@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#9500FFC4</color>
+    <color name="colorAccent">#29FF22</color>
+    <color name="colorBackgroundStatusBar">#41FF9800</color>
+    <color name="nav_bar_color">#663d00</color>
+    <color name="main_background">#FFD54F</color>
+    <color name="nav_color_title">#FF3D00</color>
+    <color name="background_drawer">#3B4BF4DB</color>
+    <color name="counter">#2FF602</color>
+    <color name="invisible">#00FFFFFF</color>
+    <color name="item_image">#FFFFFF</color>
+    <color name="text_hint_add">#3E9DDA</color>
+    <color name="back_menu_add_color">#BF360C</color>
+    <color name="back_menu_one_breed_color">#42A5F5</color>
+    <color name="img_color">#80B7E3</color>
+    <color name="float_button">#1A42A5F5</color>
+
+</resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/firstFragment">
+
+
+    <fragment
+        android:id="@+id/firstFragment"
+        android:name="com.example.findyourdog.Ui.fragments.FirstFragment"
+        android:label="@string/first"
+        tools:layout="@layout/fragment_first" />
+    <fragment
+        android:id="@+id/dogsListFragment"
+        android:name="com.example.findyourdog.Ui.fragments.DogsListFragment"
+        android:label="@string/dogs_list"
+        tools:layout="@layout/fragment_dogs_list" />
+    <fragment
+        android:id="@+id/addDogFragment"
+        android:name="com.example.findyourdog.Ui.fragments.AddDogFragment"
+        android:label="@string/add_dog"
+        tools:layout="@layout/fragment_add_dog" />
+    <fragment
+        android:id="@+id/oneBreedFragment"
+        android:name="com.example.findyourdog.Ui.fragments.OneBreedFragment"
+        android:label="@string/one_breed"
+        tools:layout="@layout/fragment_one_breed" />
+    <fragment
+        android:id="@+id/favoritesFragment"
+        android:name="com.example.findyourdog.Ui.fragments.FavoritesFragment"
+        android:label="@string/favorites"
+        tools:layout="@layout/fragment_favorites" />
+    <fragment
+        android:id="@+id/editNoteFragment"
+        android:name="com.example.findyourdog.Ui.fragments.EditNoteFragment"
+        android:label="@string/note_edit"
+        tools:layout="@layout/fragment_edit_note" />
+    <fragment
+        android:id="@+id/onePhotoFragment"
+        android:name="com.example.findyourdog.OnePhotoFragment"
+        android:label="fragment_one_photo"
+        tools:layout="@layout/fragment_one_photo" />
+
+</navigation>

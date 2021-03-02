@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">FindYourDog2</string>
+    <string name="add_dog_string">Добавить нового друга</string>
+    <string name="fav_breeds">Понравившиеся породы</string>
+    <string name="dogs_list_string">Просмотреть всех друзей</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dogs_list">Список пород</string>
+    <string name="add_dog">Добавить в список</string>
+    <string name="first">Привет</string>
+    <string name="favorites">Самые прикольные</string>
+    <string name="note_edit">Редактор заметки</string>
+    <string name="one_breed">Вот такой пёсель</string>
+    <string name="go_to_dogs_list">Перейти к списку</string>
+    <string name="go_to_add_dog">Добавить нового</string>
+    <string name="mastDog">Порода собаки</string>
+    <string name="descriptionDog">Описание</string>
+    <string name="note">note:</string>
+    <string name="temperament">temperament:<font color='#01C6DB'>Login</font></string>
+    <string name="like">Любимчики</string>
+    <string name="intro">Обычное приложение для просмотра фотографий различныхпород собак! При составном названии породы, например \"Bearded Collie\" может быть только односовпадение по фотографии! Кликайте по ножницам, чтоб сформировать запрос на \"Bearded\" или \"Collie\". Но при выборке \"Collie\" покажет все фотки по данному запросу даже \"Border Collie\"</string>
+
+
+</resources>
