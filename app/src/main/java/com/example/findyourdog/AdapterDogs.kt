@@ -15,6 +15,7 @@ class AdapterDogs(val list:MutableList<Dog>/*, val activity: MainActivity*/ ): R
         val breed = itemView.findViewById<TextView>(R.id.tvItemBreedOfDog)
         val description = itemView.findViewById<TextView>(R.id.tvItemDescription)
     }
+    //jnsdhcbhsbcdsc
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_layout, parent, false)
