@@ -29,6 +29,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.findyourdog.LocalModel.LocalModel
 import com.example.findyourdog.R
+import com.example.findyourdog.RemoteModel.BreedOfDogListPhoto
 import com.example.findyourdog.RemoteModel.Dog
 import com.example.findyourdog.RemoteModel.RemoteModel
 import com.example.findyourdog.Repository.Repository
@@ -52,6 +53,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var navController: NavController
     lateinit var mSlideshowTextView: TextView
     lateinit var viewModel: BreedViewModel
+//
+    private var optionsList: Map<String, List<String>> = mapOf()
+    private var s =  BreedOfDogListPhoto(0, optionsList, "")
 
     @Inject
     lateinit var factory: BreedViewModelFactory
@@ -59,7 +63,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //Log.d("!!!", "onCreateMA")
         init()
         nav_view.setNavigationItemSelectedListener(this)
 
@@ -105,6 +108,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             initializeCountDrawer(it.size)
         })
         viewModel.countFavorites()
+
+        viewModel.selectBreed()
 
         navController = findNavController(navHost)
         toolbar.setupWithNavController(navController, drawerLayout)

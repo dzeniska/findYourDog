@@ -17,6 +17,7 @@ import com.example.findyourdog.R
 import com.example.findyourdog.RemoteModel.DogBreeds
 import com.example.findyourdog.Ui.fragments.DogsListFragment
 import com.example.findyourdog.Ui.fragments.FavoritesFragment
+import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import retrofit2.http.Url
 
@@ -65,16 +66,15 @@ class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val
         val pict = holder.photo
         val url: String? = list[position].image.url
         val ind = list[position].ind
-        Log.d("!!!pos", "${ url?.length!!} lll ${list[position].name}")
 //        if(ind == 0){
-            Log.d("!!!pos", "$url")
             Picasso.with(context)
                 .load(url)
-                .placeholder(R.drawable.drawer_back_2)
-                .error(R.drawable.ic_add_dog)
+                .placeholder(R.drawable.ic_wait_a_litle)
+                .error(R.drawable.ic_no_connection)
                 .resize(w, h)
                 .transform(CropSquareTransformation())
                 .centerCrop()
+                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                 .into(pict)
 //        }
 //        else{

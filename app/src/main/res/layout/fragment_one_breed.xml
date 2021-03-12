@@ -13,10 +13,10 @@
         android:id="@+id/imgCut"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:src="@drawable/ic_cut"
         app:layout_constraintBottom_toBottomOf="@+id/tvBreedDog"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvBreedDog"
         app:layout_constraintTop_toTopOf="@+id/tvBreedDog"
         app:layout_constraintVertical_bias="0.533" />
 
@@ -24,8 +24,8 @@
         android:id="@+id/floatingActionButton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:clickable="true"
         android:src="@android:drawable/ic_menu_edit"
         app:layout_constraintBottom_toBottomOf="@+id/sw"
@@ -35,8 +35,8 @@
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:clickable="true"
         android:src="@android:drawable/arrow_up_float"
         app:layout_constraintBottom_toBottomOf="@+id/sw"
@@ -48,7 +48,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.55" />
+        app:layout_constraintGuide_percent="0.558104" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout2"
@@ -73,9 +73,10 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/imgRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -87,7 +88,6 @@
         android:id="@+id/tvBreedDog"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:background="@android:drawable/editbox_background"
@@ -98,8 +98,20 @@
         android:textColor="@color/text_hint_add"
         android:textColorHint="#3E9DDA"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imgCut"
         app:layout_constraintTop_toTopOf="@+id/guideline3" />
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:padding="10dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tvBreedDog"
+        app:layout_constraintEnd_toStartOf="@+id/imgCut"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvBreedDog"
+        android:spinnerMode="dialog"/>
 
     <ScrollView
         android:id="@+id/sw"

@@ -17,6 +17,12 @@ interface ApiRandomImage {
         @Path("hound") breed: String
     ): ImgBreed
 
+    @GET("breed/{hound}/{byHound}/images")
+    suspend fun getImagesDouble(
+        @Path("hound") breed: String,
+        @Path("byHound") bybreed: String
+    ): ImgBreed
+
     @GET("breeds/list/all")
     suspend fun getBreeds(
     ):BreedOfDogListPhoto

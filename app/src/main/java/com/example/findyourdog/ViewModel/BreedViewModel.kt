@@ -22,7 +22,12 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     var count: Long = 0
     var breedImgs: ImgBreed? = null
     val imgBreedList = mutableListOf<String>()
+    val selectBreed = arrayListOf<String>()
+    var bool = 0
 
+    val selectBreedLive: MutableLiveData<MutableList<String>> by lazy {
+        MutableLiveData<MutableList<String>>()
+    }
 
     var selectedBreed: DogBreeds? = null
 
@@ -40,12 +45,29 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     }
 
 
-
+//первый список с описанием пород
     fun showAllBreeds() {
         scope.launch {
             val data = repository.getAllBreeds()
             breedLive.postValue(data)
             count = data.size.toLong()
+        }
+    }
+    fun selectBreed() {
+        scope.launch {
+            val optionsList: Map<String, List<String>> = mapOf()
+            var s =  BreedOfDogListPhoto(0, optionsList, "")
+            s = repository.getBreeds()
+            val mapsBreed = s.message
+            for (map in mapsBreed) {
+                if(map.value.size == 0){
+                    selectBreed.add(map.key)
+                }else{
+                    for(byBreed in map.value){
+                        selectBreed.add("${map.key} ${byBreed}")
+                    }
+                }
+            }
         }
     }
     fun oneDog(dog: DogBreeds) {
@@ -80,13 +102,22 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
 
     fun getItemImg(breed: String){
         scope.launch {
-            val data = repository.getImgBreeds(breed)
-            //Log.d("!!!RM", data.toString())
+            val data = repository.getImgBreeds(breed.toString())
             breedImgs = data
             imgBreedList.clear()
             imgBreedList.add(selectedBreed?.image?.url.toString())
             imgBreedList.addAll(data.message)
-            Log.d("!!!RM", imgBreedList.size.toString())
+            breedItemLive.postValue(imgBreedList)
+        }
+    }
+    fun getItemImgDouble(breed: String, bybreed: String){
+
+        scope.launch {
+            val data = repository.getImgBreedsDouble(breed, bybreed)
+            breedImgs = data
+            imgBreedList.clear()
+            imgBreedList.add(selectedBreed?.image?.url.toString())
+            imgBreedList.addAll(data.message)
             breedItemLive.postValue(imgBreedList)
         }
     }
@@ -102,15 +133,4 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
             breedLive.value?.add(newBreeds)
         }
     }
-    fun breedList() {
-        scope.launch {
-            val allBreeds = repository.getBreeds()
-            Log.d("!!!jopa", allBreeds.toString())
-            //breedsLive.value?.addAll(allBreeds)
-        }
-    }
-
-
-
-
 }

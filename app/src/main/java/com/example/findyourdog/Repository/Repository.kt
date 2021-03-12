@@ -1,6 +1,5 @@
 package com.example.findyourdog.Repository
 
-import android.util.Log
 import com.example.findyourdog.LocalModel.LocalModel
 import com.example.findyourdog.RemoteModel.*
 import javax.inject.Inject
@@ -12,11 +11,9 @@ class Repository @Inject constructor(val remoteModel: RemoteModel, val localMode
         var breedsList = localModel.getAllBreed()
         return if (breedsList.isEmpty()){
             breedsList = remoteModel.getAllBreedd()
-            Log.d("!!!dl", breedsList.toString())
             localModel.insertBreeds(breedsList)
             breedsList
         } else {
-            Log.d("!!!dlelse", breedsList.toString())
             breedsList
         }
     }
@@ -43,7 +40,10 @@ class Repository @Inject constructor(val remoteModel: RemoteModel, val localMode
         return localModel.selectFavorites()
     }
     suspend fun getImgBreeds(breed: String): ImgBreed{
-        return remoteModel.getImages(breed)
+        return remoteModel.getImages(breed.toString())
+    }
+    suspend fun getImgBreedsDouble(breed: String, bybreed: String): ImgBreed{
+        return remoteModel.getImagesDouble(breed, bybreed)
     }
     suspend fun searchView(breed: Array<String>):MutableList<DogBreeds>{
         return localModel.searchView(breed)

@@ -100,7 +100,6 @@ class AddDogFragment : Fragment() {
             val image = Image("", 100L, 100L, imageUri)
 
             val id = counter
-            Log.d("!!!userIdN", "newPost $imageUri")
             val breed = DogBreeds(
                 weight,
                 height,
@@ -139,8 +138,6 @@ class AddDogFragment : Fragment() {
 
             imgAddPhoto.setImageURI(data?.data)
             imageUri = data?.data.toString()
-            Log.d("!!!uri", "${data?.data}")
-
         }
     }
     fun saveData(i:Long){

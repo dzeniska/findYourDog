@@ -14,7 +14,6 @@ class LocalModel @Inject constructor(@ApplicationContext context: Context) {
     ).build()
 
     suspend fun insertBreeds(breeds: MutableList<DogBreeds>){
-        Log.d("!!!locmod", breeds.toString())
         database.dogDao().insertBreeds(breeds)
     }
     suspend fun insertOneDog(dog: DogBreeds){
@@ -22,7 +21,6 @@ class LocalModel @Inject constructor(@ApplicationContext context: Context) {
     }
 
     suspend fun getAllBreed(): MutableList<DogBreeds> {
-        Log.d("!!!error", "data.size.toString()")
         val d = database.dogDao().getAllBreedes()
        return  database.dogDao().getAllBreedes()
     }

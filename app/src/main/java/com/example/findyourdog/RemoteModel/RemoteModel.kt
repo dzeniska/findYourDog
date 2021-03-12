@@ -11,7 +11,6 @@ class RemoteModel  @Inject constructor(){
     suspend fun getAllBreedd(): MutableList<DogBreeds>{
         return try {
             val breeds = apiService.getAllBreeds()
-            Log.d("!!!RM", breeds.toString())
             breeds
         } catch (e: Exception){
             mutableListOf()
@@ -19,7 +18,16 @@ class RemoteModel  @Inject constructor(){
     }
     suspend fun getImages(breed: String): ImgBreed{
         return try {
-            val breed = apiRandom.getImages(breed)
+            val breed = apiRandom.getImages(breed.toString())
+            breed
+        } catch (e: Exception){
+            ImgBreed(listOf(), "")
+        }
+    }
+    suspend fun getImagesDouble(breed: String, bybreed:String): ImgBreed{
+        return try {
+
+            val breed = apiRandom.getImagesDouble(breed, bybreed)
             breed
         } catch (e: Exception){
             ImgBreed(listOf(), "")
@@ -30,7 +38,8 @@ class RemoteModel  @Inject constructor(){
             val breed = apiRandom.getBreeds()
             breed
         } catch (e: Exception){
-            apiRandom.getBreeds()
+            val optionsList: Map<String, List<String>> = mapOf()
+            BreedOfDogListPhoto(0, optionsList, "")
         }
     }
 }

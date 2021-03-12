@@ -54,7 +54,6 @@ class DogsListFragment : Fragment() {
     ): View? {
         viewModel = ViewModelProvider(activity as MainActivity).get(BreedViewModel::class.java)
         // Inflate the layout for this fragment
-
         return inflater.inflate(R.layout.fragment_dogs_list, container, false)
     }
 
@@ -64,10 +63,6 @@ class DogsListFragment : Fragment() {
         navController = findNavController()
         initSearchView()
 
-
-        //navController.popBackStack()
-        //viewModel.oneDog(d)
-        Log.d("!!!dogLF", "dlf")
         val context = getContext()
 
         viewModel.showAllBreeds()
@@ -75,7 +70,6 @@ class DogsListFragment : Fragment() {
         viewModel.breedLive.observe(viewLifecycleOwner, Observer {
             breeds.clear()
             breeds.addAll(it)
-            Log.d("!!!dlf", breeds.toString())
             recyclerView?.adapter?.notifyDataSetChanged()
             tv_dog_list.alpha = 0.5f
         })
@@ -84,10 +78,6 @@ class DogsListFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
         adapter.notifyDataSetChanged()
-
-        fab1.setOnClickListener(){
-            //navController.navigate(R.id.oneBreedFragment)
-        }
     }
 
 

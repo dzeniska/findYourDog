@@ -52,7 +52,6 @@ class FavoritesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = findNavController()
-        Log.d("!!!dogLF", "dlf")
         val context = getContext()
 
         viewModel.selectFavorites()
@@ -60,7 +59,6 @@ class FavoritesFragment : Fragment() {
         viewModel.breedLive.observe(viewLifecycleOwner, Observer {
             breeds.clear()
             breeds.addAll(it)
-            Log.d("!!!dlf", breeds.toString())
             recyclerViewFav?.adapter?.notifyDataSetChanged()
             tv_dog_list_fav.alpha = 0.5f
         })
@@ -76,7 +74,4 @@ class FavoritesFragment : Fragment() {
         viewModel.getItemImg(breeds[position].name?.toLowerCase(Locale.ROOT).toString())
         navController.navigate(R.id.oneBreedFragment)
     }
-
-
-
 }
