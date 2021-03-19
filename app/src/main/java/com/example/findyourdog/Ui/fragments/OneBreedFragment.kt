@@ -191,7 +191,12 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     fun onePhoto(position: Int) {
-        viewModel.onePhoto = imgBreedList[position]
+        val resp = imgBreedList[position]
+        viewModel.getOnePhoto(resp)
+        val photo = resp.substringAfterLast("/")
+        viewModel.fileName = photo
+//        val breed = resp.substringBeforeLast("/").substringAfterLast("/")
+        Log.d("!!!pq", photo)
         navController.navigate(R.id.onePhotoFragment)
     }
 

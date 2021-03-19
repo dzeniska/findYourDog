@@ -1,12 +1,22 @@
 package com.example.findyourdog.Repository
 
+import android.util.Log
 import com.example.findyourdog.LocalModel.LocalModel
 import com.example.findyourdog.RemoteModel.*
+import okhttp3.ResponseBody
+import java.io.InputStream
 import javax.inject.Inject
 
 
-class Repository @Inject constructor(val remoteModel: RemoteModel, val localModel: LocalModel)
+data class Repository @Inject constructor(val remoteModel: RemoteModel, val localModel: LocalModel)
 {
+    //одного фото запрос
+    suspend fun getOnePhoto(url: String): ResponseBody {
+        Log.d("!!!pst", remoteModel.getOnePhoto(url).toString())
+        return remoteModel.getOnePhoto(url)
+    }
+
+
     suspend fun getAllBreeds(): MutableList<DogBreeds>{
         var breedsList = localModel.getAllBreed()
         return if (breedsList.isEmpty()){

@@ -13,17 +13,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
+import okhttp3.ResponseBody
+import java.io.InputStream
 
 
 class BreedViewModel(val repository: Repository) : ViewModel() {
     val scope = CoroutineScope(Dispatchers.IO)
 
-    var onePhoto: String = ""
     var count: Long = 0
     var breedImgs: ImgBreed? = null
     val imgBreedList = mutableListOf<String>()
     val selectBreed = arrayListOf<String>()
-    var bool = 0
+    var responseBody: ResponseBody? = null
+    var fileName:String = ""
 
     val selectBreedLive: MutableLiveData<MutableList<String>> by lazy {
         MutableLiveData<MutableList<String>>()
@@ -40,10 +42,18 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     val breedItemLive: MutableLiveData<MutableList<String>> by lazy {
         MutableLiveData<MutableList<String>>()
     }
-    val breedsLive: MutableLiveData<MutableList<BreedOfDogListPhoto>> by lazy {
-        MutableLiveData<MutableList<BreedOfDogListPhoto>>()
+    val onePhoto: MutableLiveData<ResponseBody> by lazy {
+        MutableLiveData<ResponseBody>()
     }
 
+    //одного фото запрос
+    fun getOnePhoto(url: String){
+        scope.launch {
+            onePhoto.postValue(repository.getOnePhoto(url))
+//            responseBody = repository.getOnePhoto(url)
+//            Log.d("!!!p", responseBody.toString())
+        }
+    }
 
 //первый список с описанием пород
     fun showAllBreeds() {
