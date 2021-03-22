@@ -3,16 +3,17 @@ package com.example.findyourdog.Repository
 import android.util.Log
 import com.example.findyourdog.LocalModel.LocalModel
 import com.example.findyourdog.RemoteModel.*
+import com.example.findyourdog.ViewModel.BreedViewModel
 import okhttp3.ResponseBody
 import java.io.InputStream
 import javax.inject.Inject
+import kotlin.coroutines.coroutineContext
 
 
 data class Repository @Inject constructor(val remoteModel: RemoteModel, val localModel: LocalModel)
 {
     //одного фото запрос
-    suspend fun getOnePhoto(url: String): ResponseBody {
-        Log.d("!!!pst", remoteModel.getOnePhoto(url).toString())
+    suspend fun getOnePhoto(url: String): ByteArray{
         return remoteModel.getOnePhoto(url)
     }
 

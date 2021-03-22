@@ -73,7 +73,7 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
             listBreed
         )
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapterSpinner;
+        spinner.adapter = adapterSpinner
         spinner.onItemSelectedListener = this
 //        spinner.setPrompt("hgvhgv")
 //        adapterSpinner.notifyDataSetChanged()

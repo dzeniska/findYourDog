@@ -1,19 +1,21 @@
 package com.example.findyourdog.RemoteModel
 
 
-import android.text.InputType
+import android.widget.Toast
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
-import retrofit2.http.*
-import java.io.InputStream
+import retrofit2.http.GET
+import retrofit2.http.Url
 import java.util.concurrent.TimeUnit
 
 
 val BASE_URL_RNDOM = "https://dog.ceo/api/"
-
 
 interface ApiOnePhoto {
     @GET

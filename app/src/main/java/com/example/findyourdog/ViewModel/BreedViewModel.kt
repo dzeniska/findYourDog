@@ -15,9 +15,10 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import java.io.InputStream
+import javax.inject.Inject
 
 
-class BreedViewModel(val repository: Repository) : ViewModel() {
+class BreedViewModel (val repository: Repository) : ViewModel() {
     val scope = CoroutineScope(Dispatchers.IO)
 
     var count: Long = 0
@@ -42,16 +43,15 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     val breedItemLive: MutableLiveData<MutableList<String>> by lazy {
         MutableLiveData<MutableList<String>>()
     }
-    val onePhoto: MutableLiveData<ResponseBody> by lazy {
-        MutableLiveData<ResponseBody>()
+    val onePhoto: MutableLiveData<ByteArray> by lazy {
+        MutableLiveData<ByteArray>()
     }
 
     //одного фото запрос
     fun getOnePhoto(url: String){
         scope.launch {
+            repository.getOnePhoto(url)
             onePhoto.postValue(repository.getOnePhoto(url))
-//            responseBody = repository.getOnePhoto(url)
-//            Log.d("!!!p", responseBody.toString())
         }
     }
 

@@ -1,11 +1,11 @@
 package com.example.findyourdog.RemoteModel
 
 import android.util.Log
-import okhttp3.Response
+import android.widget.Toast
 import okhttp3.ResponseBody
-import java.io.IOException
-import java.io.InputStream
+import org.json.JSONObject
 import javax.inject.Inject
+
 
 @Suppress("CAST_NEVER_SUCCEEDS")
 class RemoteModel @Inject constructor() {
@@ -13,16 +13,19 @@ class RemoteModel @Inject constructor() {
     val apiRandom = ApiRandomImage.create()
     val apiOnePhoto = ApiOnePhoto.create()
 
+
     //одного фото запрос
-    suspend fun getOnePhoto(url: String): ResponseBody {
-            var photo: ResponseBody? = null
+    suspend fun getOnePhoto(url: String): ByteArray{
+        var photo: ByteArray
+        val photoString = ""
         return try {
-            photo = apiOnePhoto.getOnePhoto(url)
+            photo = apiOnePhoto.getOnePhoto(url).bytes()
             Log.d("!!!ps", photo.toString())
-             photo
-        }catch (e: IOException){
-            Log.d("!!!ps", e.message.toString())
-            photo!!
+            photo
+        } catch (e: Exception) {
+            Log.d("!!!ps", e.toString())
+            photo = photoString.toByteArray()
+            photo
         }
     }
 

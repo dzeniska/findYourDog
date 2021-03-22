@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -16,6 +17,7 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.example.findyourdog.Ui.MainActivity
 import com.example.findyourdog.ViewModel.BreedViewModel
 import kotlinx.android.synthetic.main.fragment_one_photo.*
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStream
 
@@ -50,30 +52,40 @@ class OnePhotoFragment : Fragment() {
 //        }
 
 
+
         viewModel.onePhoto.observe(viewLifecycleOwner, Observer {
-            Log.d("!!!p", it.toString())
-            val dirName = context?.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath
-            val pathName = "$dirName/${viewModel.fileName}"
-            val f = File(pathName)
-            Log.d("!!!p", pathName.toString())
-            it?.byteStream()?.saveToFile(f)
+            Log.d("!!!px", it.toString())
 
-            val uri = Uri.fromFile(f)
-            imgOnePhoto as SubsamplingScaleImageView
-            imgOnePhoto.setImage(ImageSource.uri(uri))
+            val stream = String(it)
+            if(stream.length > 0){
+                val dirName = context?.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath
+                val pathName = "$dirName/${viewModel.fileName}"
+                val f = File(pathName)
+                Log.d("!!!p", pathName.toString())
+                val inputStream: InputStream
+                inputStream = it.inputStream()
+                inputStream.saveToFile(f)
+                val uri = Uri.fromFile(f)
+                imgOnePhoto.visibility = View.VISIBLE
+                imgOnePhoto as SubsamplingScaleImageView
+                imgOnePhoto.setImage(ImageSource.uri(uri))
 
-//            imgOnePhoto.setImageURI(uri)
-//            imgOnePhoto.invalidate()
-
+                progressBarLine.visibility = View.GONE
+            }else{
+                Toast.makeText(activity as MainActivity, "Плохое соединение с интернетом!", Toast.LENGTH_SHORT).show()
+            }
         })
-
-
-
 //            Picasso.with(context)
 //                .load(it)
 //                .placeholder(R.drawable.drawer_back_2)
 //                .error(R.drawable.ic_add_dog)
 //                .into(imgOnePhoto)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        imgOnePhoto.visibility = View.GONE
+        progressBarLine.visibility = View.VISIBLE
     }
 
 }
