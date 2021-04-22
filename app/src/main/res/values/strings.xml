@@ -30,6 +30,13 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="not_reg">Зарегестрируйтесь</string>
     <string name="exit">Выход</string>
+    <string name="reg_up_is_successful">Удачная регистрация, человек!</string>
+    <string name="error_reg">Ошибка регистрации!</string>
+    <string name="error_enter">Ошибка входа!</string>
+    <string name="email_add">Проверте Вашу почту дляподтверждения Email!</string>
+    <string name="email_no_add">Ошибка отправки подтверждения регистрации по Email!</string>
+
+
 
 
 </resources>

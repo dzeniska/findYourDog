@@ -18,8 +18,6 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.findyourdog.R
-import com.example.findyourdog.RemoteModel.firebase.AuthInterface
-import com.example.findyourdog.RemoteModel.firebase.FBAuth
 import com.example.findyourdog.Ui.fragments.LoginFragment
 import com.example.findyourdog.ViewModel.BreedViewModel
 import com.example.findyourdog.ViewModel.BreedViewModelFactory
@@ -48,7 +46,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //
     private var optionsList: Map<String, List<String>> = mapOf()
     val mAuth = FirebaseAuth.getInstance()
-    private var loginFragment: LoginFragment? = null
+
 
 
 
@@ -175,6 +173,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.auth -> {
                 viewModel.signUpIn(0)
+
                 navController.navigate(R.id.loginFragment)
                 closeDrawer()
                 Toast.makeText(applicationContext, "loginFragment", Toast.LENGTH_LONG).show()
@@ -198,5 +197,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun closeDrawer(){
         drawerLayout.closeDrawer(GravityCompat.START)
     }
+
+//    companion object{
+//        fun newInstance() = LoginFragment(this).apply {
+//            Bundle().also {
+//
+//            }
+//        }
+//    }
 
 }

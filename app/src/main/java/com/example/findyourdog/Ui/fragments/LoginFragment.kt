@@ -18,12 +18,16 @@ import com.example.findyourdog.ViewModel.BreedViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.fragment_login.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
-class LoginFragment(): Fragment() {
+class LoginFragment() : Fragment() {
 
-    val mAuth = FirebaseAuth.getInstance()
     lateinit var viewModel: BreedViewModel
+
     val fbAuth = FBAuth(this)
     var signUpIn: Int = 1
 
@@ -46,25 +50,39 @@ class LoginFragment(): Fragment() {
 
 
         viewModel.signUpInValue.observe(viewLifecycleOwner, Observer {
-                signUpIn = it
-
+            signUpIn = it
         })
+
         init()
 
+        val scope = CoroutineScope(Dispatchers.Main)
+
+        floatBtnSendEmailAndPassword.setOnClickListener() {
+            if (edEmail.text.isNotEmpty() && edPassword.text.isNotEmpty()) {
+                if (signUpIn == 0) {
+                    scope.launch {
+                        fbAuth.signUpWithEmail(
+                            edEmail.text.toString(),
+                            edPassword.text.toString(),
+                            context as MainActivity
+                        )
+                        delay(500)
+                    }
+                } else {
+                    scope.launch {
+                        fbAuth.signInWithEmail(
+                            edEmail.text.toString(),
+                            edPassword.text.toString(),
+                            context as MainActivity
+                        )
+                        delay(500)
+                    }
 
 
-
-        floatBtnSendEmailAndPassword.setOnClickListener(){
-            if(edEmail.text.isNotEmpty() && edPassword.text.isNotEmpty()){
-                if(signUpIn == 0){
-                    fbAuth.signUpWithEmail(edEmail.text.toString(), edPassword.text.toString())
-                }else{
-                    fbAuth.signInWithEmail(edEmail.text.toString(), edPassword.text.toString())
                 }
 
             }
         }
-
 
 
     }
@@ -72,7 +90,7 @@ class LoginFragment(): Fragment() {
     private fun init() {
         edEmail.apply {
             afterTextChanged {
-                if(it.length >5) {
+                if (it.length > 5) {
                     if (!it.contains("@")) {
                         edEmail.error = "@"
                     }
@@ -81,7 +99,7 @@ class LoginFragment(): Fragment() {
         }
         edPassword.apply {
             afterTextChanged {
-                if(it.length < 6){
+                if (it.length < 6) {
                     edPassword.error = "не менее 6 символов"
                 }
             }
