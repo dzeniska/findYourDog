@@ -39,8 +39,14 @@
         tools:layout="@layout/fragment_edit_note" />
     <fragment
         android:id="@+id/onePhotoFragment"
-        android:name="com.example.findyourdog.OnePhotoFragment"
+        android:name="com.example.findyourdog.Ui.fragments.OnePhotoFragment"
         android:label="fragment_one_photo"
         tools:layout="@layout/fragment_one_photo" />
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.example.findyourdog.Ui.fragments.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" />
+
 
 </navigation>

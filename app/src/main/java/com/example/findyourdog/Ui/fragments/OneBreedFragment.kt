@@ -46,10 +46,15 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 //in here you can do logic when backPress is clicked
-                viewModel.imgBreedList.clear()
+//                viewModel.imgBreedList.clear()
                 navController.popBackStack()
             }
         })
+    }
+
+    override fun onDetach() {
+        viewModel.imgBreedList.clear()
+        super.onDetach()
     }
 
     override fun onCreateView(
@@ -87,10 +92,11 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
 
         viewModel.breedItemLive.observe(viewLifecycleOwner, Observer {
-            Log.d("!!!", it.toString())
+            Log.d("!!!observe", it.size.toString())
             imgBreedList.clear()
             imgBreedList.addAll(it)
             imgRecyclerView?.adapter?.notifyDataSetChanged()
+
         })
 
         viewModel.imgBreedList?.let {

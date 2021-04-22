@@ -15,7 +15,6 @@
         android:roundIcon="@mipmap/ic_icon_8_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".Ui.MainActivity"
             android:theme="@style/AppTheme.NoActionBar"

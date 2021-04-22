@@ -1,8 +1,15 @@
 <resources>
     <string name="app_name">FindYourDog2</string>
+    <!--Drawer menu-->
     <string name="add_dog_string">Добавить нового друга</string>
     <string name="fav_breeds">Понравившиеся породы</string>
     <string name="dogs_list_string">Просмотреть всех друзей</string>
+    <string name="auth">Регистрация</string>
+    <string name="entrance">Вход</string>
+    <string name="output">Выход</string>
+    <string name="lost">Потеряшки</string>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="dogs_list">Список пород</string>
@@ -18,7 +25,11 @@
     <string name="note">note:</string>
     <string name="temperament">temperament:<font color='#01C6DB'>Login</font></string>
     <string name="like">Любимчики</string>
-    <string name="intro">Обычное приложение для просмотра фотографий различныхпород собак! При составном названии породы, например \"Bearded Collie\" может быть только односовпадение по фотографии! Кликайте по ножницам, чтоб сформировать запрос на \"Bearded\" или \"Collie\". Но при выборке \"Collie\" покажет все фотки по данному запросу даже \"Border Collie\"</string>
+    <string name="intro"> Не читайте этот текст - он будет переписываться! Обычное приложение для просмотра фотографий различныхпород собак! При составном названии породы, например \"Bearded Collie\" может быть только односовпадение по фотографии! Кликайте по ножницам, чтоб сформировать запрос на \"Bearded\" или \"Collie\". Но при выборке \"Collie\" покажет все фотки по данному запросу даже \"Border Collie\"</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="not_reg">Зарегестрируйтесь</string>
+    <string name="exit">Выход</string>
 
 
 </resources>

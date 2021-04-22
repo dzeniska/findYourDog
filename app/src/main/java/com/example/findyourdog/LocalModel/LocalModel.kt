@@ -1,7 +1,6 @@
 package com.example.findyourdog.LocalModel
 
 import android.content.Context
-import android.util.Log
 import androidx.room.Room
 import com.example.findyourdog.RemoteModel.DogBreeds
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -21,7 +20,6 @@ class LocalModel @Inject constructor(@ApplicationContext context: Context) {
     }
 
     suspend fun getAllBreed(): MutableList<DogBreeds> {
-        val d = database.dogDao().getAllBreedes()
        return  database.dogDao().getAllBreedes()
     }
 

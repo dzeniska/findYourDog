@@ -1,9 +1,7 @@
 package com.example.findyourdog.RemoteModel
 
+
 import android.util.Log
-import android.widget.Toast
-import okhttp3.ResponseBody
-import org.json.JSONObject
 import javax.inject.Inject
 
 
@@ -13,6 +11,12 @@ class RemoteModel @Inject constructor() {
     val apiRandom = ApiRandomImage.create()
     val apiOnePhoto = ApiOnePhoto.create()
 
+
+
+    suspend fun signUpWithEmail(email: String, password: String){
+//        val fbAuth = FBAuth()
+//        fbAuth.signUpWithEmail(email, password)
+    }
 
     //одного фото запрос
     suspend fun getOnePhoto(url: String): ByteArray{
@@ -40,8 +44,7 @@ class RemoteModel @Inject constructor() {
 
     suspend fun getImages(breed: String): ImgBreed {
         return try {
-            val breed = apiRandom.getImages(breed.toString())
-            breed
+            apiRandom.getImages(breed)
         } catch (e: Exception) {
             ImgBreed(listOf(), "")
         }
@@ -49,9 +52,7 @@ class RemoteModel @Inject constructor() {
 
     suspend fun getImagesDouble(breed: String, bybreed: String): ImgBreed {
         return try {
-
-            val breed = apiRandom.getImagesDouble(breed, bybreed)
-            breed
+            apiRandom.getImagesDouble(breed, bybreed)
         } catch (e: Exception) {
             ImgBreed(listOf(), "")
         }
@@ -66,4 +67,5 @@ class RemoteModel @Inject constructor() {
             BreedOfDogListPhoto(0, optionsList, "")
         }
     }
+
 }

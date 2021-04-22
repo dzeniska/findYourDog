@@ -3,6 +3,8 @@ package com.example.findyourdog.Ui
 import android.accounts.AccountManager.get
 import android.content.Context
 import android.graphics.BitmapFactory
+import android.icu.number.NumberFormatter.with
+import android.icu.number.NumberRangeFormatter.with
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -50,7 +52,6 @@ class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
 
         val width = list[position].image.width?.toInt()
         val height = list[position].image.height?.toInt()

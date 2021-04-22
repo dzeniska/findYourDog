@@ -1,21 +1,17 @@
 package com.example.findyourdog.ViewModel
 
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.findyourdog.RemoteModel.BreedOfDogListPhoto
 import com.example.findyourdog.RemoteModel.DogBreeds
 import com.example.findyourdog.RemoteModel.ImgBreed
-import com.example.findyourdog.RemoteModel.RandomImageClass
 import com.example.findyourdog.Repository.Repository
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
-import okhttp3.ResponseBody
-import java.io.InputStream
-import javax.inject.Inject
+
 
 
 class BreedViewModel (val repository: Repository) : ViewModel() {
@@ -25,14 +21,10 @@ class BreedViewModel (val repository: Repository) : ViewModel() {
     var breedImgs: ImgBreed? = null
     val imgBreedList = mutableListOf<String>()
     val selectBreed = arrayListOf<String>()
-    var responseBody: ResponseBody? = null
     var fileName:String = ""
-
-    val selectBreedLive: MutableLiveData<MutableList<String>> by lazy {
-        MutableLiveData<MutableList<String>>()
-    }
-
     var selectedBreed: DogBreeds? = null
+
+    val mAuth = MutableLiveData<String>()
 
     val breedLive: MutableLiveData<MutableList<DogBreeds>> by lazy {
         MutableLiveData<MutableList<DogBreeds>>()
@@ -40,12 +32,27 @@ class BreedViewModel (val repository: Repository) : ViewModel() {
     val breedFavLive: MutableLiveData<MutableList<DogBreeds>> by lazy {
         MutableLiveData<MutableList<DogBreeds>>()
     }
+
     val breedItemLive: MutableLiveData<MutableList<String>> by lazy {
         MutableLiveData<MutableList<String>>()
     }
     val onePhoto: MutableLiveData<ByteArray> by lazy {
         MutableLiveData<ByteArray>()
     }
+    var userUpdate = MutableLiveData<FirebaseUser>()
+
+    var signUpInValue = MutableLiveData<Int>()
+
+
+    fun signUpWithEmail(email: String, password: String){
+
+        scope.launch {
+           mAuth.postValue(repository.signUpWithEmail(email, password).toString())
+        }
+
+    }
+
+
 
     //одного фото запрос
     fun getOnePhoto(url: String){
@@ -112,7 +119,7 @@ class BreedViewModel (val repository: Repository) : ViewModel() {
 
     fun getItemImg(breed: String){
         scope.launch {
-            val data = repository.getImgBreeds(breed.toString())
+            val data = repository.getImgBreeds(breed)
             breedImgs = data
             imgBreedList.clear()
             imgBreedList.add(selectedBreed?.image?.url.toString())
@@ -142,5 +149,12 @@ class BreedViewModel (val repository: Repository) : ViewModel() {
             repository.insertOnePost(newBreeds)
             breedLive.value?.add(newBreeds)
         }
+    }
+
+    fun uiUpdateMain(user: FirebaseUser?) {
+        userUpdate.postValue(user)
+    }
+    fun signUpIn(signUpIn: Int){
+        signUpInValue.postValue(signUpIn)
     }
 }

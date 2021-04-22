@@ -14,7 +14,13 @@
     <color name="text_hint_add">#3E9DDA</color>
     <color name="back_menu_add_color">#BF360C</color>
     <color name="back_menu_one_breed_color">#42A5F5</color>
+    <color name="back_color_login">#26A69A</color>
     <color name="img_color">#80B7E3</color>
     <color name="float_button">#1A42A5F5</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
 
 </resources>

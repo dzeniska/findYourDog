@@ -1,6 +1,5 @@
-package com.example.findyourdog
+package com.example.findyourdog.Ui.fragments
 
-import android.R
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
@@ -17,7 +16,6 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.example.findyourdog.Ui.MainActivity
 import com.example.findyourdog.ViewModel.BreedViewModel
 import kotlinx.android.synthetic.main.fragment_one_photo.*
-import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.InputStream
 
@@ -89,7 +87,7 @@ class OnePhotoFragment : Fragment() {
     }
 
 }
-    fun InputStream.saveToFile(file: File) =use{ input ->
+    fun InputStream.saveToFile(file: File) = use{ input ->
         file.outputStream().use{output ->
             input.copyTo(output)
         }

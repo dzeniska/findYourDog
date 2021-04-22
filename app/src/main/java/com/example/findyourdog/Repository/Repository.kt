@@ -1,17 +1,20 @@
 package com.example.findyourdog.Repository
 
-import android.util.Log
+
+import android.content.Context
 import com.example.findyourdog.LocalModel.LocalModel
 import com.example.findyourdog.RemoteModel.*
-import com.example.findyourdog.ViewModel.BreedViewModel
-import okhttp3.ResponseBody
-import java.io.InputStream
 import javax.inject.Inject
-import kotlin.coroutines.coroutineContext
+
 
 
 data class Repository @Inject constructor(val remoteModel: RemoteModel, val localModel: LocalModel)
 {
+
+    suspend fun signUpWithEmail(email: String, password: String){
+        remoteModel.signUpWithEmail(email, password)
+    }
+
     //одного фото запрос
     suspend fun getOnePhoto(url: String): ByteArray{
         return remoteModel.getOnePhoto(url)
@@ -51,7 +54,7 @@ data class Repository @Inject constructor(val remoteModel: RemoteModel, val loca
         return localModel.selectFavorites()
     }
     suspend fun getImgBreeds(breed: String): ImgBreed{
-        return remoteModel.getImages(breed.toString())
+        return remoteModel.getImages(breed)
     }
     suspend fun getImgBreedsDouble(breed: String, bybreed: String): ImgBreed{
         return remoteModel.getImagesDouble(breed, bybreed)

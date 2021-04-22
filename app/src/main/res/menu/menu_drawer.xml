@@ -19,6 +19,27 @@
             android:icon="@drawable/ic_add_dog"
             app:actionViewClass="android.widget.TextView"
             android:title="@string/fav_breeds" />
+        <item
+            android:title="@string/lost">
+            <menu>
+                <item
+                    android:id="@+id/auth"
+                    android:icon="@drawable/ic_auth"
+                    app:actionViewClass="android.widget.TextView"
+                    android:title="@string/auth" />
+                <item
+                    android:id="@+id/enter"
+                    android:icon="@drawable/ic_entrance"
+                    app:actionViewClass="android.widget.TextView"
+                    android:title="@string/entrance" />
+                <item
+                    android:id="@+id/exit"
+                    android:icon="@drawable/ic_exit"
+                    app:actionViewClass="android.widget.TextView"
+                    android:title="@string/exit" />
+            </menu>
+        </item>
+
 
     </group>
 
