@@ -9,20 +9,25 @@
             android:id="@+id/dogs_list"
             android:icon="@drawable/ic_list"
             android:title="@string/dogs_list_string"/>
-        <item
+        <!--<item
             android:id="@+id/add_dog_item"
             android:icon="@drawable/ic_add_dog"
             app:actionViewClass="android.widget.TextView"
-            android:title="@string/add_dog_string" />
+            android:title="@string/add_dog_string" />-->
         <item
             android:id="@+id/show_fav"
-            android:icon="@drawable/ic_add_dog"
+            android:icon="@drawable/ic_fav_drawer_manu"
             app:actionViewClass="android.widget.TextView"
             android:title="@string/fav_breeds" />
         <item
             android:title="@string/lost">
             <menu>
                 <item
+                    android:id="@+id/auth"
+                    android:icon="@drawable/ic_auth"
+                    app:actionViewClass="android.widget.TextView"
+                    android:title="@string/develop" />
+               <!-- <item
                     android:id="@+id/auth"
                     android:icon="@drawable/ic_auth"
                     app:actionViewClass="android.widget.TextView"
@@ -36,7 +41,7 @@
                     android:id="@+id/exit"
                     android:icon="@drawable/ic_exit"
                     app:actionViewClass="android.widget.TextView"
-                    android:title="@string/exit" />
+                    android:title="@string/exit" /> -->
             </menu>
         </item>
 

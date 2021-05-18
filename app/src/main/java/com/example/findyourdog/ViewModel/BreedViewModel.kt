@@ -24,7 +24,6 @@ class BreedViewModel (val repository: Repository) : ViewModel() {
     var fileName:String = ""
     var selectedBreed: DogBreeds? = null
 
-    val mAuth = MutableLiveData<String>()
 
     val breedLive: MutableLiveData<MutableList<DogBreeds>> by lazy {
         MutableLiveData<MutableList<DogBreeds>>()
@@ -33,26 +32,18 @@ class BreedViewModel (val repository: Repository) : ViewModel() {
         MutableLiveData<MutableList<DogBreeds>>()
     }
 
-    val breedItemLive: MutableLiveData<MutableList<String>> by lazy {
-        MutableLiveData<MutableList<String>>()
-    }
+//    val breedItemLive: MutableLiveData<MutableList<String>> by lazy {
+//        MutableLiveData<MutableList<String>>()
+//    }
+
+    var breedItemLive = MutableLiveData<MutableList<String>>()
+
     val onePhoto: MutableLiveData<ByteArray> by lazy {
         MutableLiveData<ByteArray>()
     }
     var userUpdate = MutableLiveData<FirebaseUser>()
 
     var signUpInValue = MutableLiveData<Int>()
-
-
-    fun signUpWithEmail(email: String, password: String){
-
-        scope.launch {
-           mAuth.postValue(repository.signUpWithEmail(email, password).toString())
-        }
-
-    }
-
-
 
     //одного фото запрос
     fun getOnePhoto(url: String){

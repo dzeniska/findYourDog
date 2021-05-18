@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:src="@drawable/ic_cut"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tvBreedDog"
         app:layout_constraintEnd_toStartOf="@+id/tvBreedDog"
         app:layout_constraintTop_toTopOf="@+id/tvBreedDog"

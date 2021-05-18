@@ -9,6 +9,7 @@ import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.content.ContextCompat
 
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuItemCompat
@@ -43,7 +44,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var navController: NavController
     lateinit var mSlideshowTextView: TextView
     lateinit var viewModel: BreedViewModel
-//
+
     private var optionsList: Map<String, List<String>> = mapOf()
     val mAuth = FirebaseAuth.getInstance()
 
@@ -72,7 +73,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     fun uiUpdateMain(user: FirebaseUser?) {
         Log.d("!!!", user.toString())
         tvHeaderAcc.text = if (user == null) {
-            resources.getString(R.string.not_reg)
+//            resources.getString(R.string.not_reg)
+            resources.getString(R.string.hello)
         } else {
             """Рады видеть Вас
                 |${user.email}
@@ -116,7 +118,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         viewModel.breedFavLive.observe(this, Observer {
             //добавляем счётчик в item menu_drawer
             mSlideshowTextView = MenuItemCompat.getActionView(
-                nav_view.getMenu().findItem(R.id.show_fav)
+                nav_view.menu.findItem(R.id.show_fav)
             ) as (TextView)
             initializeCountDrawer(it.size)
         })
@@ -141,7 +143,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     fun initializeCountDrawer(count: Int) {
         mSlideshowTextView.setGravity(Gravity.CENTER_VERTICAL)
         mSlideshowTextView.setTypeface(null, Typeface.BOLD)
-        mSlideshowTextView.setTextColor(getResources().getColor(R.color.counter))
+        mSlideshowTextView.setTextColor(ContextCompat.getColor(this, R.color.counter))
         mSlideshowTextView.text = "${count}"
     }
 
@@ -159,51 +161,40 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 intent
                 navController.navigate(R.id.dogsListFragment)
                 closeDrawer()
-                Toast.makeText(applicationContext, "Просмотр списка", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "Просмотр списка", Toast.LENGTH_SHORT).show()
             }
-            R.id.add_dog_item -> {
-                navController.navigate(R.id.addDogFragment)
-                closeDrawer()
-                Toast.makeText(applicationContext, "Добавьте пёса", Toast.LENGTH_LONG).show()
-            }
+//            R.id.add_dog_item -> {
+//                navController.navigate(R.id.addDogFragment)
+//                closeDrawer()
+//                Toast.makeText(applicationContext, "Добавьте пёса", Toast.LENGTH_LONG).show()
+//            }
             R.id.show_fav -> {
                 navController.navigate(R.id.favoritesFragment)
                 closeDrawer()
-                Toast.makeText(applicationContext, "Добавьте пёса", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "Любимчики", Toast.LENGTH_SHORT).show()
             }
-            R.id.auth -> {
-                viewModel.signUpIn(0)
-
-                navController.navigate(R.id.loginFragment)
-                closeDrawer()
-                Toast.makeText(applicationContext, "loginFragment", Toast.LENGTH_LONG).show()
-            }
-            R.id.enter -> {
-                viewModel.signUpIn(1)
-                navController.navigate(R.id.loginFragment)
-                closeDrawer()
-                Toast.makeText(applicationContext, "loginFragment", Toast.LENGTH_LONG).show()
-            }
-            R.id.exit -> {
-                uiUpdateMain(null)
-                mAuth.signOut()
-            }
+//            R.id.auth -> {
+//                viewModel.signUpIn(0)
+//
+//                navController.navigate(R.id.loginFragment)
+//                closeDrawer()
+//                Toast.makeText(applicationContext, "loginFragment", Toast.LENGTH_LONG).show()
+//            }
+//            R.id.enter -> {
+//                viewModel.signUpIn(1)
+//                navController.navigate(R.id.loginFragment)
+//                closeDrawer()
+//                Toast.makeText(applicationContext, "loginFragment", Toast.LENGTH_LONG).show()
+//            }
+//            R.id.exit -> {
+//                uiUpdateMain(null)
+//                mAuth.signOut()
+//            }
         }
-
         return true
     }
-
 
     private fun closeDrawer(){
         drawerLayout.closeDrawer(GravityCompat.START)
     }
-
-//    companion object{
-//        fun newInstance() = LoginFragment(this).apply {
-//            Bundle().also {
-//
-//            }
-//        }
-//    }
-
 }

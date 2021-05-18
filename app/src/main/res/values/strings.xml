@@ -3,11 +3,12 @@
     <!--Drawer menu-->
     <string name="add_dog_string">Добавить нового друга</string>
     <string name="fav_breeds">Понравившиеся породы</string>
-    <string name="dogs_list_string">Просмотреть всех друзей</string>
+    <string name="dogs_list_string">Список пород собакенов</string>
     <string name="auth">Регистрация</string>
     <string name="entrance">Вход</string>
     <string name="output">Выход</string>
     <string name="lost">Потеряшки</string>
+    <string name="develop">В разработке…</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -18,17 +19,25 @@
     <string name="favorites">Самые прикольные</string>
     <string name="note_edit">Редактор заметки</string>
     <string name="one_breed">Вот такой пёсель</string>
-    <string name="go_to_dogs_list">Перейти к списку</string>
+    <string name="go_to_dogs_list">Перейти к списку \n
+    пород</string>
     <string name="go_to_add_dog">Добавить нового</string>
     <string name="mastDog">Порода собаки</string>
     <string name="descriptionDog">Описание</string>
     <string name="note">note:</string>
     <string name="temperament">temperament:<font color='#01C6DB'>Login</font></string>
     <string name="like">Любимчики</string>
-    <string name="intro"> Не читайте этот текст - он будет переписываться! Обычное приложение для просмотра фотографий различныхпород собак! При составном названии породы, например \"Bearded Collie\" может быть только односовпадение по фотографии! Кликайте по ножницам, чтоб сформировать запрос на \"Bearded\" или \"Collie\". Но при выборке \"Collie\" покажет все фотки по данному запросу даже \"Border Collie\"</string>
+    <string name="intro"> Приложение для просмотра фотографий различных пород собак! При составном названии породы, например \"Bearded Collie\" может быть только односовпадение по фотографии! Кликайте по ножницам, чтоб сформировать запрос на \"Bearded\" или \"Collie\". Но при выборке \"Collie\" покажет все фотки по данному запросу даже \"Border Collie\"</string>
+    <string name="intro3">by dzenis_ska</string>
+    <string name="intro2"> Это приложение (на стадии разработки…) предназначено для облегчения поиска потерявшихся собак! \n
+        Ну а пока можно просматривать краткое описание пород и фоточки пород Ваших любимчиков!) \n
+        Ипользуются разные интернет-ресурсы: dog.ceo и api.thedogapi.com, \n
+        поэтому для улучшения поиска фотографий жмите \"more photo\"
+    </string>
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="not_reg">Зарегестрируйтесь</string>
+    <string name="hello">Привет ;)</string>
     <string name="exit">Выход</string>
     <string name="reg_up_is_successful">Удачная регистрация, человек!</string>
     <string name="error_reg">Ошибка регистрации!</string>

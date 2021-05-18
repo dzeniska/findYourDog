@@ -34,17 +34,13 @@ class DogsListFragment : Fragment() {
     lateinit var adapter: AdapterBreeds
     lateinit var viewModel: BreedViewModel
     private val breeds = mutableListOf<DogBreeds>()
-    lateinit var d: DogBreeds
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 //in here you can do logic when backPress is clicked
-                navController.popBackStack(R.id.addDogFragment, true)
-                navController.popBackStack(R.id.dogsListFragment, true)
-                navController.popBackStack(R.id.favoritesFragment, true)
-                navController.popBackStack(R.id.oneBreedFragment, true)
-                navController.popBackStack(R.id.editNoteFragment, true)
+                navController.popBackStack()
             }
         })
     }

@@ -23,13 +23,20 @@
     <TextView
         android:id="@+id/tvItemBreedOfDog"
         style="@style/Widget.AppCompat.TextView"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/family_guy"
+        android:inputType="textMultiLine|textNoSuggestions"
+
+        android:paddingLeft="8dp"
+        android:paddingEnd="8dp"
         android:text="TextView"
         android:textSize="18sp"
-        android:textStyle="normal|italic"
         app:layout_constraintBottom_toBottomOf="@+id/imgItemPhoto"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imgItemPhoto"
         app:layout_constraintTop_toTopOf="@+id/imgItemPhoto" />
 

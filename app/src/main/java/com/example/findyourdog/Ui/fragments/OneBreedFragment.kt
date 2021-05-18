@@ -118,9 +118,6 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
 
 
-        imgCut.setOnClickListener() {
-            changePhoto()
-        }
 
         viewModel.selectedBreed?.let { post ->
             breed = post
@@ -132,15 +129,8 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 } catch (e: Exception) {
                     imageViewByteArray.setImageResource(R.drawable.drawer_back_5)
                 }
-
             }
 
-//            if(post.photo != null){
-//                imageViewByteArray.visibility = View.VISIBLE
-//                val bmpArray = post.photo
-//                val bmp = BitmapFactory.decodeByteArray(bmpArray, 0, bmpArray.size)
-//                imageViewByteArray.setImageBitmap(bmp)
-//            }
             var origin = "origin: ${post.origin}"
             if (post.origin == null) {
                 origin = ""
@@ -173,7 +163,7 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
             viewModel.selectBreed.let {
                 listBreed.clear()
 //                listBreed.add(post.name?.toLowerCase(Locale.ROOT).toString())
-                listBreed.add("select photos")
+                listBreed.add("more photos")
                 listBreed.addAll(it)
                 adapterSpinner.notifyDataSetChanged()
             }
@@ -207,152 +197,6 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
 
-    fun changePhoto() {
-        val yourArray: List<String> = textName.split(" ")
-        val trim = textName.toString()//African Hunting Dog
-        var s: String
-        if (yourArray.size == 2) {
-            when (counter) {
-                0 -> {
-                    viewModel.getItemImg(trim.toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${trim}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                1 -> {
-                    viewModel.getItemImg(yourArray[0].toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${yourArray[0]}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                2 -> {
-                    viewModel.getItemImg(yourArray[1].toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${yourArray[1]}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                3 -> {
-                    s = "${yourArray[1]} ${yourArray[0]}"
-                    viewModel.getItemImg(s.toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${s}", Toast.LENGTH_LONG).show()
-                    counter = 0
-                }
-            }
-        } else if (yourArray.size == 3) {
-            when (counter) {
-                0 -> {
-                    viewModel.getItemImg(trim.toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${trim}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                1 -> {
-                    viewModel.getItemImg(yourArray[0].toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${yourArray[0]}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                2 -> {
-                    viewModel.getItemImg(yourArray[1].toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${yourArray[1]}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                3 -> {
-                    s = yourArray[2]
-                    if (s.contains('(')) {
-                        s = s.substringAfter("(")
-                        s = s.substringBefore(")")
-                    }
-                    viewModel.getItemImg(s.toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${s}", Toast.LENGTH_LONG).show()
-                    counter = 0
-                }
-            }
-        } else if (yourArray.size == 4) {
-            when (counter) {
-                0 -> {
-                    viewModel.getItemImg(trim.toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${trim}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                1 -> {
-                    viewModel.getItemImg(yourArray[0].toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${yourArray[0]}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                2 -> {
-                    viewModel.getItemImg(yourArray[1].toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${yourArray[1]}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                3 -> {
-                    s = yourArray[2]
-                    if (s.contains('(')) {
-                        s = s.substringAfter("(")
-                        s = s.substringBefore(")")
-                    }
-                    viewModel.getItemImg(s.toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${s}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                4 -> {
-                    s = yourArray[3]
-                    if (s.contains('(')) {
-                        s = s.substringAfter("(")
-                        s = s.substringBefore(")")
-                    }
-                    viewModel.getItemImg(s.toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${s}", Toast.LENGTH_LONG).show()
-                    counter = 0
-                }
-            }
-        } else if (yourArray.size == 5) {
-            when (counter) {
-                0 -> {
-                    viewModel.getItemImg(trim.toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${trim}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                1 -> {
-                    viewModel.getItemImg(yourArray[0].toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${yourArray[0]}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                2 -> {
-                    viewModel.getItemImg(yourArray[1].toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${yourArray[1]}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                3 -> {
-                    s = yourArray[2]
-                    if (s.contains('(')) {
-                        s = s.substringAfter("(")
-                        s = s.substringBefore(")")
-                    }
-                    viewModel.getItemImg(s.toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${s}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                4 -> {
-                    s = yourArray[3]
-                    if (s.contains('(')) {
-                        s = s.substringAfter("(")
-                        s = s.substringBefore(")")
-                    }
-                    viewModel.getItemImg(s.toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${s}", Toast.LENGTH_LONG).show()
-                    counter++
-                }
-                5 -> {
-                    s = yourArray[4]
-                    if (s.contains('(')) {
-                        s = s.substringAfter("(")
-                        s = s.substringBefore(")")
-                    }
-                    viewModel.getItemImg(s.toLowerCase(Locale.ROOT).toString())
-                    Toast.makeText(context, "Просмотр ${s}", Toast.LENGTH_LONG).show()
-                    counter = 0
-                }
-            }
-        }
-    }
-
-
     override fun onNothingSelected(parent: AdapterView<*>?) {
 //        dog = "Dog"
     }
@@ -374,12 +218,9 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
         } else {
             bool = false
         }
-
-
     }
 
-
-    fun selectPhotoes(textBreed: String) {
+    private fun selectPhotoes(textBreed: String) {
         val yourArray: List<String> = textBreed.split(" ")
         if (yourArray.size == 2) {
             viewModel.getItemImgDouble(yourArray[0].trim(), yourArray[1].trim())
@@ -387,6 +228,5 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
             viewModel.getItemImg(textBreed)
         }
     }
-
 
 }

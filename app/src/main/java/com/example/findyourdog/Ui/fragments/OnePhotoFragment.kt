@@ -59,7 +59,7 @@ class OnePhotoFragment : Fragment() {
                 val dirName = context?.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath
                 val pathName = "$dirName/${viewModel.fileName}"
                 val f = File(pathName)
-                Log.d("!!!p", pathName.toString())
+                Log.d("!!!p", pathName)
                 val inputStream: InputStream
                 inputStream = it.inputStream()
                 inputStream.saveToFile(f)
