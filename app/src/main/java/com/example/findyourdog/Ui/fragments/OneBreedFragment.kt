@@ -106,11 +106,11 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
             if (breed.isFavorite == 0) {
                 viewModel.saveFavoriteData(breed.id, 1)
                 breed.isFavorite = 1
-                floatingActionButton.setImageResource(R.drawable.add_fav)
+                floatingActionButton.setImageResource(R.drawable.paw_red_2)
             } else {
                 viewModel.saveFavoriteData(breed.id, 0)
                 breed.isFavorite = 0
-                floatingActionButton.setImageResource(R.drawable.add_fav_null)
+                floatingActionButton.setImageResource(R.drawable.paw_blue)
             }
         }
         floatingActionButton2.setOnClickListener() {
@@ -127,7 +127,7 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 try {
                     imageViewByteArray.setImageURI(Uri.parse(post.image.url))
                 } catch (e: Exception) {
-                    imageViewByteArray.setImageResource(R.drawable.drawer_back_5)
+                    imageViewByteArray.setImageResource(R.drawable.drawer_back_6)
                 }
             }
 
@@ -173,16 +173,16 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     fun isFavNow(post: DogBreeds) {
         if (post.isFavorite == 0) {
-            floatingActionButton.setImageResource(R.drawable.add_fav_null)
+            floatingActionButton.setImageResource(R.drawable.paw_blue)
         } else {
-            floatingActionButton.setImageResource(R.drawable.add_fav)
+            floatingActionButton.setImageResource(R.drawable.paw_red_2)
         }
     }
 
     override fun onPause() {
         imgRecyclerView.adapter?.notifyItemRangeRemoved(0, imgBreedList.size)
         super.onPause()
-        viewModel.countFavorites()
+
         bool = true
     }
 

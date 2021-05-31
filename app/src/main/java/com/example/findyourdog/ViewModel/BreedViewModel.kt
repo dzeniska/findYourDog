@@ -28,9 +28,12 @@ class BreedViewModel (val repository: Repository) : ViewModel() {
     val breedLive: MutableLiveData<MutableList<DogBreeds>> by lazy {
         MutableLiveData<MutableList<DogBreeds>>()
     }
-    val breedFavLive: MutableLiveData<MutableList<DogBreeds>> by lazy {
-        MutableLiveData<MutableList<DogBreeds>>()
-    }
+
+//    val breedFavLive: MutableLiveData<MutableList<DogBreeds>> by lazy {
+//        MutableLiveData<MutableList<DogBreeds>>()
+//    }
+
+    val breedFavLive = MutableLiveData<MutableList<DogBreeds>>()
 
 //    val breedItemLive: MutableLiveData<MutableList<String>> by lazy {
 //        MutableLiveData<MutableList<String>>()
@@ -64,8 +67,8 @@ class BreedViewModel (val repository: Repository) : ViewModel() {
     fun selectBreed() {
         scope.launch {
             val optionsList: Map<String, List<String>> = mapOf()
-            var s =  BreedOfDogListPhoto(0, optionsList, "")
-            s = repository.getBreeds()
+//            var s =  BreedOfDogListPhoto(0, optionsList, "")
+            val s = repository.getBreeds()
             val mapsBreed = s.message
             for (map in mapsBreed) {
                 if(map.value.size == 0){
@@ -87,6 +90,7 @@ class BreedViewModel (val repository: Repository) : ViewModel() {
     fun saveFavoriteData(id: Long, isSelected: Int){
         scope.launch{
             repository.saveFavoriteData(id, isSelected)
+            countFavorites()
         }
     }
     fun saveNote(id: Long, note: String){
@@ -143,7 +147,7 @@ class BreedViewModel (val repository: Repository) : ViewModel() {
     }
 
     fun uiUpdateMain(user: FirebaseUser?) {
-        userUpdate.postValue(user)
+        userUpdate.postValue(user!!)
     }
     fun signUpIn(signUpIn: Int){
         signUpInValue.postValue(signUpIn)

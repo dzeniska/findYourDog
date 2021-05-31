@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FindYourDog2</string>
+    <string name="app_name">Find Your Dog</string>
     <!--Drawer menu-->
     <string name="add_dog_string">Добавить нового друга</string>
     <string name="fav_breeds">Понравившиеся породы</string>
@@ -42,10 +42,17 @@
     <string name="reg_up_is_successful">Удачная регистрация, человек!</string>
     <string name="error_reg">Ошибка регистрации!</string>
     <string name="error_enter">Ошибка входа!</string>
-    <string name="email_add">Проверте Вашу почту дляподтверждения Email!</string>
+    <string name="email_add">Проверте Вашу почту для подтверждения Email!</string>
     <string name="email_no_add">Ошибка отправки подтверждения регистрации по Email!</string>
 
 
+    <!-- Login fragment-->
+    <string name="auth_ic">Зарегистрируйтесь</string>
+    <string name="entrance_ic">Войдите</string>
+    <string name="forgot_password">Забыли пороль</string>
+    <string name="email_reset_password_was_send">Check Your Email!</string>
+    <string name="email_reset_password_was_not_send">Сheck the correctness of your Email!</string>
+    <string name="fill_the_email">Fill the Email!</string>
 
 
 </resources>

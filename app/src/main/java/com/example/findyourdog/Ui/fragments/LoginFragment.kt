@@ -1,5 +1,6 @@
 package com.example.findyourdog.Ui.fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,10 +13,10 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.findyourdog.R
+import com.example.findyourdog.RemoteModel.firebase.AuthInterface
 import com.example.findyourdog.RemoteModel.firebase.FBAuth
 import com.example.findyourdog.Ui.MainActivity
 import com.example.findyourdog.ViewModel.BreedViewModel
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.CoroutineScope
@@ -24,12 +25,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
-class LoginFragment() : Fragment() {
+class LoginFragment() : Fragment(), AuthInterface {
 
     lateinit var viewModel: BreedViewModel
 
     val fbAuth = FBAuth(this)
-    var signUpIn: Int = 1
+    var signUpIn: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +52,15 @@ class LoginFragment() : Fragment() {
 
         viewModel.signUpInValue.observe(viewLifecycleOwner, Observer {
             signUpIn = it
+
+            if (it == 1) {
+                tvRegIn.text = resources.getString(R.string.entrance_ic)
+                inUpImage.setImageResource(R.drawable.ic_in_white)
+            }else{
+                tvRegIn.text = resources.getString(R.string.auth_ic)
+                inUpImage.setImageResource(R.drawable.ic_reg)
+            }
+
         })
 
         init()
@@ -84,10 +94,19 @@ class LoginFragment() : Fragment() {
             }
         }
 
+        imgButtonForgot.setOnClickListener(){
+            setOnClickResetPassword()
+        }
 
     }
 
+
+
     private fun init() {
+
+
+
+
         edEmail.apply {
             afterTextChanged {
                 if (it.length > 5) {
@@ -118,7 +137,27 @@ class LoginFragment() : Fragment() {
         })
     }
 
-    fun uiUpdateMain(user: FirebaseUser?) {
+    fun uiUpdateMain(user: FirebaseUser) {
         viewModel.uiUpdateMain(user)
     }
+
+    override fun uiReplacePassword() {
+        tvForgotPas.visibility = View.VISIBLE
+        imgButtonForgot.visibility = View.VISIBLE
+    }
+
+    private fun setOnClickResetPassword() {
+        if(edEmail.text.isNotEmpty()){
+            fbAuth.mAuth.sendPasswordResetEmail(edEmail.text.toString()).addOnCompleteListener{task ->
+                if(task.isSuccessful){
+                    Toast.makeText(activity, R.string.email_reset_password_was_send, Toast.LENGTH_LONG).show()
+                }else{
+                    Toast.makeText(activity, R.string.email_reset_password_was_not_send, Toast.LENGTH_LONG).show()
+                }
+            }
+        }else{
+            Toast.makeText(activity, R.string.fill_the_email, Toast.LENGTH_SHORT).show()
+        }
+    }
+
 }

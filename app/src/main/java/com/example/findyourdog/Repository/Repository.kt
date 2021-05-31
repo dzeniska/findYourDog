@@ -11,10 +11,6 @@ import javax.inject.Inject
 data class Repository @Inject constructor(val remoteModel: RemoteModel, val localModel: LocalModel)
 {
 
-    suspend fun signUpWithEmail(email: String, password: String){
-        remoteModel.signUpWithEmail(email, password)
-    }
-
     //одного фото запрос
     suspend fun getOnePhoto(url: String): ByteArray{
         return remoteModel.getOnePhoto(url)

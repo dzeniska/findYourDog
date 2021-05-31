@@ -38,8 +38,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    //var list = mutableListOf<Dog>()
-    //lateinit var adapter: AdapterDogs
     lateinit var tvHeaderAcc: TextView
     lateinit var navController: NavController
     lateinit var mSlideshowTextView: TextView
@@ -47,10 +45,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private var optionsList: Map<String, List<String>> = mapOf()
     val mAuth = FirebaseAuth.getInstance()
-
-
-
-
 
     @Inject
     lateinit var factory: BreedViewModelFactory
@@ -73,8 +67,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     fun uiUpdateMain(user: FirebaseUser?) {
         Log.d("!!!", user.toString())
         tvHeaderAcc.text = if (user == null) {
-//            resources.getString(R.string.not_reg)
-            resources.getString(R.string.hello)
+            resources.getString(R.string.not_reg)
+//            resources.getString(R.string.hello)
         } else {
             """Рады видеть Вас
                 |${user.email}
@@ -173,23 +167,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 closeDrawer()
                 Toast.makeText(applicationContext, "Любимчики", Toast.LENGTH_SHORT).show()
             }
-//            R.id.auth -> {
-//                viewModel.signUpIn(0)
-//
-//                navController.navigate(R.id.loginFragment)
-//                closeDrawer()
+            R.id.auth -> {
+                viewModel.signUpIn(0)
+
+                navController.navigate(R.id.loginFragment)
+                closeDrawer()
 //                Toast.makeText(applicationContext, "loginFragment", Toast.LENGTH_LONG).show()
-//            }
-//            R.id.enter -> {
-//                viewModel.signUpIn(1)
-//                navController.navigate(R.id.loginFragment)
-//                closeDrawer()
+            }
+            R.id.enter -> {
+                viewModel.signUpIn(1)
+                navController.navigate(R.id.loginFragment)
+                closeDrawer()
 //                Toast.makeText(applicationContext, "loginFragment", Toast.LENGTH_LONG).show()
-//            }
-//            R.id.exit -> {
-//                uiUpdateMain(null)
-//                mAuth.signOut()
-//            }
+            }
+            R.id.exit -> {
+                uiUpdateMain(null)
+                mAuth.signOut()
+            }
         }
         return true
     }

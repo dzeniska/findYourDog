@@ -41,7 +41,7 @@ class OnePhotoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val context = getContext()
+        val context = context
 
 //        if (ContextCompat.checkSelfPermission(activity as MainActivity, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 //            requestPermissions(Array(1) {

@@ -10,6 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.AppCompatDrawableManager.get
@@ -31,13 +32,23 @@ class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val
         val photo = itemView.findViewById<ImageView>(R.id.imgItemPhoto)
         val like = itemView.findViewById<ImageView>(R.id.image_like)
         val breed = itemView.findViewById<TextView>(R.id.tvItemBreedOfDog)
-        //val description = itemView.findViewById<TextView>(R.id.tvItemDescription)
+        val description = itemView.findViewById<TextView>(R.id.tvItemBreedOfDog)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_layout, parent, false)
         val holder = ViewHolder(itemView)
+
+
+
         itemView.setOnClickListener(){
+            if(fragment is DogsListFragment) {
+                fragment.onBreedSelect(holder.adapterPosition)
+            }else if(fragment is FavoritesFragment){
+                fragment.onBreedFavSelect(holder.adapterPosition)
+            }
+        }
+        holder.description.setOnClickListener(){
             if(fragment is DogsListFragment) {
                 fragment.onBreedSelect(holder.adapterPosition)
             }else if(fragment is FavoritesFragment){
@@ -53,6 +64,8 @@ class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
+        holder.itemView.animation = AnimationUtils.loadAnimation(context, R.anim.translate_item)
+
         val width = list[position].image.width?.toInt()
         val height = list[position].image.height?.toInt()
         val w:Int
@@ -66,9 +79,9 @@ class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val
         }
         val pict = holder.photo
         val url: String? = list[position].image.url
-        val ind = list[position].ind
+//        val ind = list[position].ind
 //        if(ind == 0){
-            Picasso.with(context)
+            Picasso.get()
                 .load(url)
                 .placeholder(R.drawable.ic_wait_a_litle)
                 .error(R.drawable.ic_no_connection)
@@ -91,9 +104,9 @@ class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val
         holder.breed.text = list[position].name
         val pos = list[position].isFavorite
         if (pos == 1){
-            holder.like.setImageResource(R.drawable.add_fav)
+            holder.like.setImageResource(R.drawable.paw_red_2)
         }else{
-            holder.like.setImageResource(R.drawable.ic_add_dog)
+            holder.like.setImageResource(R.drawable.paw_blue)
         }
     }
 }

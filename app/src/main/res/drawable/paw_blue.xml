@@ -1,0 +1,31 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:aapt="http://schemas.android.com/aapt"
+    android:viewportWidth="400"
+    android:viewportHeight="400"
+    android:width="400dp"
+    android:height="400dp">
+    <path
+        android:pathData="M146.5 20L160.5 20L171 26Q181.4 38.8 185 59.5L186 72.5L187 73.5L187 84.5L188 85.5L188 113.5L185 129.5L182 137.5Q176.2 150.7 166.5 160L153.5 169L144.5 172L134.5 173L118.5 169L103 157.5Q91.2 144.8 86 125.5L85 114.5L84 113.5L84 97.5Q92.7 60.7 116.5 39L134.5 25L146.5 20Z"
+        android:fillColor="#4BB0EA"
+        android:strokeColor="#4BB0EA"
+        android:strokeWidth="1" />
+    <path
+        android:pathData="M241.5 20L255.5 20L263.5 23Q277 30 287 40.5Q301.5 55 311 74.5L318 97.5L318 113.5L317 114.5L316 125.5L312 137.5Q306.1 150.6 296.5 160L283.5 169L274.5 172L264.5 173L248.5 169L233 157.5Q222.4 146.1 217 129.5L214 113.5L214 85.5L215 84.5L215 73.5L219 50.5Q223 35.8 231 26L241.5 20Z"
+        android:fillColor="#4BB0EA"
+        android:strokeColor="#4BB0EA"
+        android:strokeWidth="1" />
+    <path
+        android:pathData="M48.5 127Q57.1 127.4 62.5 131L78 144.5L80 147.5Q94.3 164.2 103 186.5L108 205.5L108 222.5L102 241.5L92.5 253Q82.8 262.8 61.5 261Q40.6 255.9 29 241.5Q18.4 229.6 13 212.5L12 207.5L12 178.5L18 156.5L23 146.5L35.5 132L40.5 129L48.5 127Z"
+        android:fillColor="#4BB0EA"
+        android:strokeColor="#4BB0EA"
+        android:strokeWidth="1" />
+    <path
+        android:pathData="M351.5 127L361.5 129L375 140.5Q385.1 153.9 389 173.5L390 178.5L390 207.5Q383.8 233.3 366.5 248Q357.5 256 344.5 260Q337.4 262.4 326.5 261Q312.5 258 305 248.5Q297.9 240.6 295 228.5Q296.2 223.7 294 222.5L294 205.5L296 195.5L302 179.5Q310.7 161 322 146Q324.7 147.1 324 144.5L339.5 131L351.5 127Z"
+        android:fillColor="#4BB0EA"
+        android:strokeColor="#4BB0EA"
+        android:strokeWidth="1" />
+    <path
+        android:pathData="M194.5 176L214.5 177L228.5 181Q247.3 189.3 259 204.5L275 232.5L288.5 247L311 264.5Q322 275.5 329 290.5L334 309.5L334 321.5L332 331.5L327 342.5L313.5 358Q300 369.5 279.5 374Q274.8 372.8 273.5 375L244.5 375L226.5 371L216.5 367L199.5 365L198.5 366L185.5 367L175.5 371L157.5 375L128.5 375L111.5 371L98.5 365Q87.8 358.8 80 349.5Q73.5 342 70 331.5L68 321.5L68 309.5L71 295.5L77 282.5L92.5 263L118 240.5Q132.7 224.7 143 204.5L156.5 191L173.5 181L194.5 176Z"
+        android:fillColor="#4BB0EA"
+        android:strokeColor="#4BB0EA"
+        android:strokeWidth="1" />
+</vector>

@@ -5,18 +5,14 @@ import android.util.Log
 import javax.inject.Inject
 
 
+
+
 @Suppress("CAST_NEVER_SUCCEEDS")
 class RemoteModel @Inject constructor() {
     val apiService = ApiService.create()
     val apiRandom = ApiRandomImage.create()
     val apiOnePhoto = ApiOnePhoto.create()
 
-
-
-    suspend fun signUpWithEmail(email: String, password: String){
-//        val fbAuth = FBAuth()
-//        fbAuth.signUpWithEmail(email, password)
-    }
 
     //одного фото запрос
     suspend fun getOnePhoto(url: String): ByteArray{
@@ -25,7 +21,7 @@ class RemoteModel @Inject constructor() {
         return try {
             photo = apiOnePhoto.getOnePhoto(url).bytes()
             Log.d("!!!ps", photo.toString())
-            photo
+            return photo
         } catch (e: Exception) {
             Log.d("!!!ps", e.toString())
             photo = photoString.toByteArray()

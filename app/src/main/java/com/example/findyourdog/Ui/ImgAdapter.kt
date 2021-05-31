@@ -13,6 +13,7 @@ import com.example.findyourdog.Ui.fragments.OneBreedFragment
 import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
+import java.lang.Exception
 
 
 class ImgAdapter(val list: MutableList<String>, val breed: DogBreeds, val context: Context?, val fragment: OneBreedFragment
@@ -42,7 +43,7 @@ class ImgAdapter(val list: MutableList<String>, val breed: DogBreeds, val contex
         val ind = breed.ind
         if(ind == 0){
             holder.progressBar.visibility = View.VISIBLE
-            Picasso.with(context)
+            Picasso.get()
                 .load(url)
                 .placeholder(R.drawable.ic_wait_a_litle)
                 .error(R.drawable.ic_no_connection)
@@ -55,12 +56,10 @@ class ImgAdapter(val list: MutableList<String>, val breed: DogBreeds, val contex
                     override fun onSuccess() {
                         holder.progressBar.visibility = View.GONE
                     }
-                    override fun onError() {
+                    override fun onError(e: Exception?) {
                         holder.progressBar.visibility = View.GONE
                     }
                 })
-
-
         }else{
             holder.itemView.visibility = View.GONE
         }

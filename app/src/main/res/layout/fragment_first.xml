@@ -7,18 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".Ui.fragments.FirstFragment">
 
-
-    <TextView
-        android:id="@+id/tv2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="@string/go_to_add_dog"
-        android:textSize="24sp"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/tv1"
-        app:layout_constraintTop_toBottomOf="@+id/tv1" />
-
     <TextView
         android:id="@+id/tvIntro"
         android:layout_width="0dp"
@@ -26,7 +14,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:fontFamily="@font/meows"
         android:text="@string/intro2"
         android:textSize="14sp"
         android:textStyle="bold|italic"

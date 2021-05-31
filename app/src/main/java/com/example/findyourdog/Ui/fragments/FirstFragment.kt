@@ -14,7 +14,6 @@ import com.example.findyourdog.ViewModel.BreedViewModel
 import kotlinx.android.synthetic.main.fragment_first.*
 
 class FirstFragment : Fragment() {
-    lateinit var viewModel: BreedViewModel
     lateinit var navController: NavController
 
 
@@ -22,7 +21,6 @@ class FirstFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel =  ViewModelProvider(activity as MainActivity).get(BreedViewModel::class.java)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_first, container, false)
     }
@@ -35,8 +33,6 @@ class FirstFragment : Fragment() {
         tv1.setOnClickListener(){
             navController.navigate(R.id.dogsListFragment)
         }
-        tv2.setOnClickListener(){
-            navController.navigate(R.id.addDogFragment)
-        }
+
     }
 }

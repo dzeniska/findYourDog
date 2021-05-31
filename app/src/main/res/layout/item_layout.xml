@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
+
     android:background="@drawable/background">
 
     <ImageView
@@ -29,7 +30,6 @@
         android:layout_marginEnd="16dp"
         android:fontFamily="@font/family_guy"
         android:inputType="textMultiLine|textNoSuggestions"
-
         android:paddingLeft="8dp"
         android:paddingEnd="8dp"
         android:text="TextView"
@@ -40,20 +40,6 @@
         app:layout_constraintStart_toEndOf="@+id/imgItemPhoto"
         app:layout_constraintTop_toTopOf="@+id/imgItemPhoto" />
 
-    <TextView
-        android:id="@+id/tvItemDescription"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:inputType="textMultiLine"
-        android:text="TextView"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/imgItemPhoto"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imgItemPhoto"
-        app:layout_constraintTop_toBottomOf="@+id/tvItemBreedOfDog" />
 
     <ImageView
         android:id="@+id/image_like"
