@@ -7,11 +7,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -41,16 +43,16 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
     var bool = true
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                //in here you can do logic when backPress is clicked
-//                viewModel.imgBreedList.clear()
-                navController.popBackStack()
-            }
-        })
-    }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                //in here you can do logic when backPress is clicked
+////                viewModel.imgBreedList.clear()
+//                navController.popBackStack()
+//            }
+//        })
+//    }
 
     override fun onDetach() {
         viewModel.imgBreedList.clear()
@@ -61,6 +63,7 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("!!!observe", "it.size.toString()")
         viewModel = ViewModelProvider(activity as MainActivity).get(BreedViewModel::class.java)
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_one_breed, container, false)
@@ -69,7 +72,7 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = findNavController()
-        val context = getContext()
+        val context = context
 
         //Spinner
         val adapterSpinner = ArrayAdapter(
@@ -83,24 +86,23 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
 //        spinner.setPrompt("hgvhgv")
 //        adapterSpinner.notifyDataSetChanged()
 
+        badConnection()
 
         adapter = ImgAdapter(imgBreedList, viewModel.selectedBreed!!, context, this)
         imgRecyclerView.adapter = adapter
         imgRecyclerView.layoutManager =
             LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        //adapter.notifyDataSetChanged()
+//        adapter.notifyDataSetChanged()
 
 
-        viewModel.breedItemLive.observe(viewLifecycleOwner, Observer {
-            Log.d("!!!observe", it.size.toString())
-            imgBreedList.clear()
-            imgBreedList.addAll(it)
-            imgRecyclerView?.adapter?.notifyDataSetChanged()
+            viewModel.breedItemLive.observe(viewLifecycleOwner, Observer {
+                Log.d("!!!observe", it.size.toString())
+                imgBreedList.clear()
+                imgBreedList.addAll(it)
+                imgRecyclerView?.adapter?.notifyDataSetChanged()
+//                badConnectionEnd()
+            })
 
-        })
-
-        viewModel.imgBreedList?.let {
-        }
 
         floatingActionButton.setOnClickListener() {
             if (breed.isFavorite == 0) {
@@ -227,6 +229,18 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
         } else {
             viewModel.getItemImg(textBreed)
         }
+    }
+
+    private fun badConnection(){
+        progressBarOneBreedFrag.visibility = View.VISIBLE
+        progressBarOneBreedFrag.animation = AnimationUtils.loadAnimation(context, R.anim.alpha)
+
+        imgNoConnection.visibility = View.VISIBLE
+        imgNoConnection.animation = AnimationUtils.loadAnimation(context, R.anim.alpha)
+    }
+    fun badConnectionEnd(){
+        progressBarOneBreedFrag.visibility = View.GONE
+        imgNoConnection.visibility = View.GONE
     }
 
 }

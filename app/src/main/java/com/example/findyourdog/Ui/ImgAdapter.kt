@@ -13,6 +13,7 @@ import com.example.findyourdog.Ui.fragments.OneBreedFragment
 import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_one_breed.*
 import java.lang.Exception
 
 
@@ -27,6 +28,9 @@ class ImgAdapter(val list: MutableList<String>, val breed: DogBreeds, val contex
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.img_item_layout, parent, false)
         val holder = ViewHolder(itemView)
+
+        fragment.badConnectionEnd()
+
         itemView.setOnClickListener(){
             fragment.onePhoto(holder.adapterPosition)
         }

@@ -71,6 +71,29 @@
             app:layout_constraintTop_toTopOf="@+id/imgRecyclerView"
             tools:src="@tools:sample/avatars" />
 
+        <ImageView
+            android:id="@+id/imgNoConnection"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_bad_connection_1" />
+
+        <ProgressBar
+            android:id="@+id/progressBarOneBreedFrag"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha="0.5"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/imgRecyclerView"
             android:layout_width="match_parent"

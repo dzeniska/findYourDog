@@ -25,6 +25,7 @@ import com.example.findyourdog.ViewModel.BreedViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.fragment_dogs_list.*
+import kotlinx.coroutines.*
 import java.util.*
 
 
@@ -34,16 +35,18 @@ class DogsListFragment : Fragment() {
     lateinit var adapter: AdapterBreeds
     lateinit var viewModel: BreedViewModel
     private val breeds = mutableListOf<DogBreeds>()
+    private var job: Job? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                //in here you can do logic when backPress is clicked
-                navController.popBackStack()
-            }
-        })
-    }
+
+    //    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                //in here you can do logic when backPress is clicked
+//                navController.popBackStack()
+//            }
+//        })
+//    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -56,18 +59,27 @@ class DogsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewModel.showAllBreeds()
         navController = findNavController()
         initSearchView()
 
-        val context = getContext()
+        initSwipeRefresh()
 
-        viewModel.showAllBreeds()
+        val context = context
+
 
         viewModel.breedLive.observe(viewLifecycleOwner, Observer {
-            breeds.clear()
-            breeds.addAll(it)
-            recyclerView?.adapter?.notifyDataSetChanged()
-            tv_dog_list.alpha = 0.5f
+            Log.d("!!!observeDLF", it.size.toString())
+            if(it.size == 0){
+                (activity as MainActivity).checkNetwork()
+
+            } else{
+                breeds.clear()
+                breeds.addAll(it)
+                recyclerView?.adapter?.notifyDataSetChanged()
+                tv_dog_list.alpha = 0.3f
+            }
+
         })
 
         adapter = AdapterBreeds(breeds, context, this)
@@ -76,11 +88,35 @@ class DogsListFragment : Fragment() {
         adapter.notifyDataSetChanged()
     }
 
+    private fun initSwipeRefresh() {
+        swipeRefreshLayout.setOnRefreshListener {
+            job = CoroutineScope(Dispatchers.Main).launch {
+                viewModel.showAllBreeds()
+                sleepScope()
+                swipeRefreshLayout.isRefreshing = false
+            }
+
+        }
+
+
+        swipeRefreshLayout.setColorSchemeResources(
+            android.R.color.holo_blue_bright,
+            android.R.color.holo_green_light,
+            android.R.color.holo_orange_light,
+            android.R.color.holo_red_light
+        )
+    }
+
+    private suspend fun sleepScope() = withContext(Dispatchers.IO) {
+        delay(3000)
+    }
+
 
     fun onBreedSelect(position:Int){
+        navController.navigate(R.id.oneBreedFragment)
         viewModel.selectedBreed = breeds[position]
         viewModel.getItemImg(breeds[position].name?.toLowerCase(Locale.ROOT).toString())
-        navController.navigate(R.id.oneBreedFragment)
+
     }
     fun initSearchView(){
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
@@ -96,6 +132,8 @@ class DogsListFragment : Fragment() {
             }
         })
     }
+
+
 
 
 }

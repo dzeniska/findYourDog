@@ -1,7 +1,10 @@
 package com.example.findyourdog.Ui
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +22,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.findyourdog.R
+import com.example.findyourdog.Ui.fragments.DogsListFragment
 import com.example.findyourdog.Ui.fragments.LoginFragment
 import com.example.findyourdog.ViewModel.BreedViewModel
 import com.example.findyourdog.ViewModel.BreedViewModelFactory
@@ -43,6 +47,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit var mSlideshowTextView: TextView
     lateinit var viewModel: BreedViewModel
 
+
     private var optionsList: Map<String, List<String>> = mapOf()
     val mAuth = FirebaseAuth.getInstance()
 
@@ -52,6 +57,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+
+
         init()
 
         nav_view.setNavigationItemSelectedListener(this)
@@ -80,7 +88,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         uiUpdateMain(mAuth.currentUser)
     }
 
-    fun openCloseDrawer() {
+    private fun openCloseDrawer() {
         //работа при откр-закр drawer
         val toggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(
             this, drawerLayout, toolbar, android.R.string.yes, android.R.string.no
@@ -100,7 +108,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
-    fun init() {
+    private fun init() {
 
 //        val remoteModel = RemoteModel()
 //         val localModel = LocalModel(this)
@@ -108,7 +116,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //         val factory = BreedViewModelFactory(repository)
         viewModel = ViewModelProvider(this, factory).get(BreedViewModel::class.java)
 
-        viewModel.breedLive.setValue(mutableListOf())
+//        viewModel.breedLive.value = mutableListOf()
+
         viewModel.breedFavLive.observe(this, Observer {
             //добавляем счётчик в item menu_drawer
             mSlideshowTextView = MenuItemCompat.getActionView(
@@ -134,7 +143,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     //рисуем счётчик
-    fun initializeCountDrawer(count: Int) {
+    private fun initializeCountDrawer(count: Int) {
         mSlideshowTextView.setGravity(Gravity.CENTER_VERTICAL)
         mSlideshowTextView.setTypeface(null, Typeface.BOLD)
         mSlideshowTextView.setTextColor(ContextCompat.getColor(this, R.color.counter))
@@ -152,10 +161,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.dogs_list -> {
-                intent
                 navController.navigate(R.id.dogsListFragment)
                 closeDrawer()
-                Toast.makeText(applicationContext, "Просмотр списка", Toast.LENGTH_SHORT).show()
             }
 //            R.id.add_dog_item -> {
 //                navController.navigate(R.id.addDogFragment)
@@ -190,5 +197,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun closeDrawer(){
         drawerLayout.closeDrawer(GravityCompat.START)
+    }
+    fun checkNetwork() {
+        //проверка на доступ к сети
+        val cManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+//getNetworkCapabilities -
+        val info = cManager.getNetworkCapabilities(cManager.activeNetwork)
+        if (info == null){
+            Toast.makeText(this, "NO Network!!!", Toast.LENGTH_LONG).show()
+        }
+        else if(info.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || info.hasTransport(
+                NetworkCapabilities.TRANSPORT_WIFI)) {
+            Toast.makeText(this, "Network available", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(this, "NO Network!!!", Toast.LENGTH_LONG).show()
+        }
     }
 }

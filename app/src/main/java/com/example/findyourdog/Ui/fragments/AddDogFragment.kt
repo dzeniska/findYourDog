@@ -120,7 +120,7 @@ class AddDogFragment : Fragment() {
                 "",
                 "jopa"
             )
-            viewModel.insertOnePost(breed)
+//            viewModel.insertOnePost(breed)
 
             edDescription.text.clear()
             edDescription.hint = "Ваш пёсель успешно добавлен в базу"
@@ -132,14 +132,14 @@ class AddDogFragment : Fragment() {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_PHOTO && resultCode == Activity.RESULT_OK) {
-
-            imgAddPhoto.setImageURI(data?.data)
-            imageUri = data?.data.toString()
-        }
-    }
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        if (requestCode == REQUEST_PHOTO && resultCode == Activity.RESULT_OK) {
+//
+//            imgAddPhoto.setImageURI(data?.data)
+//            imageUri = data?.data.toString()
+//        }
+//    }
     fun saveData(i:Long){
         val edit = pref?.edit()
         edit?.putLong("counter", i)
