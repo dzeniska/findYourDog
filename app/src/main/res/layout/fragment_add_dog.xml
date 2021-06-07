@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_add_menu"
-    tools:context=".Ui.fragments.DogsListFragment">
+    tools:context=".ui.fragments.DogsListFragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline4"

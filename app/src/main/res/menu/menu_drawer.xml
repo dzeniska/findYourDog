@@ -19,14 +19,25 @@
             android:icon="@drawable/ic_fav_drawer_manu"
             app:actionViewClass="android.widget.TextView"
             android:title="@string/fav_breeds" />
+
         <item
             android:title="@string/lost">
             <menu>
-                <!--<item
-                    android:id="@+id/auth"
-                    android:icon="@drawable/ic_auth"
+
+                <item
+                    android:id="@+id/mapFr"
+                    android:icon="@drawable/ic_map"
                     app:actionViewClass="android.widget.TextView"
-                    android:title="@string/develop" />-->
+                    android:title="@string/treasure_map" />
+
+
+            </menu>
+        </item>
+
+
+        <item android:title="@string/enter_please">
+            <menu>
+
                 <item
                     android:id="@+id/auth"
                     android:icon="@drawable/ic_reg"

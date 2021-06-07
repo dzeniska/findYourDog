@@ -9,44 +9,49 @@
 
     <fragment
         android:id="@+id/firstFragment"
-        android:name="com.example.findyourdog.Ui.fragments.FirstFragment"
+        android:name="com.dzenis_ska.findyourdog.ui.fragments.FirstFragment"
         android:label="@string/first"
         tools:layout="@layout/fragment_first" />
     <fragment
         android:id="@+id/dogsListFragment"
-        android:name="com.example.findyourdog.Ui.fragments.DogsListFragment"
+        android:name="com.dzenis_ska.findyourdog.ui.fragments.DogsListFragment"
         android:label="@string/dogs_list"
         tools:layout="@layout/fragment_dogs_list" />
     <fragment
         android:id="@+id/addDogFragment"
-        android:name="com.example.findyourdog.Ui.fragments.AddDogFragment"
+        android:name="com.dzenis_ska.findyourdog.ui.fragments.AddDogFragment"
         android:label="@string/add_dog"
         tools:layout="@layout/fragment_add_dog" />
     <fragment
         android:id="@+id/oneBreedFragment"
-        android:name="com.example.findyourdog.Ui.fragments.OneBreedFragment"
+        android:name="com.dzenis_ska.findyourdog.ui.fragments.OneBreedFragment"
         android:label="@string/one_breed"
         tools:layout="@layout/fragment_one_breed" />
     <fragment
         android:id="@+id/favoritesFragment"
-        android:name="com.example.findyourdog.Ui.fragments.FavoritesFragment"
+        android:name="com.dzenis_ska.findyourdog.ui.fragments.FavoritesFragment"
         android:label="@string/favorites"
         tools:layout="@layout/fragment_favorites" />
     <fragment
         android:id="@+id/editNoteFragment"
-        android:name="com.example.findyourdog.Ui.fragments.EditNoteFragment"
+        android:name="com.dzenis_ska.findyourdog.ui.fragments.EditNoteFragment"
         android:label="@string/note_edit"
         tools:layout="@layout/fragment_edit_note" />
-    <fragment
+   <fragment
         android:id="@+id/onePhotoFragment"
-        android:name="com.example.findyourdog.Ui.fragments.OnePhotoFragment"
+        android:name="com.dzenis_ska.findyourdog.ui.fragments.OnePhotoFragment"
         android:label="fragment_one_photo"
         tools:layout="@layout/fragment_one_photo" />
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.example.findyourdog.Ui.fragments.LoginFragment"
+        android:name="com.dzenis_ska.findyourdog.ui.fragments.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/mapsFragment"
+        android:name="com.dzenis_ska.findyourdog.MapsFragment"
+        android:label="fragment_maps"
+        tools:layout="@layout/fragment_maps" />
 
 
 </navigation>

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_marginTop="5dp"
     android:background="@drawable/background_login"
-    tools:context=".Ui.fragments.DogsListFragment">
+    tools:context=".ui.fragments.DogsListFragment">
 
 
     <EditText
