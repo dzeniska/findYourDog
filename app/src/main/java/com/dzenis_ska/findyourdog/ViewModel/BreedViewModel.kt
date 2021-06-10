@@ -19,6 +19,7 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     val selectBreed = arrayListOf<String>()
     var fileName: String = ""
     var selectedBreed: DogBreeds? = null
+    var locationManagerBool: Boolean = false
 
 
     //    val breedLive: MutableLiveData<MutableList<DogBreeds>> by lazy {

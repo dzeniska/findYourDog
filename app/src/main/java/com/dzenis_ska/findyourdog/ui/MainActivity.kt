@@ -1,17 +1,19 @@
 package com.dzenis_ska.findyourdog.ui
 
+import android.Manifest
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 import androidx.core.view.GravityCompat
@@ -21,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.ui.setupWithNavController
+import com.dzenis_ska.findyourdog.MapsFragment
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.ui.fragments.DogsListFragment
 import com.dzenis_ska.findyourdog.ViewModel.BreedViewModel
@@ -40,6 +43,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     var dogListFragment: DogsListFragment? = null
+    private val locationPermissionCode = 2
     lateinit var tvHeaderAcc: TextView
     lateinit var navController: NavController
     lateinit var mSlideshowTextView: TextView
@@ -60,18 +64,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         init()
 
+        getPermission()
+
         nav_view.setNavigationItemSelectedListener(this)
 
         openCloseDrawer()
 
         viewModel.userUpdate.observe(this, Observer{
             uiUpdateMain(it)
-            Log.d("!!!", "$it")
+//            Log.d("!!!", "$it")
         })
 
     }
     fun uiUpdateMain(user: FirebaseUser?) {
-        Log.d("!!!", user.toString())
+//        Log.d("!!!", user.toString())
         tvHeaderAcc.text = if (user == null) {
             resources.getString(R.string.not_reg)
 //            resources.getString(R.string.hello)
@@ -178,13 +184,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
             R.id.mapFr -> {
+
                 navController.navigate(R.id.mapsFragment)
+
                 closeDrawer()
             }
 
             R.id.auth -> {
                 viewModel.signUpIn(0)
-
                 navController.navigate(R.id.loginFragment)
                 closeDrawer()
 //                Toast.makeText(applicationContext, "loginFragment", Toast.LENGTH_LONG).show()
@@ -219,6 +226,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             Toast.makeText(this, "Network available", Toast.LENGTH_LONG).show()
         } else {
             Toast.makeText(this, "NO Network!!!", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun getPermission(){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionCode)
+        }
+    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if(requestCode == locationPermissionCode){
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

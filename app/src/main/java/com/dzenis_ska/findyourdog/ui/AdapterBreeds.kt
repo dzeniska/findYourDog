@@ -82,16 +82,6 @@ class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val
                 .centerCrop()
                 .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                 .into(pict)
-//        }
-//        else{
-//            Log.d("!!!pos1", "$url")
-//            holder.photo?.setImageURI(Uri.parse(url))
-//        }
-//        else{
-//            val bmpArray = list[position].photo!!
-//            val bmp = BitmapFactory.decodeByteArray(bmpArray, 0, bmpArray.size)
-//            holder.photo.setImageBitmap(bmp)
-//        }
 
         holder.breed.text = list[position].name
         val pos = list[position].isFavorite

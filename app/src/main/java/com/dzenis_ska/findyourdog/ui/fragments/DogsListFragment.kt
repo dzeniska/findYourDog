@@ -131,9 +131,9 @@ class DogsListFragment : Fragment() {
                 return true
             }
             override fun onQueryTextChange(newText: String?): Boolean {
-                Log.d("!!!", newText!!)
+
                 var txt = ""
-                txt = newText
+                txt = newText!!
                 viewModel.searchView(arrayOf("%$txt%"))
                 return true
             }
