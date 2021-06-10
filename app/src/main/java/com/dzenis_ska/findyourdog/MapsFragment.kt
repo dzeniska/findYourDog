@@ -3,11 +3,13 @@ package com.dzenis_ska.findyourdog
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.IntentSender
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.os.Bundle
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,16 +20,17 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.dzenis_ska.findyourdog.ViewModel.BreedViewModel
 import com.dzenis_ska.findyourdog.ui.MainActivity
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
+import com.google.android.gms.tasks.Task
 import kotlinx.android.synthetic.main.fragment_maps.*
 
 
 class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMyLocationButtonClickListener,
-    GoogleMap.OnMyLocationClickListener, GoogleMap.OnCameraMoveStartedListener {
+    GoogleMap.OnMyLocationClickListener {
 
     lateinit var viewModel: BreedViewModel
     private var permissionDenied = false
@@ -36,9 +39,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private lateinit var mMap: GoogleMap
     var lat: Double = 0.0
     var lng: Double = 0.0
+    var lastLat: Double = 0.0
+    var lastLng: Double = 0.0
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
 
 //    private val callback = OnMapReadyCallback { googleMap ->
 //        val sydney = LatLng(lat, lng)
@@ -59,15 +63,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
-
-//        getLocation()
         //инициализация переменной для получения последней локации
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
 
         floatBtnGPS.setOnClickListener() {
             getLocation()
+            floatBtnGPS.visibility = View.GONE
         }
-
     }
 
     @SuppressLint("MissingPermission")
@@ -76,32 +78,32 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         // получаем последнюю локацию
         fusedLocationClient.lastLocation
                 .addOnSuccessListener { location : Location? ->
-                    Log.d("!!!loc", "${location?.longitude} ${location?.latitude}")
-                    setMarker(location?.latitude!!, location?.longitude!!)
-                    // Got last known location. In some rare situations this can be null.
+                    if(location != null) {
+                        Log.d("!!!loc", "${location?.longitude} ${location?.latitude}")
+                        setMarker(location.latitude, location.longitude, 10f)
+                        lastLat = location.latitude
+                        lastLng = location.longitude
+                        // Got last known location. In some rare situations this can be null.
+                    }else{
+                        Toast.makeText(context, "No gps!", Toast.LENGTH_LONG).show()
+                    }
                 }
 
         locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         viewModel.locationManagerBool = true
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
-
-
-
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d("!!!", "onMapReady")
-
         mMap = googleMap
-
         getPermission()
-
         mMap.setOnMyLocationButtonClickListener(this)
         mMap.setOnMyLocationClickListener(this)
 
-        val sydney = LatLng(42.276871, 18.831676)
-//        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+//        val sydney = LatLng(42.276871, 18.831676)
+////        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 
     private fun getPermission() {
@@ -123,13 +125,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 locationPermissionCode
             )
         }else{
-
             getLocation()
 //            mMap.isMyLocationEnabled = true
-
         }
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,
@@ -141,7 +140,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
         if (requestCode == locationPermissionCode) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
                 Toast.makeText(activity as MainActivity, "Permission Granted", Toast.LENGTH_SHORT)
                     .show()
             } else {
@@ -153,20 +151,18 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     override fun onLocationChanged(location: Location) {
         Log.d("!!!", "onLocationChanged")
-//        Toast.makeText(activity as MainActivity, "${location.latitude}", Toast.LENGTH_SHORT).show()
-//        Log.d("!!!", "Lat: " + location.latitude + " , Lng: " + location.longitude)
-
-
-
         lat = location.latitude
         lng = location.longitude
-        setMarker(lat, lng)
-
+        setMarker(lat, lng, 17f)
+        if(lat != lastLat && lng != lastLng) {
+            locationManager.removeUpdates(this)
+            viewModel.locationManagerBool = false
+            floatBtnGPS.visibility = View.VISIBLE
+        }
     }
 
-    private fun setMarker(lat: Double, lng: Double) {
+    private fun setMarker(lat: Double, lng: Double, zoom: Float) {
         var target = LatLng(lat, lng)
-
         mMap.clear()
 
         val circleOptions = CircleOptions()
@@ -177,24 +173,23 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             .strokeWidth(10f)
 
         mMap.addCircle(circleOptions)
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 17f))
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, zoom))
         val marker = mMap.addMarker(
             MarkerOptions().position(target).title("Marker in Sydney").draggable(
-                true
+                false
             )
         )
         mMap.setOnCameraMoveListener {
             marker!!.position = mMap.getCameraPosition().target //to center in map
-            target = marker!!.position
-//            Log.d("!!!tar", "$target")
-//            locationManager.removeUpdates(this)
+            target = marker.position
+            //здесь сохраняем данные местоположения
+            Log.d("!!!target", "target $target")
         }
     }
 
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-        val p = provider
-        Log.d("!!!", "onStatusChanged")
+        Log.d("!!!", "onStatusChanged $provider")
     }
 
     override fun onProviderEnabled(provider: String) {
@@ -229,26 +224,4 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onMyLocationClick(location: Location) {
         Toast.makeText(context as MainActivity, "Current location:\n$location", Toast.LENGTH_LONG).show()
     }
-
-    override fun onCameraMoveStarted(reason: Int) {
-        when (reason) {
-            GoogleMap.OnCameraMoveStartedListener.REASON_GESTURE -> {
-                Log.d("!!!move", "REASON_GESTURE")
-                Toast.makeText(activity as MainActivity, "REASON_GESTURE", Toast.LENGTH_SHORT)
-                    .show()
-            }
-            GoogleMap.OnCameraMoveStartedListener.REASON_API_ANIMATION -> {
-                Log.d("!!!move", "REASON_API_ANIMATION")
-                Toast.makeText(activity as MainActivity, "REASON_API_ANIMATION", Toast.LENGTH_SHORT)
-                    .show()
-            }
-            GoogleMap.OnCameraMoveStartedListener.REASON_DEVELOPER_ANIMATION -> {
-                Log.d("!!!move", "REASON_DEVELOPER_ANIMATION")
-                Toast.makeText(activity as MainActivity, "REASON_DEVELOPER_ANIMATION", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
-    }
-
-
 }
