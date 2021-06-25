@@ -1,4 +1,4 @@
-package com.dzenis_ska.findyourdog.ViewModel
+package com.dzenis_ska.findyourdog.viewModel
 
 
 import androidx.lifecycle.MutableLiveData
@@ -20,6 +20,8 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     var fileName: String = ""
     var selectedBreed: DogBreeds? = null
     var locationManagerBool: Boolean = false
+    var countSelectedPhoto: Int = 0
+    var numPage: Int = 0
 
 
     //    val breedLive: MutableLiveData<MutableList<DogBreeds>> by lazy {
@@ -80,12 +82,6 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
         }
     }
 
-    //    fun oneDog(dog: DogBreeds) {
-//        scope.launch {
-//            repository.insOneDog(dog)
-//            breedLive.value?.add(dog)
-//        }
-//    }
     fun saveFavoriteData(id: Long, isSelected: Int) {
         scope.launch {
             repository.saveFavoriteData(id, isSelected)
@@ -144,12 +140,6 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
             breedLive.postValue(data)
         }
     }
-//    fun insertOnePost(newBreeds: DogBreeds) {
-//        scope.launch {
-//            repository.insertOnePost(newBreeds)
-//            breedLive.value?.add(newBreeds)
-//        }
-//    }
 
     fun uiUpdateMain(user: FirebaseUser?) {
         userUpdate.postValue(user!!)

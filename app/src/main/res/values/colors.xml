@@ -6,6 +6,7 @@
     <color name="colorBackgroundStatusBar">#41FF9800</color>
     <color name="nav_bar_color">#663d00</color>
     <color name="main_background">#FFD54F</color>
+    <color name="main_background_50">#83FFD54F</color>
     <color name="nav_color_title">#FF3D00</color>
     <color name="background_drawer">#3B4BF4DB</color>
     <color name="counter">#2FF602</color>
@@ -21,6 +22,7 @@
     <color name="light_blue_900">#FF01579B</color>
     <color name="light_blue_A200">#FF40C4FF</color>
     <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="light_blue_A400_60">#9900B0FF</color>
     <color name="black_overlay">#66000000</color>
     <color name="fill_color">#7EF6E442</color>
 

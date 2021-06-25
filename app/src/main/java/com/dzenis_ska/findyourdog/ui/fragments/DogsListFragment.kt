@@ -12,9 +12,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.RemoteModel.DogBreeds
-import com.dzenis_ska.findyourdog.ui.AdapterBreeds
+import com.dzenis_ska.findyourdog.ui.utils.AdapterBreeds
 import com.dzenis_ska.findyourdog.ui.MainActivity
-import com.dzenis_ska.findyourdog.ViewModel.BreedViewModel
+import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import kotlinx.android.synthetic.main.fragment_dogs_list.*
 import kotlinx.coroutines.*
 import java.util.*
@@ -110,18 +110,15 @@ class DogsListFragment : Fragment() {
             goToFrag(position)
 //            sleepScope()
             navController.navigate(R.id.oneBreedFragment)
+//            navController.navigate(R.id.addShelterFragment)
 
         }
-
-
     }
 
     private suspend fun goToFrag(position: Int) = withContext(Dispatchers.IO) {
 
             viewModel.selectedBreed = breeds[position]
             viewModel.getItemImg(breeds[position].name?.toLowerCase(Locale.ROOT).toString() )
-
-
 
     }
 
@@ -139,8 +136,4 @@ class DogsListFragment : Fragment() {
             }
         })
     }
-
-
-
-
 }

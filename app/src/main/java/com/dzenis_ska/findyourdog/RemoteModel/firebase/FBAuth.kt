@@ -26,7 +26,6 @@ class FBAuth(private val fragment: Fragment) {
                     }
                 } else {
 //                    Toast.makeText(context, context.resources.getString(R.string.error_reg), Toast.LENGTH_SHORT).show()
-
                     Log.d("!!!er", task.exception.toString())
                     if (task.exception is FirebaseAuthUserCollisionException) {
                         val exception = task.exception as FirebaseAuthUserCollisionException

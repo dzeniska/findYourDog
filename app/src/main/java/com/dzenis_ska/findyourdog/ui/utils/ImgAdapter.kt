@@ -1,4 +1,4 @@
-package com.dzenis_ska.findyourdog.ui
+package com.dzenis_ska.findyourdog.ui.utils
 
 import android.content.Context
 import android.view.LayoutInflater

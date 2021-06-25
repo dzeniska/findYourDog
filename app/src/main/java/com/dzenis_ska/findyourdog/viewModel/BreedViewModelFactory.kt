@@ -1,4 +1,4 @@
-package com.dzenis_ska.findyourdog.ViewModel
+package com.dzenis_ska.findyourdog.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

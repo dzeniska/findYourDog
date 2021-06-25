@@ -19,6 +19,7 @@
         android:icon="@mipmap/ic_icon_8"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_icon_8_round"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">

@@ -20,9 +20,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.RemoteModel.DogBreeds
-import com.dzenis_ska.findyourdog.ui.ImgAdapter
+import com.dzenis_ska.findyourdog.ui.utils.ImgAdapter
 import com.dzenis_ska.findyourdog.ui.MainActivity
-import com.dzenis_ska.findyourdog.ViewModel.BreedViewModel
+import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import kotlinx.android.synthetic.main.fragment_one_breed.*
 
 

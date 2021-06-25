@@ -1,4 +1,4 @@
-package com.dzenis_ska.findyourdog.ui
+package com.dzenis_ska.findyourdog.ui.utils
 
 import android.graphics.*
 import com.squareup.picasso.Transformation

@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.dzenis_ska.findyourdog.ui.MainActivity
-import com.dzenis_ska.findyourdog.ViewModel.BreedViewModel
+import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import kotlinx.android.synthetic.main.fragment_one_photo.*
 import java.io.File
 import java.io.InputStream

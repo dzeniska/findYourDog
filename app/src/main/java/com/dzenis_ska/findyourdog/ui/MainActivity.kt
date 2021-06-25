@@ -23,11 +23,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.ui.setupWithNavController
-import com.dzenis_ska.findyourdog.MapsFragment
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.ui.fragments.DogsListFragment
-import com.dzenis_ska.findyourdog.ViewModel.BreedViewModel
-import com.dzenis_ska.findyourdog.ViewModel.BreedViewModelFactory
+import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
+import com.dzenis_ska.findyourdog.viewModel.BreedViewModelFactory
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -59,8 +58,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
 
         init()
 
@@ -172,11 +169,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 navController.navigate(R.id.dogsListFragment)
                 closeDrawer()
             }
-//            R.id.add_dog_item -> {
-//                navController.navigate(R.id.addDogFragment)
-//                closeDrawer()
-//                Toast.makeText(applicationContext, "Добавьте пёса", Toast.LENGTH_LONG).show()
-//            }
+            R.id.add_shelter_item -> {
+                navController.navigate(R.id.addShelterFragment)
+                closeDrawer()
+            }
             R.id.show_fav -> {
                 navController.navigate(R.id.favoritesFragment)
                 closeDrawer()
@@ -186,7 +182,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.mapFr -> {
 
                 navController.navigate(R.id.mapsFragment)
-
                 closeDrawer()
             }
 
@@ -213,6 +208,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun closeDrawer(){
         drawerLayout.closeDrawer(GravityCompat.START)
     }
+
     fun checkNetwork() {
         //проверка на доступ к сети
         val cManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

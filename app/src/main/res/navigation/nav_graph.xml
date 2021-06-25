@@ -18,10 +18,10 @@
         android:label="@string/dogs_list"
         tools:layout="@layout/fragment_dogs_list" />
     <fragment
-        android:id="@+id/addDogFragment"
-        android:name="com.dzenis_ska.findyourdog.ui.fragments.AddDogFragment"
+        android:id="@+id/addShelterFragment"
+        android:name="com.dzenis_ska.findyourdog.ui.fragments.AddShelterFragment"
         android:label="@string/add_dog"
-        tools:layout="@layout/fragment_add_dog" />
+        tools:layout="@layout/fragment_add_shelter" />
     <fragment
         android:id="@+id/oneBreedFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.OneBreedFragment"

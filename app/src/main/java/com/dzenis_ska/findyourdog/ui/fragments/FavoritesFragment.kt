@@ -5,7 +5,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
@@ -13,9 +12,9 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.RemoteModel.DogBreeds
-import com.dzenis_ska.findyourdog.ui.AdapterBreeds
+import com.dzenis_ska.findyourdog.ui.utils.AdapterBreeds
 import com.dzenis_ska.findyourdog.ui.MainActivity
-import com.dzenis_ska.findyourdog.ViewModel.BreedViewModel
+import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import kotlinx.android.synthetic.main.fragment_favorites.*
 import java.util.*
 
@@ -26,19 +25,19 @@ class FavoritesFragment : Fragment() {
     private val breeds = mutableListOf<DogBreeds>()
     lateinit var adapter: AdapterBreeds
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                //in here you can do logic when backPress is clicked
-                navController.popBackStack(R.id.addDogFragment, true)
-                navController.popBackStack(R.id.dogsListFragment, true)
-                navController.popBackStack(R.id.oneBreedFragment, true)
-                navController.popBackStack(R.id.favoritesFragment, true)
-                navController.popBackStack(R.id.editNoteFragment, true)
-            }
-        })
-    }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                //in here you can do logic when backPress is clicked
+//                navController.popBackStack(R.id.addDogFragment, true)
+//                navController.popBackStack(R.id.dogsListFragment, true)
+//                navController.popBackStack(R.id.oneBreedFragment, true)
+//                navController.popBackStack(R.id.favoritesFragment, true)
+//                navController.popBackStack(R.id.editNoteFragment, true)
+//            }
+//        })
+//    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

@@ -4,15 +4,11 @@ package com.dzenis_ska.findyourdog.RemoteModel
 import android.util.Log
 import javax.inject.Inject
 
-
-
-
 @Suppress("CAST_NEVER_SUCCEEDS")
 class RemoteModel @Inject constructor() {
     val apiService = ApiService.create()
     val apiRandom = ApiRandomImage.create()
     val apiOnePhoto = ApiOnePhoto.create()
-
 
     //одного фото запрос
     suspend fun getOnePhoto(url: String): ByteArray{
@@ -63,5 +59,4 @@ class RemoteModel @Inject constructor() {
             BreedOfDogListPhoto(0, optionsList, "")
         }
     }
-
 }

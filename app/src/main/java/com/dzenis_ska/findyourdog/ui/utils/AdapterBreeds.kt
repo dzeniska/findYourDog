@@ -1,4 +1,4 @@
-package com.dzenis_ska.findyourdog.ui
+package com.dzenis_ska.findyourdog.ui.utils
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -30,8 +30,6 @@ class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.item_layout, parent, false)
         val holder = ViewHolder(itemView)
-
-
 
         itemView.setOnClickListener(){
             if(fragment is DogsListFragment) {

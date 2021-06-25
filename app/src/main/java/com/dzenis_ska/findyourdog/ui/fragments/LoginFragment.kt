@@ -15,7 +15,7 @@ import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.RemoteModel.firebase.AuthInterface
 import com.dzenis_ska.findyourdog.RemoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
-import com.dzenis_ska.findyourdog.ViewModel.BreedViewModel
+import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.fragment_login.*
 import kotlinx.coroutines.CoroutineScope
