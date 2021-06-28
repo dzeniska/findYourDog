@@ -72,11 +72,30 @@ object ImagePicker {
             if (result.resultCode == Activity.RESULT_OK) {
                 if (result.data != null) {
                     val returnValues = result.data?.getStringArrayListExtra(Pix.IMAGE_RESULTS)
+                    if (returnValues?.size!! == 0) {
+                        Toast.makeText(addSF.context, "No selected photo", Toast.LENGTH_LONG).show()
+                    } else {
+                        CoroutineScope(Dispatchers.Main).launch {
+//                            val bitmapList = ImageManager.imageResize(returnValues)
+//                            addSF.vpAdapter.updateAdapter(bitmapList as MutableList<Bitmap>)
+                            addSF.vpAdapter.updateAdapterForSinglePhoto(returnValues)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    fun getLauncherForReplaceSelectedImage(addSF: AddShelterFragment): ActivityResultLauncher<Intent>? {
+        return addSF.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                if (result.data != null) {
+                    val returnValues = result.data?.getStringArrayListExtra(Pix.IMAGE_RESULTS)
 
                     CoroutineScope(Dispatchers.Main).launch {
 //                        val bitmapList = ImageManager.imageResize(returnValues as List<String>)
 //                        addSF.vpAdapter.replaceItemAdapter(bitmapList as MutableList<Bitmap>)
-                            addSF.vpAdapter.updateAdapter(returnValues!!)
+                        addSF.vpAdapter.replaceItemAdapter(returnValues!!)
                     }
 
                 }

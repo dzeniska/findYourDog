@@ -49,6 +49,7 @@ class AddShelterFragment : Fragment() {
 
     var launcherMultiSelectImage: ActivityResultLauncher<Intent>? = null
     var launcherSingleSelectImage: ActivityResultLauncher<Intent>? = null
+    var launcherReplaceSelectedImage: ActivityResultLauncher<Intent>? = null
 
 //    private val requestPermissions =
 //        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -85,35 +86,31 @@ class AddShelterFragment : Fragment() {
         rootElement.apply{
             imgAddPhoto.setOnClickListener(){
                 imgAddPhoto.alpha = 0.8f
-                ImagePicker.launcher(context, addShelterFragment, launcherMultiSelectImage, 17)
+                ImagePicker.launcher(context, addShelterFragment, launcherMultiSelectImage, 5)
             }
             fabAddImage.setOnClickListener(){
-
-                ImagePicker.launcher(context, addShelterFragment, launcherMultiSelectImage, 1)
+                ImagePicker.launcher(context, addShelterFragment, launcherSingleSelectImage, 5 - vpAdapter.arrayPhoto.size)
             }
             fabDeleteImage.setOnClickListener(){
                 CoroutineScope(Dispatchers.Main).launch{
                     val num = viewModel!!.numPage
-                    Log.d("!!!num", "${num}")
                     vpAdapter.removeItemAdapter(num)
-
                 }
-
             }
             fabReplaceImage.setOnClickListener(){
-                ImagePicker.launcher(context, addShelterFragment, launcherSingleSelectImage, 1)
+                ImagePicker.launcher(context, addShelterFragment, launcherReplaceSelectedImage, 1)
             }
-
-            floatingActionButtonAdd.setOnClickListener(){
-                ImagePicker.launcher(context, addShelterFragment, launcherMultiSelectImage, 3)
-                imgAddPhoto.visibility = View.GONE
-            }
+//            floatingActionButtonAdd.setOnClickListener(){
+//                ImagePicker.launcher(context, addShelterFragment, launcherMultiSelectImage, 3)
+//                imgAddPhoto.visibility = View.GONE
+//            }
         }
     }
 
     private fun init() {
         launcherMultiSelectImage = ImagePicker.getLauncherForMultiSelectImages(this)
-//        launcherSingleSelectImage = ImagePicker.getLauncherForSingleSelectImages(this)
+        launcherSingleSelectImage = ImagePicker.getLauncherForSingleSelectImages(this)
+        launcherReplaceSelectedImage = ImagePicker.getLauncherForReplaceSelectedImage(this)
     }
 
     private fun initRecyclerView() {

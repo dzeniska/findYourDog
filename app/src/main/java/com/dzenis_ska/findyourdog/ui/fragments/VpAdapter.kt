@@ -2,6 +2,7 @@ package com.dzenis_ska.findyourdog.ui.fragments
 
 
 import android.graphics.Bitmap
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,7 @@ import com.dzenis_ska.findyourdog.ui.utils.imageManager.ImageManager
 
 class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.VpHolder>() {
 
-    private val arrayPhoto = mutableListOf<String>()
+    val arrayPhoto = mutableListOf<String>()
 
     class VpHolder(val binding: VpAdapterItemBinding) : RecyclerView.ViewHolder(binding.root) {
         //        binding.imgItemVp as SubsamplingScaleImageView
@@ -40,73 +41,40 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
     }
 
     fun updateAdapter(arrayListPhoto: MutableList<String>) {
-//        arrayPhoto.clear()
-//        arrayPhoto.addAll(arrayListPhoto)
-//        addSF.rootElement.imgAddPhoto.visibility = View.GONE
-//        addSF.rootElement.clEditPhoto.visibility = View.VISIBLE
-//        notifyDataSetChanged()
-//
-        val size = arrayListPhoto.size
-        if((size == 1 && arrayPhoto.size == 0)){
-            arrayPhoto.add(arrayListPhoto[0])
-            hideElements()
-            notifyDataSetChanged()
-        }else if(size == 1 && arrayPhoto.size > 0){
-            val array = arrayPhoto
-            arrayPhoto.clear()
-            arrayPhoto.add(arrayListPhoto[0])
-            arrayPhoto.addAll(array)
-            hideElements()
-            notifyDataSetChanged()
-        }else if(size > 1 && arrayPhoto.size == 0){
-            arrayPhoto.addAll(arrayListPhoto)
-            hideElements()
-            notifyDataSetChanged()
-        }else if(size > 1 && arrayPhoto.size > 0){
-            val array = arrayPhoto
-            arrayPhoto.clear()
-            arrayPhoto.addAll(arrayListPhoto)
-            arrayPhoto.addAll(array)
-            hideElements()
-            notifyDataSetChanged()
-        }
-//
-//
+        arrayPhoto.clear()
+        arrayPhoto.addAll(arrayListPhoto)
+        addSF.rootElement.imgAddPhoto.visibility = View.GONE
+        addSF.rootElement.clEditPhoto.visibility = View.VISIBLE
+        if(arrayPhoto.size > 1) addSF.tabLayoutMediator(true)
+        if (arrayPhoto.size == 5) addSF.rootElement.fabAddImage.visibility = View.GONE
+        notifyDataSetChanged()
     }
-////
-    fun hideElements(){
-        val sizeListAdapter = arrayPhoto.size
-        addSF.viewModel?.countSelectedPhoto = sizeListAdapter
-        if(sizeListAdapter > 2) addSF.rootElement.fabAddImage.visibility = View.GONE
-        if(sizeListAdapter > 1) {
+    fun updateAdapterForSinglePhoto(arrayListPhoto: MutableList<String>) {
+        arrayPhoto.addAll(arrayListPhoto)
+        if (arrayPhoto.size == 5) addSF.rootElement.fabAddImage.visibility = View.GONE
+//        notifyItemInserted(0)
+        Log.d("!!!addPhotoo",  "${arrayPhoto}")
+        if(arrayPhoto.size > 1 && addSF.tlm?.isAttached == false) {
             addSF.tabLayoutMediator(true)
-            addSF.rootElement.imgAddPhoto.visibility = View.GONE
-            addSF.rootElement.clEditPhoto.visibility = View.VISIBLE
-        }else if(sizeListAdapter == 1){
-            addSF.tabLayoutMediator(false)
-            addSF.rootElement.imgAddPhoto.visibility = View.GONE
-            addSF.rootElement.clEditPhoto.visibility = View.VISIBLE
+            addSF.rootElement.tabLayout.visibility = View.VISIBLE
         }
+        notifyDataSetChanged()
     }
 
     fun removeItemAdapter(numPage: Int){
-//        if(arrayPhoto.size == 1){
-//
-
-//            addSF.tabLayoutMediator(false)
-//        }
-
         arrayPhoto.removeAt(numPage)
+        Log.d("!!!addPhotoo",  "${arrayPhoto}")
+        if (arrayPhoto.size < 5) addSF.rootElement.fabAddImage.visibility = View.VISIBLE
+        if(arrayPhoto.size == 1) {
+            addSF.tlm?.detach()
+            addSF.rootElement.tabLayout.visibility = View.GONE
+//            165654asdasd
+        }
+        if(arrayPhoto.size == 0) {
+            addSF.rootElement.imgAddPhoto.visibility = View.VISIBLE
+            addSF.rootElement.clEditPhoto.visibility = View.GONE
+        }
         notifyItemRemoved(numPage)
-
-//        addSF.tabLayoutMediator(true)
-//        for(n in 0 until arrayPhoto.size) notifyItemChanged(n)
-//        if(arrayPhoto.size < 2) {
-//            addSF.tabLayoutMediator(false                                                                                                                                                                                 )
-//            addSF.rootElement.imgAddPhoto.visibility = View.VISIBLE
-//            addSF.rootElement.clEditPhoto.visibility = View.GONE
-////        adapter.adapterCallBack.onItemDelete()
-//        }
     }
     fun replaceItemAdapter( arrayListPhoto: MutableList<String>){
         arrayPhoto.removeAt(addSF.viewModel?.numPage!!)
