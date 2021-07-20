@@ -12,8 +12,8 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.dzenis_ska.findyourdog.R
-import com.dzenis_ska.findyourdog.RemoteModel.firebase.AuthInterface
-import com.dzenis_ska.findyourdog.RemoteModel.firebase.FBAuth
+import com.dzenis_ska.findyourdog.remoteModel.firebase.AuthInterface
+import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.firebase.auth.FirebaseUser
@@ -48,7 +48,6 @@ class LoginFragment() : Fragment(), AuthInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
         viewModel.signUpInValue.observe(viewLifecycleOwner, Observer {
             signUpIn = it
 
@@ -59,7 +58,6 @@ class LoginFragment() : Fragment(), AuthInterface {
                 tvRegIn.text = resources.getString(R.string.auth_ic)
                 inUpImage.setImageResource(R.drawable.ic_reg)
             }
-
         })
 
         init()
@@ -124,7 +122,7 @@ class LoginFragment() : Fragment(), AuthInterface {
         }
     }
 
-    fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
+    private fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
         this.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
                 afterTextChanged.invoke(editable.toString())

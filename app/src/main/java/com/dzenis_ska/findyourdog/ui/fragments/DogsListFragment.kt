@@ -11,8 +11,8 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dzenis_ska.findyourdog.R
-import com.dzenis_ska.findyourdog.RemoteModel.DogBreeds
-import com.dzenis_ska.findyourdog.ui.utils.AdapterBreeds
+import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
+import com.dzenis_ska.findyourdog.ui.fragments.adapters.AdapterBreeds
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import kotlinx.android.synthetic.main.fragment_dogs_list.*
@@ -64,7 +64,6 @@ class DogsListFragment : Fragment() {
             Log.d("!!!observeDLF", it.size.toString())
             if(it.size == 0){
                 (activity as MainActivity).checkNetwork()
-
             } else{
                 breeds.clear()
                 breeds.addAll(it)
@@ -103,23 +102,17 @@ class DogsListFragment : Fragment() {
         delay(3000)
     }
 
-
     fun onBreedSelect(position:Int){
         job2 = CoroutineScope(Dispatchers.Main).launch {
-
             goToFrag(position)
 //            sleepScope()
             navController.navigate(R.id.oneBreedFragment)
-//            navController.navigate(R.id.addShelterFragment)
-
         }
     }
 
     private suspend fun goToFrag(position: Int) = withContext(Dispatchers.IO) {
-
             viewModel.selectedBreed = breeds[position]
-            viewModel.getItemImg(breeds[position].name?.toLowerCase(Locale.ROOT).toString() )
-
+            viewModel.getItemImg(breeds[position].name?.lowercase(Locale.ROOT).toString() )
     }
 
     fun initSearchView(){

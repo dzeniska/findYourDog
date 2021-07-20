@@ -1,4 +1,4 @@
-package com.dzenis_ska.findyourdog.RemoteModel
+package com.dzenis_ska.findyourdog.remoteModel
 
 
 import okhttp3.OkHttpClient
@@ -9,31 +9,44 @@ import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
 
-val BASE_URL = "https://api.thedogapi.com/v1/"
+val BASE_URL_RANDOM = "https://dog.ceo/api/"
 
-interface ApiService {
-    @Headers("x-api-key:c102c232-9aec-4038-80bd-7eb6eeba21a7")
-    @GET("breeds")
-    suspend fun getAllBreeds(
-        //@Query("q") cityname: String
-    ): MutableList<DogBreeds>
+
+interface ApiRandomImage {
+    @GET("breed/{hound}/images")
+    suspend fun getImages(
+        @Path("hound") breed: String
+    ): ImgBreed
+
+    @GET("breed/{hound}/{byHound}/images")
+    suspend fun getImagesDouble(
+        @Path("hound") breed: String,
+        @Path("byHound") bybreed: String
+    ): ImgBreed
+
+    @GET("breeds/list/all")
+    suspend fun getBreeds(
+    ):BreedOfDogListPhoto
+
+
 
 
 
     companion object Factory {
-        fun create(): ApiService {
+        fun create(): ApiRandomImage {
             val okHttpClient = OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(120, TimeUnit.SECONDS)
                 .build()
             val retrofit: Retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(BASE_URL_RANDOM)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .client(okHttpClient)
                 .build()
-            return retrofit.create(ApiService::class.java)
+            return retrofit.create(ApiRandomImage::class.java)
         }
     }
 }
+

@@ -49,7 +49,7 @@
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/mapsFragment"
-        android:name="com.dzenis_ska.findyourdog.MapsFragment"
+        android:name="com.dzenis_ska.findyourdog.ui.fragments.MapsFragment"
         android:label="fragment_maps"
         tools:layout="@layout/fragment_maps" />
 

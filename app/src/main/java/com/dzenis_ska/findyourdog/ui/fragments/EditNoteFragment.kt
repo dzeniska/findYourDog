@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import com.dzenis_ska.findyourdog.R
-import com.dzenis_ska.findyourdog.RemoteModel.DogBreeds
+import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import kotlinx.android.synthetic.main.fragment_edit_note.*

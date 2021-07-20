@@ -3,8 +3,10 @@ package com.dzenis_ska.findyourdog.viewModel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dzenis_ska.findyourdog.RemoteModel.DogBreeds
+import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
 import com.dzenis_ska.findyourdog.Repository.Repository
+import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
+import com.dzenis_ska.findyourdog.remoteModel.firebase.DbManager
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -47,6 +49,30 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     var userUpdate = MutableLiveData<FirebaseUser>()
 
     var signUpInValue = MutableLiveData<Int>()
+
+    val dbManager = DbManager()
+    var listShelter = ArrayList<AdShelter>()
+    val liveAdsDataAllShelter = MutableLiveData<ArrayList<AdShelter>>()
+
+    fun publishAdShelter(adTemp: AdShelter) {
+
+        dbManager.publishAdShelter(adTemp, object: DbManager.WriteDataCallback{
+            override fun writeData() {
+                getAllAds()
+            }
+
+        })
+    }
+
+    fun getAllAds(){
+        dbManager.getAllAds(object: DbManager.ReadDataCallback{
+            override fun readData(list: ArrayList<AdShelter>) {
+                liveAdsDataAllShelter.value = list
+            }
+        })
+    }
+
+
 
     //одного фото запрос
     fun getOnePhoto(url: String) {
@@ -148,4 +174,6 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     fun signUpIn(signUpIn: Int) {
         signUpInValue.postValue(signUpIn)
     }
+
+
 }

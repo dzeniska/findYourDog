@@ -2,7 +2,7 @@ package com.dzenis_ska.findyourdog.Repository
 
 
 import com.dzenis_ska.findyourdog.LocalModel.LocalModel
-import com.dzenis_ska.findyourdog.RemoteModel.*
+import com.dzenis_ska.findyourdog.remoteModel.*
 import javax.inject.Inject
 
 

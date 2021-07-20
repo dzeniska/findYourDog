@@ -1,4 +1,4 @@
-package com.dzenis_ska.findyourdog.RemoteModel.firebase
+package com.dzenis_ska.findyourdog.remoteModel.firebase
 
 import android.content.Context
 import android.util.Log

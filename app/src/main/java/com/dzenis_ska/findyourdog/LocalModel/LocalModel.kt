@@ -2,7 +2,7 @@ package com.dzenis_ska.findyourdog.LocalModel
 
 import android.content.Context
 import androidx.room.Room
-import com.dzenis_ska.findyourdog.RemoteModel.DogBreeds
+import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 

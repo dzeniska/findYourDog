@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_add_menu"
@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="16dp"
                 android:backgroundTint="@color/main_background"
                 android:clickable="true"
                 android:foregroundGravity="center"
@@ -91,15 +91,15 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@android:color/transparent"
+            android:padding="8dp"
+            android:translationY="8dp"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:tabBackground="@drawable/viewpager_indicators"
             app:tabGravity="center"
-            android:padding="8dp"
-            android:translationY="8dp"
-            app:tabIndicatorHeight="0dp"
-            />
+            app:tabIndicatorHeight="0dp" />
 
         <ImageView
             android:id="@+id/imgAddPhoto"
@@ -118,52 +118,132 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <EditText
-        android:id="@+id/edMastDog"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:background="@android:drawable/editbox_background"
-        android:ems="10"
-        android:hint="@string/mastDog"
-        android:inputType="textPersonName"
-        android:padding="10dp"
-        android:textColor="@color/text_hint_add"
-        android:textColorHint="#3E9DDA"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline4" />
 
-    <EditText
-        android:id="@+id/edDescription"
+    <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:background="@android:drawable/editbox_background"
-        android:ems="10"
-        android:gravity="top|left"
-        android:hint="@string/descriptionDog"
-        android:inputType="textMultiLine|textPersonName"
-        android:padding="10dp"
-        android:textColor="@color/text_hint_add"
-        android:textColorHint="@color/text_hint_add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/edMastDog"
-        app:layout_constraintStart_toStartOf="@+id/edMastDog"
-        app:layout_constraintTop_toBottomOf="@+id/edMastDog" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline4">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/clDescr"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:id="@+id/edTelNum"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@android:drawable/editbox_background"
+                    android:ems="10"
+                    android:hint="@string/tel_num_shelter"
+                    android:inputType="phone"
+                    android:padding="10dp"
+
+                    android:textColorHint="@color/text_hint_add"
+                    android:textColor="@color/back_menu_add_color"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/edName"
+                    android:layout_width="0dp"
+                    android:layout_height="44dp"
+                    android:background="@android:drawable/editbox_background"
+                    android:ems="10"
+                    android:gravity="top|left"
+                    android:hint="@string/tel_num_shelter"
+                    android:inputType="textMultiLine|phone"
+                    android:padding="10dp"
+                    android:visibility="gone"
+                    android:textColorHint="@color/text_hint_add"
+                    android:textColor="@color/back_menu_add_color"
+                    app:layout_constraintEnd_toEndOf="@+id/edTelNum"
+                    app:layout_constraintStart_toStartOf="@+id/edTelNum"
+                    app:layout_constraintTop_toBottomOf="@+id/edTelNum" />
+
+                <com.dzenis_ska.findyourdog.ui.fragments.customMapView.CustomMapView
+                    android:id="@+id/mapView"
+                    android:layout_width="0dp"
+                    android:layout_height="100dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="4dp"
+                    app:layout_constraintEnd_toEndOf="@+id/edTelNum"
+                    app:layout_constraintStart_toStartOf="@+id/edTelNum"
+                    app:layout_constraintTop_toBottomOf="@+id/edName" />
+
+                <EditText
+                    android:id="@+id/edDescription"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:ems="10"
+                    android:gravity="top|left"
+                    android:hint="@string/description"
+
+                    android:padding="10dp"
+                    android:textColor="@color/back_menu_add_color"
+                    android:textColorHint="@color/text_hint_add"
+                    app:layout_constraintEnd_toEndOf="@+id/edTelNum"
+                    app:layout_constraintStart_toStartOf="@+id/edTelNum"
+                    app:layout_constraintTop_toBottomOf="@+id/mapView" />
+
+                <ImageButton
+                    android:id="@+id/ibFullScreen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="28dp"
+                    android:background="@drawable/edit_image_button"
+                    android:padding="5dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/mapView"
+                    app:layout_constraintStart_toStartOf="@+id/mapView"
+                    app:layout_constraintTop_toTopOf="@+id/mapView"
+                    app:layout_constraintVertical_bias="1.0"
+                    app:srcCompat="@drawable/ic_open_in_full" />
+
+                <ImageButton
+                    android:id="@+id/ibGetLocation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="28dp"
+                    android:background="@drawable/edit_image_button"
+                    android:padding="5dp"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/mapView"
+                    app:layout_constraintEnd_toEndOf="@+id/mapView"
+                    app:layout_constraintTop_toTopOf="@+id/mapView"
+                    app:layout_constraintVertical_bias="1.0"
+                    app:srcCompat="@drawable/ic_baseline_gps_fixed_24" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButtonAdd"
+        android:id="@+id/fabAddShelter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:background="@color/background_drawer"
         android:clickable="true"
-        android:src="@drawable/ic_add_dog"
-        app:layout_constraintBottom_toBottomOf="@+id/edDescription"
-        app:layout_constraintEnd_toEndOf="@+id/edDescription" />
+        android:src="@android:drawable/ic_menu_save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+    <!-- android:src="@drawable/ic_add_dog"-->
 </androidx.constraintlayout.widget.ConstraintLayout>

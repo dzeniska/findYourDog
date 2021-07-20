@@ -1,4 +1,4 @@
-package com.dzenis_ska.findyourdog.ui.utils
+package com.dzenis_ska.findyourdog.ui.fragments.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -10,9 +10,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.dzenis_ska.findyourdog.R
-import com.dzenis_ska.findyourdog.RemoteModel.DogBreeds
+import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
 import com.dzenis_ska.findyourdog.ui.fragments.DogsListFragment
 import com.dzenis_ska.findyourdog.ui.fragments.FavoritesFragment
+import com.dzenis_ska.findyourdog.ui.utils.CropSquareTransformation
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 
@@ -53,9 +54,7 @@ class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
         holder.itemView.animation = AnimationUtils.loadAnimation(context, R.anim.translate_item)
-
         val width = list[position].image.width?.toInt()
         val height = list[position].image.height?.toInt()
         val w:Int

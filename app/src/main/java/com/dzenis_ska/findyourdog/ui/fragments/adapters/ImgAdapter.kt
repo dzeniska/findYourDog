@@ -1,4 +1,4 @@
-package com.dzenis_ska.findyourdog.ui.utils
+package com.dzenis_ska.findyourdog.ui.fragments.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.dzenis_ska.findyourdog.R
-import com.dzenis_ska.findyourdog.RemoteModel.DogBreeds
+import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
 import com.dzenis_ska.findyourdog.ui.fragments.OneBreedFragment
 import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy

@@ -23,10 +23,6 @@ import java.io.InputStream
 class OnePhotoFragment : Fragment() {
     lateinit var viewModel: BreedViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -45,7 +41,6 @@ class OnePhotoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val context = context
-
 
         viewModel.onePhoto.observe(viewLifecycleOwner, Observer {
             Log.d("!!!px", it.toString())

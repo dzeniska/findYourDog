@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -41,23 +42,23 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    var dogListFragment: DogsListFragment? = null
     private val locationPermissionCode = 2
-    lateinit var tvHeaderAcc: TextView
+    private lateinit var tvHeaderAcc: TextView
     lateinit var navController: NavController
     lateinit var mSlideshowTextView: TextView
-    lateinit var viewModel: BreedViewModel
-
-
-    private var optionsList: Map<String, List<String>> = mapOf()
+//    private var optionsList: Map<String, List<String>> = mapOf()
     val mAuth = FirebaseAuth.getInstance()
 
     @Inject
     lateinit var factory: BreedViewModelFactory
+    private val viewModel: BreedViewModel by viewModels{
+        factory
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
 
         init()
 
@@ -71,6 +72,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             uiUpdateMain(it)
 //            Log.d("!!!", "$it")
         })
+
 
     }
     fun uiUpdateMain(user: FirebaseUser?) {
@@ -111,11 +113,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun init() {
 
+
+
 //        val remoteModel = RemoteModel()
 //         val localModel = LocalModel(this)
 //         val repository = Repository(remoteModel, localModel)
 //         val factory = BreedViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, factory).get(BreedViewModel::class.java)
+//        viewModel = ViewModelProvider(this, factory).get(BreedViewModel::class.java)
 
 //        viewModel.breedLive.value = mutableListOf()
 
@@ -178,13 +182,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 closeDrawer()
                 Toast.makeText(applicationContext, "Любимчики", Toast.LENGTH_SHORT).show()
             }
-
             R.id.mapFr -> {
 
                 navController.navigate(R.id.mapsFragment)
                 closeDrawer()
             }
-
             R.id.auth -> {
                 viewModel.signUpIn(0)
                 navController.navigate(R.id.loginFragment)

@@ -2,7 +2,7 @@ package com.dzenis_ska.findyourdog.LocalModel
 
 
 import androidx.room.*
-import com.dzenis_ska.findyourdog.RemoteModel.DogBreeds
+import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
 
 @Dao
 interface DogDao {

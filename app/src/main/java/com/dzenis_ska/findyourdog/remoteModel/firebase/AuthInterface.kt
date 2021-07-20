@@ -1,4 +1,4 @@
-package com.dzenis_ska.findyourdog.RemoteModel.firebase
+package com.dzenis_ska.findyourdog.remoteModel.firebase
 
 interface AuthInterface {
     fun uiReplacePassword()

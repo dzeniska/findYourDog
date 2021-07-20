@@ -30,7 +30,6 @@ object ImagePicker {
 //            .setVideoDurationLimitinSeconds(30) //Duration for video recording
             .setScreenOrientation(Options.SCREEN_ORIENTATION_PORTRAIT) //Orientaion
             .setPath("/pix/images") //Custom Path For media Storage
-
         return options
 //        Pix.start(this@MainActivity, options)
     }

@@ -1,4 +1,4 @@
-package com.dzenis_ska.findyourdog.RemoteModel
+package com.dzenis_ska.findyourdog.remoteModel
 
 
 import android.util.Log

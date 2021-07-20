@@ -60,5 +60,13 @@
     <string name="email_reset_password_was_not_send">Сheck the correctness of your Email!</string>
     <string name="fill_the_email">Fill the Email!</string>
 
+    <!-- Add Shelter fragment-->
+    <string name="name_shelter">Название</string>
+    <string name="tel_num_shelter">Номер телефона</string>
+    <string name="description">Описание</string>
+
+    <!-- Maps fragment-->
+    <string name="state_badge_label">State badge</string>
+
 
 </resources>
