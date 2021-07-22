@@ -53,9 +53,11 @@
 
 
     <!-- Login fragment-->
-    <string name="auth_ic">Зарегистрируйтесь</string>
+    <string name="auth_ic">Войдите или \n
+        Зарегистрируйтесь</string>
     <string name="entrance_ic">Войдите</string>
-    <string name="forgot_password">Забыли пороль</string>
+    <string name="exit_ic">Выход</string>
+    <string name="forgot_password">Забыли пороль?</string>
     <string name="email_reset_password_was_send">Check Your Email!</string>
     <string name="email_reset_password_was_not_send">Сheck the correctness of your Email!</string>
     <string name="fill_the_email">Fill the Email!</string>

@@ -22,6 +22,8 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.FragmentMapsBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
@@ -36,10 +38,11 @@ import kotlin.random.Random
 
 class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMyLocationButtonClickListener,
-    GoogleMap.OnMyLocationClickListener {
+    GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener {
 
     val viewModel: BreedViewModel by activityViewModels()
     var rootElement: FragmentMapsBinding? = null
+    lateinit var navController: NavController
     private var permissionDenied = false
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
@@ -67,14 +70,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!", "onViewCreated")
+        navController = findNavController()
         mapFragment = childFragmentManager.findFragmentById(R.id.mapFr) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
 
-        viewModel.liveAdsDataAllShelter.observe(this,{list ->
-            Log.d("!!!", "${list.size}")
+        viewModel.liveAdsDataAllShelter.observe(viewLifecycleOwner,{list ->
+            Log.d("!!!!", "${list.size}")
             val list1 = list
             if (::mMap.isInitialized) {
                 getAllMarkers(list1)
@@ -97,7 +101,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     if(location != null) {
                         Log.d("!!!loc", "${location.longitude} ${location.latitude}")
                         Toast.makeText(context, "Find your last location!", Toast.LENGTH_LONG).show()
-                        setMarker(location.latitude, location.longitude, 10f)
+                        setMarker(location.latitude, location.longitude, 5f)
                         lastLat = location.latitude
                         lastLng = location.longitude
                         // Got last known location. In some rare situations this can be null.
@@ -117,11 +121,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mMap.setOnMyLocationButtonClickListener(this)
         mMap.setOnMyLocationClickListener(this)
         mMap.setInfoWindowAdapter(CustomInfoWindowAdapter())
+        mMap.setOnInfoWindowClickListener(this)
         getPermission()
 //        val sydney = LatLng(42.276871, 18.831676)
 ////        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
 //        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
+
 
     /** Demonstrates customizing the info window and/or its contents.  */
     internal inner class CustomInfoWindowAdapter : GoogleMap.InfoWindowAdapter {
@@ -223,7 +229,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         Log.d("!!!", "onLocationChanged")
         lat = location.latitude
         lng = location.longitude
-        setMarker(lat, lng, 17f)
+        setMarker(lat, lng, 10f)
         if(lat != lastLat && lng != lastLng) {
             locationManager.removeUpdates(this)
             viewModel.locationManagerBool = false
@@ -232,8 +238,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun getAllMarkers(list: List<AdShelter>){
-
-//        val bitmap = BitmapFactory.decodeResource(resources, R.drawable.paw_blue)
         for(item in list){
             val target = LatLng(item.lat!!.toDouble(), item.lng!!.toDouble())
             val marker = mMap.addMarker(
@@ -246,7 +250,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             )
             marker!!.tag = item.key
         }
-
+    }
+    override fun onInfoWindowClick(markerInfo: Marker) {
+        for(info in viewModel.listShelter){
+            if(info.key == markerInfo.tag){
+                viewModel.openFragShelter(info)
+                navController.navigate(R.id.addShelterFragment)
+                Toast.makeText(context as MainActivity, "${info.key}", Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     private fun setMarker(lat: Double, lng: Double, zoom: Float) {
@@ -255,22 +267,21 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         addCircle?.remove()
         val circleOptions = CircleOptions()
             .center(LatLng(lat, lng))
-            .radius(50.0)
+            .radius(350.0)
             .fillColor(resources.getColor(R.color.fill_color))
             .strokeColor(resources.getColor(R.color.main_background))
             .strokeWidth(10f)
 
         addCircle = mMap.addCircle(circleOptions)
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, zoom))
-        marker = mMap.addMarker(
-            MarkerOptions().position(target).title("Marker in Sydney").draggable(
-                false
-            )
-        )
+//        marker = mMap.addMarker(
+//            MarkerOptions().position(target).title("Marker in Sydney").draggable(
+//                false
+//            )
+//        )
         mMap.setOnCameraMoveListener {
-            marker!!.position = mMap.getCameraPosition().target //to center in map
-            target = marker!!.position
-
+//            marker?.position = mMap.getCameraPosition().target //to center in map
+//            target = marker!!.position
 
             //здесь сохраняем данные местоположения
 //            Log.d("!!!target", "target $target")
@@ -339,5 +350,4 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         super.onLowMemory()
         mapFragment?.onLowMemory()
     }
-
 }

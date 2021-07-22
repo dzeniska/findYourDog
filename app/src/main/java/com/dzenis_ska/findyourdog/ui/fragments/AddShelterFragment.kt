@@ -72,6 +72,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var lastLng: Double = 0.0
     var targetLat: Double = 0.0
     var targetLng: Double = 0.0
+    var shLat: Double? = null
+    var shLng: Double? = null
 
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
@@ -107,14 +109,32 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
 
         init()
+        initViewModel()
         initRecyclerView()
         onClick(this)
 
     }
 
+    private fun initViewModel() {
+
+        виёв модель не катит или покатило
+        viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner,{adShelter ->
+            if (adShelter != null) {
+                edTelNum.setText(adShelter.tel)
+                edTelNum.isEnabled = false
+                edDescription.setText(adShelter.description)
+                edDescription.isEnabled = false
+            shLat = (adShelter.lat)!!.toDouble()
+            shLng = (adShelter.lng)!!.toDouble()
+                rootElement!!.fabAddShelter.visibility = View.GONE
+            viewModel.openFragShelter(null)
+//                setMarker((adShelter.lat)!!.toDouble(), (adShelter.lng)!!.toDouble(), 11f)
+            }
+        })
+    }
+
     private fun fillAdShelter(): AdShelter {
         val adShelter: AdShelter
-//        37 13 00
         rootElement.apply {
                 adShelter = AdShelter(
                     "",
@@ -211,8 +231,14 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             fabAddShelter.setOnClickListener() {
                 val adTemp = fillAdShelter()
-                viewModel.publishAdShelter(adTemp)
-                navController.navigate(R.id.mapsFragment)
+                viewModel.publishAdShelter(adTemp, object : BreedViewModel.WritedDataCallback{
+                    override fun writedData() {
+                        navController.popBackStack(R.id.addShelterFragment, true)
+                        navController.navigate(R.id.mapsFragment)
+                    }
+
+                })
+//                navController.navigate(R.id.mapsFragment)
 //                 Log.d("!!!cal", "Selected date: ${dateFormatter.format(calendar.time)} ${selectedDate} ${time} )
             }
             vp2.setOnClickListener {
@@ -279,31 +305,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        when (requestCode) {
-//            PermUtil.REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS -> {
-//                // If request is cancelled, the result arrays are empty.
-//                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                    Toast.makeText(context as MainActivity, "Approvecker", Toast.LENGTH_LONG).show()
-////                    ImagePicker.getOptions()
-//                } else {
-//                    Toast.makeText(
-//                        context as MainActivity,
-//                        "Approve permissions to open Pix ImagePicker",
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                }
-//                return
-//            }
-//        }
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-//    }
-
-
     //    counter++
 //    saveData(counter)
     fun saveData(i: Long) {
@@ -344,7 +345,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d("!!!", "onMapReady")
         mMap = googleMap
-        getPermission()
+        if(shLat != null){
+            setMarker(shLat!!, shLng!!, 11f)
+        }else{
+            getPermission()
+        }
+
         mMap.setOnMyLocationButtonClickListener(this)
         mMap.setOnMyLocationClickListener(this)
     }

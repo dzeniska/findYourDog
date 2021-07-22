@@ -186,12 +186,11 @@
                 <EditText
                     android:id="@+id/edDescription"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="300dp"
                     android:background="@android:drawable/editbox_background"
                     android:ems="10"
                     android:gravity="top|left"
                     android:hint="@string/description"
-
                     android:padding="10dp"
                     android:textColor="@color/back_menu_add_color"
                     android:textColorHint="@color/text_hint_add"

@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 
 class BreedViewModel(val repository: Repository) : ViewModel() {
 
+
     private val scope = CoroutineScope(Dispatchers.IO)
 
     val  imgBreedList = mutableListOf<String>()
@@ -46,21 +47,32 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     val onePhoto: MutableLiveData<ByteArray> by lazy {
         MutableLiveData<ByteArray>()
     }
-    var userUpdate = MutableLiveData<FirebaseUser>()
+    var userUpdate = MutableLiveData<FirebaseUser?>()
 
     var signUpInValue = MutableLiveData<Int>()
 
     val dbManager = DbManager()
     var listShelter = ArrayList<AdShelter>()
+    var shelter: AdShelter? = null
     val liveAdsDataAllShelter = MutableLiveData<ArrayList<AdShelter>>()
+    val liveAdsDataAddShelter = MutableLiveData<AdShelter?>()
 
-    fun publishAdShelter(adTemp: AdShelter) {
 
+
+    fun uiUpdateMain(user: FirebaseUser?) {
+        userUpdate.postValue(user)
+    }
+
+    fun openFragShelter(adShelter: AdShelter?){
+        liveAdsDataAddShelter.value = adShelter
+    }
+
+    fun publishAdShelter(adTemp: AdShelter, writedDataCallback: WritedDataCallback) {
         dbManager.publishAdShelter(adTemp, object: DbManager.WriteDataCallback{
             override fun writeData() {
                 getAllAds()
+                writedDataCallback.writedData()
             }
-
         })
     }
 
@@ -68,6 +80,8 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
         dbManager.getAllAds(object: DbManager.ReadDataCallback{
             override fun readData(list: ArrayList<AdShelter>) {
                 liveAdsDataAllShelter.value = list
+                listShelter.clear()
+                listShelter.addAll(list)
             }
         })
     }
@@ -167,12 +181,8 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
         }
     }
 
-    fun uiUpdateMain(user: FirebaseUser?) {
-        userUpdate.postValue(user!!)
-    }
-
-    fun signUpIn(signUpIn: Int) {
-        signUpInValue.postValue(signUpIn)
+    interface WritedDataCallback {
+        fun writedData()
     }
 
 

@@ -41,16 +41,6 @@
                     android:icon="@drawable/ic_reg"
                     app:actionViewClass="android.widget.TextView"
                     android:title="@string/auth" />
-                <item
-                    android:id="@+id/enter"
-                    android:icon="@drawable/ic_in"
-                    app:actionViewClass="android.widget.TextView"
-                    android:title="@string/entrance" />
-                <item
-                    android:id="@+id/exit"
-                    android:icon="@drawable/ic_out"
-                    app:actionViewClass="android.widget.TextView"
-                    android:title="@string/exit" />
             </menu>
         </item>
 

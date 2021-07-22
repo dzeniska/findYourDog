@@ -188,20 +188,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 closeDrawer()
             }
             R.id.auth -> {
-                viewModel.signUpIn(0)
                 navController.navigate(R.id.loginFragment)
                 closeDrawer()
 //                Toast.makeText(applicationContext, "loginFragment", Toast.LENGTH_LONG).show()
-            }
-            R.id.enter -> {
-                viewModel.signUpIn(1)
-                navController.navigate(R.id.loginFragment)
-                closeDrawer()
-//                Toast.makeText(applicationContext, "loginFragment", Toast.LENGTH_LONG).show()
-            }
-            R.id.exit -> {
-                uiUpdateMain(null)
-                mAuth.signOut()
             }
         }
         return true

@@ -41,7 +41,7 @@ var onePhotoFrag: OnePhotoFragment? = null
 
 
 //    override fun onCreate(savedInstanceState: Bundle?) {
-//        super.onCreate(savedInstanceState)
+//        per.onCreate(savedInstanceState)
 //        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
 //            override fun handleOnBackPressed() {
 //                //in here you can do logic when backPress is clicked

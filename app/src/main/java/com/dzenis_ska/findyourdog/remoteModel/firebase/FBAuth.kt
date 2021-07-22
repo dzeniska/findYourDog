@@ -16,7 +16,7 @@ class FBAuth(private val fragment: Fragment) {
 
     val mAuth = FirebaseAuth.getInstance()
 
-    suspend fun signUpWithEmail(email: String, password: String, context: Context) =  withContext(Dispatchers.IO){
+    /*suspend */fun signUpWithEmail(email: String, password: String, context: Context)/* =  withContext(Dispatchers.IO)*/{
            mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(context, context.resources.getString(R.string.reg_up_is_successful), Toast.LENGTH_SHORT).show()
@@ -31,6 +31,8 @@ class FBAuth(private val fragment: Fragment) {
                         val exception = task.exception as FirebaseAuthUserCollisionException
                         Log.d("!!!erPas", exception.errorCode)
                         if (exception.errorCode == FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE) {
+
+                            signInWithEmail(email, password, context)
                             Toast.makeText(context, FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE, Toast.LENGTH_SHORT).show()
                             Log.d("!!!error", "${FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE}")
 
@@ -53,7 +55,7 @@ class FBAuth(private val fragment: Fragment) {
         }
     }
 
-    suspend fun signInWithEmail(email: String, password: String, context: Context) = withContext(Dispatchers.IO) {
+    /*suspend */fun signInWithEmail(email: String, password: String, context: Context)/* = withContext(Dispatchers.IO)*/ {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {

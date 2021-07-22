@@ -45,13 +45,14 @@
         android:layout_marginBottom="16dp"
         android:clickable="true"
         android:src="@drawable/ic_entrance"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
-        android:id="@+id/inUpImage"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:id="@+id/imgInUp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginTop="50dp"
         android:src="@drawable/ic_reg"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,14 +63,15 @@
         android:id="@+id/tvRegIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="TextView"
         android:textColor="@color/white"
+        android:gravity="center"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/inUpImage"
-        app:layout_constraintStart_toStartOf="@+id/inUpImage"
-        app:layout_constraintTop_toBottomOf="@+id/inUpImage" />
+        app:layout_constraintEnd_toEndOf="@+id/imgInUp"
+        app:layout_constraintStart_toStartOf="@+id/imgInUp"
+        app:layout_constraintTop_toBottomOf="@+id/imgInUp" />
 
     <TextView
         android:id="@+id/tvForgotPas"
@@ -87,7 +89,7 @@
         android:id="@+id/imgButtonForgot"
         android:layout_width="0dp"
         android:layout_height="32dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:background="@drawable/forgot_back"
         android:text="@string/forgot_password"
         android:textColor="@color/white"
@@ -95,6 +97,55 @@
         app:layout_constraintEnd_toEndOf="@+id/edPassword"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/edPassword"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <ImageButton
+        android:id="@+id/imgButtonEnter"
+        android:layout_width="80dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/forgot_back"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_in_white"
+        android:text="@string/forgot_password"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@+id/edPassword"
         app:layout_constraintTop_toBottomOf="@+id/edPassword" />
+
+    <ImageButton
+        android:id="@+id/imgButtonExit"
+        android:layout_width="80dp"
+        android:layout_height="57dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/forgot_back"
+        android:padding="8dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_out"
+        android:text="@string/forgot_password"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/edPassword"
+        app:layout_constraintTop_toBottomOf="@+id/edPassword"
+        app:tint="@color/white" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Вход"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="@+id/imgButtonEnter"
+        app:layout_constraintStart_toStartOf="@+id/imgButtonEnter"
+        app:layout_constraintTop_toBottomOf="@+id/imgButtonEnter" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Выход"
+        android:textColor="#FFFFFF"
+        app:layout_constraintEnd_toEndOf="@+id/imgButtonExit"
+        app:layout_constraintStart_toStartOf="@+id/imgButtonExit"
+        app:layout_constraintTop_toBottomOf="@+id/imgButtonExit" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
