@@ -115,9 +115,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun initViewModel() {
 
-        виёв модель не катит или покатило
+//        виёв модель не катит или покатило
         viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner,{adShelter ->
             if (adShelter != null) {
                 edTelNum.setText(adShelter.tel)
@@ -127,6 +128,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             shLat = (adShelter.lat)!!.toDouble()
             shLng = (adShelter.lng)!!.toDouble()
                 rootElement!!.fabAddShelter.visibility = View.GONE
+                rootElement!!.clMain.background = resources.getDrawable(R.drawable.background_write_fragment)
             viewModel.openFragShelter(null)
 //                setMarker((adShelter.lat)!!.toDouble(), (adShelter.lng)!!.toDouble(), 11f)
             }
