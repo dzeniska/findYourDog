@@ -19,13 +19,14 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.remoteModel.*
-import com.dzenis_ska.findyourdog.remoteModel.firebase.DbManager
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.dzenis_ska.findyourdog.databinding.FragmentAddShelterBinding
@@ -40,10 +41,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_add_shelter.*
-import kotlinx.android.synthetic.main.fragment_maps.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMyLocationButtonClickListener,
@@ -74,6 +75,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var targetLng: Double = 0.0
     var shLat: Double? = null
     var shLng: Double? = null
+    var adShelterToEdit: AdShelter? = null
 
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
@@ -120,19 +122,47 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
 //        виёв модель не катит или покатило
         viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner,{adShelter ->
-            if (adShelter != null) {
-                edTelNum.setText(adShelter.tel)
-                edTelNum.isEnabled = false
-                edDescription.setText(adShelter.description)
-                edDescription.isEnabled = false
-            shLat = (adShelter.lat)!!.toDouble()
-            shLng = (adShelter.lng)!!.toDouble()
-                rootElement!!.fabAddShelter.visibility = View.GONE
-                rootElement!!.clMain.background = resources.getDrawable(R.drawable.background_write_fragment)
-            viewModel.openFragShelter(null)
+            rootElement.apply {
+                if (adShelter != null) {
+                    if(adShelter.uid == viewModel.dbManager.auth.uid){
+                        fillFrag(adShelter, true)
+                        fabDeleteShelter.isVisible = true
+                    }else {
+                        fillFrag(adShelter, false)
+                    }
 //                setMarker((adShelter.lat)!!.toDouble(), (adShelter.lng)!!.toDouble(), 11f)
+                }
             }
         })
+    }
+
+    private fun fillFrag(adShelter: AdShelter, isEnabled: Boolean) {
+        rootElement.apply {
+            imgAddPhoto.setImageDrawable(
+                ContextCompat.getDrawable(
+                    context as MainActivity,
+                    R.drawable.ic_no_one_photo
+                )
+            )
+            edTelNum.setText(adShelter.tel)
+            edTelNum.isEnabled = isEnabled
+            edDescription.setText(adShelter.description)
+            edDescription.isEnabled = isEnabled
+
+
+            if(!isEnabled) {
+                shLat = (adShelter.lat)!!.toDouble()
+                shLng = (adShelter.lng)!!.toDouble()
+                fabAddShelter.visibility = View.GONE
+                clMain.background =
+                    resources.getDrawable(R.drawable.background_write_fragment)
+            }else{
+                Log.d("!!!!", "${adShelter}")
+                adShelterToEdit = adShelter
+            }
+
+            viewModel.openFragShelter(null)
+        }
     }
 
     private fun fillAdShelter(): AdShelter {
@@ -146,7 +176,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     edDescription.text.toString(),
                     "",
                     viewModel.dbManager.db.push().key,
-                    viewModel.dbManager.auth.uid
+                    viewModel.dbManager.auth.uid,
+                    (Random.nextInt(0,  360)).toFloat()
                 )
             }
         return adShelter
@@ -193,14 +224,16 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 false
             )
         )
-        mMap.setOnCameraMoveListener {
-            marker!!.position = mMap.getCameraPosition().target //to center in map
-            target = marker.position
+        if(zoom != 11f) {
+            mMap.setOnCameraMoveListener {
+                marker!!.position = mMap.cameraPosition.target //to center in map
+                target = marker.position
 
-            //здесь сохраняем данные местоположения
-            targetLat = target.latitude
-            targetLng = target.longitude
+                //здесь сохраняем данные местоположения
+                targetLat = target.latitude
+                targetLng = target.longitude
 //            Log.d("!!!target", "target $target")
+            }
         }
     }
 
@@ -231,15 +264,35 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 fullScreen(250, 0.50f)
                 ImagePicker.launcher(context, addShelterFragment, launcherReplaceSelectedImage, 1)
             }
-            fabAddShelter.setOnClickListener() {
-                val adTemp = fillAdShelter()
-                viewModel.publishAdShelter(adTemp, object : BreedViewModel.WritedDataCallback{
+            
+            fabDeleteShelter.setOnClickListener { 
+                viewModel.deleteAdShelter(adShelterToEdit, object : BreedViewModel.WritedDataCallback{
                     override fun writedData() {
                         navController.popBackStack(R.id.addShelterFragment, true)
                         navController.navigate(R.id.mapsFragment)
+
                     }
 
                 })
+            }
+            
+            fabAddShelter.setOnClickListener() {
+                val adTemp = fillAdShelter()
+                if(adTemp.uid == viewModel.dbManager.auth.uid){
+                    viewModel.publishAdShelter(adTemp.copy(key = adShelterToEdit?.key, markerColor = adShelterToEdit?.markerColor ), object : BreedViewModel.WritedDataCallback{
+                        override fun writedData() {
+                            navController.popBackStack(R.id.addShelterFragment, true)
+                            navController.navigate(R.id.mapsFragment)
+                        }
+                    })
+                }else {
+                    viewModel.publishAdShelter(adTemp, object : BreedViewModel.WritedDataCallback {
+                        override fun writedData() {
+                            navController.popBackStack(R.id.addShelterFragment, true)
+                            navController.navigate(R.id.mapsFragment)
+                        }
+                    })
+                }
 //                navController.navigate(R.id.mapsFragment)
 //                 Log.d("!!!cal", "Selected date: ${dateFormatter.format(calendar.time)} ${selectedDate} ${time} )
             }

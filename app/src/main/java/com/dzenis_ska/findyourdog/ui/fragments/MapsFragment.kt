@@ -78,9 +78,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
 
         viewModel.liveAdsDataAllShelter.observe(viewLifecycleOwner,{list ->
-            Log.d("!!!!", "${list.size}")
+
             val list1 = list
             if (::mMap.isInitialized) {
+
                 getAllMarkers(list1)
             }
         })
@@ -101,7 +102,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     if(location != null) {
                         Log.d("!!!loc", "${location.longitude} ${location.latitude}")
                         Toast.makeText(context, "Find your last location!", Toast.LENGTH_LONG).show()
-                        setMarker(location.latitude, location.longitude, 5f)
+                        setMarker(location.latitude, location.longitude, 6f)
                         lastLat = location.latitude
                         lastLng = location.longitude
                         // Got last known location. In some rare situations this can be null.
@@ -167,10 +168,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
             val snippet: String? = marker.snippet
             val snippetUi = view.findViewById<TextView>(R.id.snippet)
-            if (snippet != null && snippet.length > 2) {
+            if (snippet != null && snippet.length > 0) {
                 snippetUi.text = SpannableString(snippet).apply {
                     setSpan(ForegroundColorSpan(Color.MAGENTA), 0, 1, 0)
-                    setSpan(ForegroundColorSpan(Color.BLUE), 1, snippet.length, 0)
+//                    setSpan(ForegroundColorSpan(Color.BLUE), 1, snippet.length, 0)
                 }
             } else {
                 snippetUi.text = ""
@@ -238,17 +239,24 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun getAllMarkers(list: List<AdShelter>){
+        mMap.clear()
         for(item in list){
             val target = LatLng(item.lat!!.toDouble(), item.lng!!.toDouble())
             val marker = mMap.addMarker(
                 MarkerOptions().position(target)
-                    .icon(BitmapDescriptorFactory.defaultMarker((Random.nextInt(0,  360)).toFloat()))
+                    .icon(BitmapDescriptorFactory.defaultMarker(item.markerColor?:15f))
                     .title("${item.tel}")
-                    .snippet(item.description)
+                    .snippet(item.viewsCounter)
                     .draggable(false)
+
 //                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.paw_mark))
             )
+
             marker!!.tag = item.key
+            if(item.uid == viewModel.dbManager.auth.uid) {
+                marker.showInfoWindow()
+                marker.alpha = 0.6f
+            }
         }
     }
     override fun onInfoWindowClick(markerInfo: Marker) {

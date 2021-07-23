@@ -1,6 +1,7 @@
 package com.dzenis_ska.findyourdog.viewModel
 
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
@@ -65,6 +66,35 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
 
     fun openFragShelter(adShelter: AdShelter?){
         liveAdsDataAddShelter.value = adShelter
+        adShelter?.let { adViewed(it) }
+    }
+
+    fun deleteAdShelter(adShelter: AdShelter?, writedDataCallback: WritedDataCallback){
+        dbManager.deleteAdShelter(adShelter, object : DbManager.FinishWorkListener{
+            override fun onFinish() {
+                val updateList = liveAdsDataAllShelter.value
+                updateList?.remove(adShelter)
+                liveAdsDataAllShelter.postValue(updateList!!)
+                writedDataCallback.writedData()
+            }
+
+        })
+    }
+
+    private fun adViewed(adShelter: AdShelter){
+        dbManager.adViewed(adShelter, object : DbManager.FinishWorkListener{
+            override fun onFinish() {
+                val updatedList = liveAdsDataAllShelter.value
+                val pos = updatedList?.indexOf(adShelter)
+                if(pos != -1) {
+                    pos?.let{
+                        val viewCounter = adShelter.viewsCounter.toInt() + 1
+                        updatedList[pos] = updatedList[pos].copy(viewsCounter = viewCounter.toString())
+                    }
+                }
+                liveAdsDataAllShelter.value = updatedList!!
+            }
+        })
     }
 
     fun publishAdShelter(adTemp: AdShelter, writedDataCallback: WritedDataCallback) {
@@ -79,7 +109,8 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     fun getAllAds(){
         dbManager.getAllAds(object: DbManager.ReadDataCallback{
             override fun readData(list: ArrayList<AdShelter>) {
-                liveAdsDataAllShelter.value = list
+
+                liveAdsDataAllShelter.setValue(list)
                 listShelter.clear()
                 listShelter.addAll(list)
             }

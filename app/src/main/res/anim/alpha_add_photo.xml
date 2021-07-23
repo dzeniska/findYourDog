@@ -4,8 +4,9 @@
     <alpha
         android:fromAlpha="1.0"
         android:toAlpha="0.0"
-        android:duration="1500"
         android:repeatMode="reverse"
+        android:repeatCount="1"
+        android:duration="2250"
         />
 
 </set>
