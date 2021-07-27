@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.FragmentLoginBinding
@@ -19,6 +20,8 @@ import com.dzenis_ska.findyourdog.remoteModel.firebase.AuthInterface
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.android.synthetic.main.fragment_login.*
 
@@ -28,6 +31,7 @@ class LoginFragment() : Fragment(), AuthInterface {
     val viewModel: BreedViewModel by activityViewModels()
     var rootElement: FragmentLoginBinding? = null
     private val fbAuth = FBAuth(this)
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -46,16 +50,21 @@ class LoginFragment() : Fragment(), AuthInterface {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.userUpdate.observe(viewLifecycleOwner, {
-            currentUser(fbAuth.mAuth.currentUser)
-//            uiUpdateMain(it)
-//            Log.d("!!!", "$it")
-        })
-
         init()
-        currentUser(fbAuth.mAuth.currentUser)
         onClick()
 
+    }
+
+    fun showElements(bool: Boolean){
+        rootElement.apply{
+            if (bool) {
+                imgButtonEnter.visibility = View.VISIBLE
+                tvEnter.visibility = View.VISIBLE
+            } else {
+                imgButtonEnter.visibility = View.GONE
+                tvEnter.visibility = View.GONE
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -63,13 +72,28 @@ class LoginFragment() : Fragment(), AuthInterface {
 
         rootElement.apply {
             if (currentUser == null) {
-                tvRegIn.text = resources.getString(R.string.auth_ic)
-                uiUpdateMain(currentUser)
-            } else {
-                uiUpdateMain(currentUser)
+                fbAuth.signInAnonimously(context as MainActivity, object : FBAuth.Listener {
+                    override fun onComplete() {
+                        tvRegIn.text = "Вы вошли как Гость"
+                        Log.d("!!!userLFonComplete", "${currentUser?.uid}")
+
+                    }
+                })
+            } else if (currentUser.isAnonymous) {
+                Log.d("!!!userLFisAnonimous", "${currentUser?.uid}")
+                tvRegIn.text = "Привет, Незнакомец!)"
+
+
+
+            } else if (!currentUser.isAnonymous) {
+                tvForgotPas.visibility = View.GONE
+                imgButtonForgot.visibility = View.GONE
+                Log.d("!!!userLFisNoAnonimous", "${currentUser?.uid}")
                 tvRegIn.text = """Привет
                     |${currentUser.email}
                 """.trimMargin()
+                showElements(false)
+
             }
         }
     }
@@ -81,8 +105,12 @@ class LoginFragment() : Fragment(), AuthInterface {
         imgButtonEnter.setOnClickListener(enterEmailAndPassword(fbAuth))
 
         imgButtonExit.setOnClickListener {
-            fbAuth.mAuth.signOut()
-            currentUser(null)
+            if (fbAuth.mAuth.currentUser?.email != null) {
+                fbAuth.mAuth.signOut()
+                tvForgotPas.visibility = View.GONE
+                imgButtonForgot.visibility = View.GONE
+                currentUser(null)
+            }
         }
 
         imgButtonForgot.setOnClickListener() {
@@ -92,7 +120,6 @@ class LoginFragment() : Fragment(), AuthInterface {
 
 
     private fun init() = with(rootElement) {
-
         edEmail.apply {
             afterTextChanged {
                 if (it.length > 1) {
@@ -125,6 +152,7 @@ class LoginFragment() : Fragment(), AuthInterface {
 
     fun uiUpdateMain(user: FirebaseUser?) {
         viewModel.uiUpdateMain(user)
+        currentUser(user)
     }
 
     override fun uiReplacePassword() {

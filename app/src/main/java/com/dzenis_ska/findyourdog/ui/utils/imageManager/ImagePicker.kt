@@ -1,56 +1,63 @@
 package com.dzenis_ska.findyourdog.ui.utils.imageManager
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
-import android.widget.Toast
+import android.util.Log
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import com.dzenis_ska.findyourdog.R
+import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.AddShelterFragment
-import com.fxn.pix.Options
-import com.fxn.pix.Pix
-import com.fxn.utility.PermUtil
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import io.ak1.pix.helpers.PixEventCallback
+import io.ak1.pix.helpers.addPixToActivity
+import io.ak1.pix.models.Mode
+import io.ak1.pix.models.Options
+import io.ak1.pix.models.Ratio
 
 object ImagePicker {
 
 
     fun getOptions(imageCount: Int): Options {
-        val options = Options.init()
-//            .setRequestCode(100) //Request code for activity results
-            .setCount(imageCount) //Number of images to restict selection count
-            .setFrontfacing(false) //Front Facing camera on start
-//            .setPreSelectedUrls(returnValue) //Pre selected Image Urls
-//            .setSpanCount(4) //Span count for gallery min 1 & max 5
-            .setMode(Options.Mode.Picture) //Option to select only pictures or videos or both
-//            .setVideoDurationLimitinSeconds(30) //Duration for video recording
-            .setScreenOrientation(Options.SCREEN_ORIENTATION_PORTRAIT) //Orientaion
-            .setPath("/pix/images") //Custom Path For media Storage
+        val options = Options().apply(){
+            ratio = Ratio.RATIO_AUTO
+            count = imageCount
+            isFrontFacing = false
+            mode = Mode.Picture
+            path = "/pix/images"
+        }
         return options
-//        Pix.start(this@MainActivity, options)
     }
 
     fun launcher(
-        context: Context?,
-        addSF: AddShelterFragment,
-        launcher: ActivityResultLauncher<Intent>?,
-        imageCount: Int,
+        mAct: MainActivity,
+        addShelterFragment: AddShelterFragment,
+        launcherMultiSelectImage: ActivityResultLauncher<Intent>?,
+        imageCount: Int
     ) {
-        PermUtil.checkForCamaraWritePermissions(addSF) {
-            val intent = Intent(context, Pix::class.java).apply {
-                putExtra("options", getOptions(imageCount))
+        mAct.addPixToActivity(R.id.clMain, getOptions(imageCount)) { result->
+            when (result.status) {
+                PixEventCallback.Status.SUCCESS -> {
+                    closePixFragment(mAct)
+                }
+                PixEventCallback.Status.BACK_PRESSED ->{
+                    Log.d("!!!PixBackPressed", "Pix")
+                }
             }
-            launcher?.launch(intent)
+        }
+    }
+    private fun closePixFragment(mAct: MainActivity) {
+        val fList = mAct.supportFragmentManager.fragments
+        fList.forEach { frag ->
+            if(frag.toString().startsWith("PixFragment")) {
+                mAct.supportFragmentManager.beginTransaction().remove(frag).commit()
+                mAct.navController.navigate(R.id.addShelterFragment)
+            }
         }
     }
 
     fun getLauncherForMultiSelectImages(addSF: AddShelterFragment): ActivityResultLauncher<Intent> {
         return addSF.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
+            /*if (result.resultCode == Activity.RESULT_OK) {
                 if (result.data != null) {
                     val returnValues = result.data?.getStringArrayListExtra(Pix.IMAGE_RESULTS)
                     if (returnValues?.size!! == 0) {
@@ -63,12 +70,12 @@ object ImagePicker {
                         }
                     }
                 }
-            }
+            }*/
         }
     }
     fun getLauncherForSingleSelectImages(addSF: AddShelterFragment): ActivityResultLauncher<Intent> {
         return addSF.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
+            /*if (result.resultCode == Activity.RESULT_OK) {
                 if (result.data != null) {
                     val returnValues = result.data?.getStringArrayListExtra(Pix.IMAGE_RESULTS)
                     if (returnValues?.size!! == 0) {
@@ -81,13 +88,13 @@ object ImagePicker {
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 
     fun getLauncherForReplaceSelectedImage(addSF: AddShelterFragment): ActivityResultLauncher<Intent>? {
         return addSF.registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
+           /* if (result.resultCode == Activity.RESULT_OK) {
                 if (result.data != null) {
                     val returnValues = result.data?.getStringArrayListExtra(Pix.IMAGE_RESULTS)
 
@@ -98,7 +105,7 @@ object ImagePicker {
                     }
 
                 }
-            }
+            }*/
         }
     }
 }

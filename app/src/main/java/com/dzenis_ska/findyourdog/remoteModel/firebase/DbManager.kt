@@ -1,6 +1,7 @@
 package com.dzenis_ska.findyourdog.remoteModel.firebase
 
 
+import android.util.Log
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -37,6 +38,8 @@ class DbManager() {
     fun adViewed(adShelter: AdShelter, listener: FinishWorkListener) {
         var counter = adShelter.viewsCounter.toInt()
         counter++
+        Log.d("!!!views", "${auth.uid}")
+//        сделать не нулл
         if (auth.uid != null)
             db.child(adShelter.key ?: "empty").child(INFO_NODE)
                 .setValue(InfoItem(counter.toString()))

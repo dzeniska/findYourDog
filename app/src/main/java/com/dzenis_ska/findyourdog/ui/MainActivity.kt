@@ -2,6 +2,7 @@ package com.dzenis_ska.findyourdog.ui
 
 import android.Manifest
 import android.content.Context
+
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
@@ -9,9 +10,11 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.app.ActivityCompat
@@ -20,16 +23,16 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuItemCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.dzenis_ska.findyourdog.R
-import com.dzenis_ska.findyourdog.ui.fragments.DogsListFragment
+import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
+import com.dzenis_ska.findyourdog.ui.fragments.LoginFragment
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModelFactory
 import com.google.android.material.navigation.NavigationView
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
@@ -46,12 +49,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private lateinit var tvHeaderAcc: TextView
     lateinit var navController: NavController
     lateinit var mSlideshowTextView: TextView
-//    private var optionsList: Map<String, List<String>> = mapOf()
-    val mAuth = FirebaseAuth.getInstance()
+
+    //    private var optionsList: Map<String, List<String>> = mapOf()
+    val fragment = LoginFragment()
+    val fbAuth = FBAuth(fragment)
 
     @Inject
     lateinit var factory: BreedViewModelFactory
-    private val viewModel: BreedViewModel by viewModels{
+    private val viewModel: BreedViewModel by viewModels {
         factory
     }
 
@@ -68,27 +73,26 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         openCloseDrawer()
 
-        viewModel.userUpdate.observe(this, Observer{
+        viewModel.userUpdate.observe(this, Observer {
             uiUpdateMain(it)
 //            Log.d("!!!", "$it")
         })
-
-
     }
-    fun uiUpdateMain(user: FirebaseUser?) {
-//        Log.d("!!!", user.toString())
-        tvHeaderAcc.text = if (user == null) {
-            resources.getString(R.string.not_reg)
-//            resources.getString(R.string.hello)
-        } else {
-            """Рады видеть Вас
-                |${user.email}
+
+    private fun uiUpdateMain(user: FirebaseUser?) {
+        if(user?.email != null) {
+            tvHeaderAcc.text = """Рады видеть Вас
+                |${user?.email}
             """.trimMargin()
+        }else{
+            tvHeaderAcc.text = "Рады видеть Вас"
         }
+
     }
+
     override fun onResume() {
         super.onResume()
-        uiUpdateMain(mAuth.currentUser)
+        uiUpdateMain(fbAuth.mAuth.currentUser)
     }
 
     private fun openCloseDrawer() {
@@ -112,7 +116,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun init() {
-
 
 
 //        val remoteModel = RemoteModel()
@@ -196,7 +199,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    private fun closeDrawer(){
+    private fun closeDrawer() {
         drawerLayout.closeDrawer(GravityCompat.START)
     }
 
@@ -205,29 +208,42 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val cManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
 //getNetworkCapabilities -
         val info = cManager.getNetworkCapabilities(cManager.activeNetwork)
-        if (info == null){
+        if (info == null) {
             Toast.makeText(this, "NO Network!!!", Toast.LENGTH_LONG).show()
-        }
-        else if(info.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || info.hasTransport(
-                NetworkCapabilities.TRANSPORT_WIFI)) {
+        } else if (info.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || info.hasTransport(
+                NetworkCapabilities.TRANSPORT_WIFI
+            )
+        ) {
             Toast.makeText(this, "Network available", Toast.LENGTH_LONG).show()
         } else {
             Toast.makeText(this, "NO Network!!!", Toast.LENGTH_LONG).show()
         }
     }
 
-    private fun getPermission(){
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), locationPermissionCode)
+    private fun getPermission() {
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                locationPermissionCode
+            )
         }
     }
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if(requestCode == locationPermissionCode){
+        if (requestCode == locationPermissionCode) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
-            }
-            else {
+            } else {
                 Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
             }
         }

@@ -40,6 +40,8 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.tabs.TabLayoutMediator
+import io.ak1.pix.helpers.PixBus
+import io.ak1.pix.helpers.PixEventCallback
 import kotlinx.android.synthetic.main.fragment_add_shelter.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -76,10 +78,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var shLat: Double? = null
     var shLng: Double? = null
     var adShelterToEdit: AdShelter? = null
+    var boolEditOrNew: Boolean? = false
 
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
-//    private lateinit var mMap: GoogleMap
 
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -126,6 +128,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 if (adShelter != null) {
                     if(adShelter.uid == viewModel.dbManager.auth.uid){
                         fillFrag(adShelter, true)
+                        boolEditOrNew = true
                         fabDeleteShelter.isVisible = true
                     }else {
                         fillFrag(adShelter, false)
@@ -242,12 +245,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             imgAddPhoto.setOnClickListener() {
                 fullScreen(250, 0.50f)
                 imgAddPhoto.alpha = 0.8f
-                ImagePicker.launcher(context, addShelterFragment, launcherMultiSelectImage, 5)
+                ImagePicker.launcher(activity as MainActivity, addShelterFragment, launcherMultiSelectImage, 5)
             }
             fabAddImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
                 ImagePicker.launcher(
-                    context,
+                    activity as MainActivity,
                     addShelterFragment,
                     launcherSingleSelectImage,
                     5 - vpAdapter.arrayPhoto.size
@@ -262,7 +265,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             fabReplaceImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
-                ImagePicker.launcher(context, addShelterFragment, launcherReplaceSelectedImage, 1)
+                ImagePicker.launcher(
+                    activity as MainActivity,
+                    addShelterFragment,
+                    launcherReplaceSelectedImage,
+                    1
+                )
             }
             
             fabDeleteShelter.setOnClickListener { 
@@ -278,7 +286,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             
             fabAddShelter.setOnClickListener() {
                 val adTemp = fillAdShelter()
-                if(adTemp.uid == viewModel.dbManager.auth.uid){
+                if(boolEditOrNew == true){
+                    Log.d("!!!uid", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
+
                     viewModel.publishAdShelter(adTemp.copy(key = adShelterToEdit?.key, markerColor = adShelterToEdit?.markerColor ), object : BreedViewModel.WritedDataCallback{
                         override fun writedData() {
                             navController.popBackStack(R.id.addShelterFragment, true)
@@ -286,6 +296,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         }
                     })
                 }else {
+                    Log.d("!!!uid", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
                     viewModel.publishAdShelter(adTemp, object : BreedViewModel.WritedDataCallback {
                         override fun writedData() {
                             navController.popBackStack(R.id.addShelterFragment, true)
@@ -368,8 +379,11 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         edit?.apply()
     }
 
+
+
     override fun onResume() {
         super.onResume()
+        Log.d("!!!", "onResume")
         pref = this.activity?.getSharedPreferences("FUCK", 0)
         counter = pref?.getLong("counter", 5000)!!
         mapView.onResume()
@@ -474,24 +488,24 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode != AddShelterFragment.LOCATION_PERMISSION_REQUEST_CODE_1) {
-            return
-        }
-        if (requestCode == locationPermissionCode) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(activity as MainActivity, "Permission Granted", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                Toast.makeText(activity as MainActivity, "Permission Denied", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
-    }
+//    override fun onRequestPermissionsResult(
+//        requestCode: Int,
+//        permissions: Array<out String>,
+//        grantResults: IntArray
+//    ) {
+//        if (requestCode != AddShelterFragment.LOCATION_PERMISSION_REQUEST_CODE_1) {
+//            return
+//        }
+//        if (requestCode == locationPermissionCode) {
+//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                Toast.makeText(activity as MainActivity, "Permission Granted", Toast.LENGTH_SHORT)
+//                    .show()
+//            } else {
+//                Toast.makeText(activity as MainActivity, "Permission Denied", Toast.LENGTH_SHORT)
+//                    .show()
+//            }
+//        }
+//    }
 
 
 }

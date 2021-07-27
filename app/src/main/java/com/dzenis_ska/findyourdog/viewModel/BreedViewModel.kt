@@ -86,6 +86,7 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
             override fun onFinish() {
                 val updatedList = liveAdsDataAllShelter.value
                 val pos = updatedList?.indexOf(adShelter)
+                Log.d("!!!views", "$pos")
                 if(pos != -1) {
                     pos?.let{
                         val viewCounter = adShelter.viewsCounter.toInt() + 1

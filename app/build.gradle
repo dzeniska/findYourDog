@@ -85,7 +85,7 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
-    implementation  'com.fxn769:pix:1.5.6'
+    implementation  'io.ak1.pix:piximagepicker:1.6.2'
 
 }
 //kapt {
