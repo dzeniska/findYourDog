@@ -24,15 +24,29 @@
         android:id="@+id/floatBtnGPS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
-        android:layout_marginBottom="24dp"
-        android:clickable="true"
-        android:visibility="gone"
+        android:layout_marginBottom="108dp"
         android:backgroundTint="@color/main_background"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
         map:layout_constraintBottom_toBottomOf="parent"
-        map:layout_constraintEnd_toEndOf="parent"
-        map:srcCompat="@drawable/ic_baseline_gps_fixed_24"
-        android:focusable="true" />
+        android:layout_marginStart="18dp"
+        map:layout_constraintStart_toStartOf="parent"
+        map:srcCompat="@drawable/ic_baseline_gps_fixed_24" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatBtnAddShelter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="36dp"
+        android:backgroundTint="@color/main_background"
+        android:clickable="true"
+        android:focusable="true"
+        map:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginStart="18dp"
+        android:visibility="gone"
+        map:layout_constraintStart_toStartOf="parent"
+        map:srcCompat="@android:drawable/ic_input_add" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

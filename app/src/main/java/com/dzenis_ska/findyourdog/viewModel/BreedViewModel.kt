@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class BreedViewModel(val repository: Repository) : ViewModel() {
@@ -98,6 +99,16 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
         })
     }
 
+    suspend fun publishPhoto(adTemp: ArrayList<ByteArray>, adShelter: AdShelter, writedDataCallback: WritedDataCallback) = withContext(Dispatchers.IO) {
+        dbManager.addPhotoToStorage(adTemp, adShelter/* object: DbManager.WriteDataCallback{
+            override fun writeData() {
+//                getAllAds()
+                writedDataCallback.writedData()
+            }
+        }*/){
+
+        }
+    }
     fun publishAdShelter(adTemp: AdShelter, writedDataCallback: WritedDataCallback) {
         dbManager.publishAdShelter(adTemp, object: DbManager.WriteDataCallback{
             override fun writeData() {
@@ -123,7 +134,7 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     //одного фото запрос
     fun getOnePhoto(url: String) {
         scope.launch {
-            repository.getOnePhoto(url)
+//            repository.getOnePhoto(url)
             onePhoto.postValue(repository.getOnePhoto(url))
         }
     }

@@ -3,9 +3,9 @@ package com.dzenis_ska.findyourdog.ui.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -16,7 +16,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -32,6 +31,7 @@ import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.dzenis_ska.findyourdog.databinding.FragmentAddShelterBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.VpAdapter
+import com.dzenis_ska.findyourdog.ui.utils.imageManager.ImageManager
 import com.dzenis_ska.findyourdog.ui.utils.imageManager.ImagePicker
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -40,12 +40,12 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.tabs.TabLayoutMediator
-import io.ak1.pix.helpers.PixBus
-import io.ak1.pix.helpers.PixEventCallback
 import kotlinx.android.synthetic.main.fragment_add_shelter.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.io.ByteArrayOutputStream
 import kotlin.random.Random
 
 class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
@@ -80,20 +80,22 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var adShelterToEdit: AdShelter? = null
     var boolEditOrNew: Boolean? = false
 
+    var job: Job? = null
+
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
 
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    var launcherMultiSelectImage: ActivityResultLauncher<Intent>? = null
-    var launcherSingleSelectImage: ActivityResultLauncher<Intent>? = null
-    var launcherReplaceSelectedImage: ActivityResultLauncher<Intent>? = null
+//    var launcherMultiSelectImage: ActivityResultLauncher<Intent>? = null
+//    var launcherSingleSelectImage: ActivityResultLauncher<Intent>? = null
+//    var launcherReplaceSelectedImage: ActivityResultLauncher<Intent>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         rootElement = FragmentAddShelterBinding.inflate(inflater)
         return rootElement!!.root
     }
@@ -117,6 +119,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         initRecyclerView()
         onClick(this)
 
+    }
+    fun hideAddShelterButton(bool:Boolean){
+        rootElement!!.fabAddShelter.visibility = if(!bool)  View.GONE else View.VISIBLE
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -152,7 +157,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             edDescription.setText(adShelter.description)
             edDescription.isEnabled = isEnabled
 
-
             if(!isEnabled) {
                 shLat = (adShelter.lat)!!.toDouble()
                 shLng = (adShelter.lng)!!.toDouble()
@@ -163,7 +167,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 Log.d("!!!!", "${adShelter}")
                 adShelterToEdit = adShelter
             }
-
             viewModel.openFragShelter(null)
         }
     }
@@ -245,15 +248,17 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             imgAddPhoto.setOnClickListener() {
                 fullScreen(250, 0.50f)
                 imgAddPhoto.alpha = 0.8f
-                ImagePicker.launcher(activity as MainActivity, addShelterFragment, launcherMultiSelectImage, 5)
+                hideAddShelterButton(false)
+                ImagePicker.choosePhotoes(activity as MainActivity, addShelterFragment, 5, ADD_PHOTO)
             }
             fabAddImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
-                ImagePicker.launcher(
+                hideAddShelterButton(false)
+                ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
-                    launcherSingleSelectImage,
-                    5 - vpAdapter.arrayPhoto.size
+                    5 - vpAdapter.arrayPhoto.size,
+                    ADD_IMAGE
                 )
             }
             fabDeleteImage.setOnClickListener() {
@@ -265,11 +270,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             fabReplaceImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
-                ImagePicker.launcher(
+                hideAddShelterButton(false)
+                ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
-                    launcherReplaceSelectedImage,
-                    1
+                    1,
+                    REPLACE_IMAGE
                 )
             }
             
@@ -285,7 +291,21 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             
             fabAddShelter.setOnClickListener() {
-                val adTemp = fillAdShelter()
+                job = CoroutineScope(Dispatchers.Main).launch {
+                    val list = ImageManager.imageResize( vpAdapter.arrayPhoto, activity as MainActivity)
+                    Log.d("!!!resize","${list}")
+                    val adShelter = fillAdShelter()
+                    val byteArray = prepareImageBiteArray(list[0])
+                    viewModel.publishPhoto(byteArray, adShelter, object : BreedViewModel.WritedDataCallback{
+                        override fun writedData() {
+                            Log.d("susses", "susses")
+                        }
+                    })
+                }
+
+
+
+                /*val adTemp = fillAdShelter()
                 if(boolEditOrNew == true){
                     Log.d("!!!uid", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
 
@@ -303,9 +323,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                             navController.navigate(R.id.mapsFragment)
                         }
                     })
-                }
-//                navController.navigate(R.id.mapsFragment)
-//                 Log.d("!!!cal", "Selected date: ${dateFormatter.format(calendar.time)} ${selectedDate} ${time} )
+                }*/
             }
             vp2.setOnClickListener {
                 fullScreen(250, 0.50f)
@@ -319,6 +337,13 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 ibGetLocation.visibility = View.GONE
             }
         }
+    }
+    private fun prepareImageBiteArray(bitMap: Bitmap): ArrayList<ByteArray>{
+        val outStream = ByteArrayOutputStream()
+        bitMap.compress(Bitmap.CompressFormat.JPEG, 25, outStream)
+        val list = ArrayList<ByteArray>()
+        list.add(outStream.toByteArray())
+        return list
     }
 
     fun fullScreen(height: Int, percent: Float) {
@@ -335,9 +360,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
 
     private fun init() {
-        launcherMultiSelectImage = ImagePicker.getLauncherForMultiSelectImages(this)
-        launcherSingleSelectImage = ImagePicker.getLauncherForSingleSelectImages(this)
-        launcherReplaceSelectedImage = ImagePicker.getLauncherForReplaceSelectedImage(this)
+
     }
 
     private fun initRecyclerView() {
@@ -466,6 +489,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     companion object {
         private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
         private const val LOCATION_PERMISSION_REQUEST_CODE_1 = 2
+        const val ADD_PHOTO = 10
+        const val ADD_IMAGE = 20
+        const val DELETE_IMAGE = 30
+        const val REPLACE_IMAGE = 40
     }
 
     override fun onLocationChanged(location: Location) {
@@ -506,7 +533,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 //            }
 //        }
 //    }
-
 
 }
 

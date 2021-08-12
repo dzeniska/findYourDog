@@ -1,7 +1,9 @@
 package com.dzenis_ska.findyourdog.remoteModel.firebase
 
 
+import android.net.Uri
 import android.util.Log
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -9,18 +11,45 @@ import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.ktx.storage
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class DbManager() {
     val db = Firebase.database.getReference(MAIN_NODE)
     val auth = Firebase.auth
+    val ref = Firebase.storage.getReference(STORAGE_NODE)
 
     fun publishAdShelter(adTemp: AdShelter, writeDataCallback: WriteDataCallback?) {
-        if(auth.uid != null) db.child(adTemp.key?: "empty").child(auth.uid!!).child("adShelter").setValue(adTemp)
-            .addOnCompleteListener { task->
-            if(task.isSuccessful){
-                writeDataCallback?.writeData()
-            }
+        if(auth.uid != null) {
+            db.child(adTemp.key?: "empty").child(auth.uid!!).child("adShelter").setValue(adTemp)
+                .addOnCompleteListener { task->
+                    if(task.isSuccessful){
+                        writeDataCallback?.writeData()
+                    }
+                }
         }
+    }
+    suspend fun addPhotoToStorage(adTemp: ArrayList<ByteArray>, adShelter: AdShelter, listener: OnCompleteListener<Uri>/*, writeDataCallback: WriteDataCallback?*/) = withContext(Dispatchers.IO){
+//        adTemp.forEach {
+            val imStorageRef = ref
+                .child(auth.uid!!)
+                .child("image_${System.currentTimeMillis()}")
+
+        val upTask = imStorageRef.putBytes(adTemp[0])
+        upTask.continueWithTask{task->
+            imStorageRef.downloadUrl
+        }.addOnCompleteListener(listener)
+                /*.putBytes(it)
+            uploadTask.addOnFailureListener {
+                // Handle unsuccessful uploads
+            }.addOnSuccessListener { taskSnapshot ->
+                Log.d("!!!sus", "${taskSnapshot.metadata}")
+                // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+                writeDataCallback?.writeData()*/
+//            }
+//        }
+
     }
 
     fun getAllAds(readDataCallback: ReadDataCallback?){
@@ -33,6 +62,7 @@ class DbManager() {
             if(task.isSuccessful) listener.onFinish()
         }
         db.child(adShelter.key).child(INFO_NODE).removeValue()
+//        придумать логику загрузки
     }
 
     fun adViewed(adShelter: AdShelter, listener: FinishWorkListener) {
@@ -89,6 +119,6 @@ class DbManager() {
         const val AD_SHELTER_NODE = "adShelter"
         const val INFO_NODE = "info"
         const val MAIN_NODE = "main"
-        const val FAVS_NODE = "favs"
+        const val STORAGE_NODE = "storage"
     }
 }

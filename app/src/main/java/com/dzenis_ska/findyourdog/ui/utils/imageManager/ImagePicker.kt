@@ -13,6 +13,9 @@ import io.ak1.pix.helpers.addPixToActivity
 import io.ak1.pix.models.Mode
 import io.ak1.pix.models.Options
 import io.ak1.pix.models.Ratio
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 object ImagePicker {
 
@@ -28,15 +31,32 @@ object ImagePicker {
         return options
     }
 
-    fun launcher(
+    fun choosePhotoes(
         mAct: MainActivity,
-        addShelterFragment: AddShelterFragment,
-        launcherMultiSelectImage: ActivityResultLauncher<Intent>?,
-        imageCount: Int
+        addSF: AddShelterFragment,
+        imageCount: Int,
+        const: Int
     ) {
         mAct.addPixToActivity(R.id.clMain, getOptions(imageCount)) { result->
             when (result.status) {
                 PixEventCallback.Status.SUCCESS -> {
+                    result.status
+
+                    result.data.forEach {
+                        Log.d("!!!result", "showCameraFragment: ${it.path}")
+                    }
+
+                        when (const) {
+                            AddShelterFragment.ADD_PHOTO -> addSF.vpAdapter.updateAdapter(result.data)
+                            AddShelterFragment.ADD_IMAGE -> addSF.vpAdapter.updateAdapterForSinglePhoto(
+                                result.data
+                            )
+                            AddShelterFragment.REPLACE_IMAGE -> addSF.vpAdapter.replaceItemAdapter(
+                                result.data
+                            )
+                        }
+
+                    addSF.hideAddShelterButton(true)
                     closePixFragment(mAct)
                 }
                 PixEventCallback.Status.BACK_PRESSED ->{
@@ -45,12 +65,13 @@ object ImagePicker {
             }
         }
     }
+
     private fun closePixFragment(mAct: MainActivity) {
         val fList = mAct.supportFragmentManager.fragments
         fList.forEach { frag ->
             if(frag.toString().startsWith("PixFragment")) {
                 mAct.supportFragmentManager.beginTransaction().remove(frag).commit()
-                mAct.navController.navigate(R.id.addShelterFragment)
+//                mAct.navController.navigate(R.id.addShelterFragment)
             }
         }
     }

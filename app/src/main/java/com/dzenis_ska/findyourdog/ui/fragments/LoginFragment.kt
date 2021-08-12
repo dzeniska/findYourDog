@@ -14,6 +14,8 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.NavController
+import androidx.navigation.fragment.findNavController
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.FragmentLoginBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AuthInterface
@@ -31,6 +33,7 @@ class LoginFragment() : Fragment(), AuthInterface {
     val viewModel: BreedViewModel by activityViewModels()
     var rootElement: FragmentLoginBinding? = null
     private val fbAuth = FBAuth(this)
+    lateinit var navController: NavController
 
 
     override fun onCreateView(
@@ -55,14 +58,14 @@ class LoginFragment() : Fragment(), AuthInterface {
 
     }
 
-    fun showElements(bool: Boolean){
-        rootElement.apply{
+    fun showElements(bool: Boolean) {
+        rootElement.apply {
             if (bool) {
-                imgButtonEnter.visibility = View.VISIBLE
-                tvEnter.visibility = View.VISIBLE
+                imgButtonEnter.setImageResource(R.drawable.ic_in_white)
+                tvEnter.text = "Вход"
             } else {
-                imgButtonEnter.visibility = View.GONE
-                tvEnter.visibility = View.GONE
+                imgButtonEnter.setImageResource(R.drawable.world_map)
+                tvEnter.text = "Карта"
             }
         }
     }
@@ -82,7 +85,6 @@ class LoginFragment() : Fragment(), AuthInterface {
             } else if (currentUser.isAnonymous) {
                 Log.d("!!!userLFisAnonimous", "${currentUser?.uid}")
                 tvRegIn.text = "Привет, Незнакомец!)"
-
 
 
             } else if (!currentUser.isAnonymous) {
@@ -111,6 +113,7 @@ class LoginFragment() : Fragment(), AuthInterface {
                 imgButtonForgot.visibility = View.GONE
                 currentUser(null)
             }
+            viewModel.uiUpdateMain(null)
         }
 
         imgButtonForgot.setOnClickListener() {
@@ -119,20 +122,23 @@ class LoginFragment() : Fragment(), AuthInterface {
     }
 
 
-    private fun init() = with(rootElement) {
-        edEmail.apply {
-            afterTextChanged {
-                if (it.length > 1) {
-                    if (!it.contains("@") || !it.contains(".")) {
-                        edEmail.error = "@, ."
+    private fun init() {
+        navController = findNavController()
+        rootElement.apply {
+            edEmail.apply {
+                afterTextChanged {
+                    if (it.length > 1) {
+                        if (!it.contains("@") || !it.contains(".")) {
+                            edEmail.error = "@, ."
+                        }
                     }
                 }
             }
-        }
-        edPassword.apply {
-            afterTextChanged {
-                if (it.length < 6) {
-                    edPassword.error = "не менее 6 символов"
+            edPassword.apply {
+                afterTextChanged {
+                    if (it.length < 6) {
+                        edPassword.error = "не менее 6 символов"
+                    }
                 }
             }
         }
@@ -152,6 +158,8 @@ class LoginFragment() : Fragment(), AuthInterface {
 
     fun uiUpdateMain(user: FirebaseUser?) {
         viewModel.uiUpdateMain(user)
+        tvRegIn.animation = AnimationUtils.loadAnimation(context, R.anim.alpha_replace_user_up)
+        tvRegIn.visibility = View.VISIBLE
         currentUser(user)
     }
 
@@ -187,38 +195,43 @@ class LoginFragment() : Fragment(), AuthInterface {
 
     private fun enterEmailAndPassword(fbAuth: FBAuth): View.OnClickListener {
         return View.OnClickListener {
+            if (tvEnter.text == "Карта") {
+                navController.navigate(R.id.mapsFragment)
+            } else {
+                rootElement.apply {
+                    imgInUp.animation = AnimationUtils.loadAnimation(context, R.anim.rotation)
+                    tvRegIn.animation =
+                        AnimationUtils.loadAnimation(context, R.anim.alpha_replace_user_down)
+                    tvRegIn.visibility = View.GONE
 
-            rootElement.apply {
-                imgInUp.animation = AnimationUtils.loadAnimation(context, R.anim.rotation)
-                tvRegIn.animation = AnimationUtils.loadAnimation(context, R.anim.alpha_add_photo)
-
-                if (edEmail.text.isNotEmpty() && edPassword.text.isNotEmpty()) {
-                    if (!edEmail.text.contains('@') || !edEmail.text.contains('.')) {
-                        Toast.makeText(
-                            context,
-                            "Поле Email должно включать символы '@' и '.'",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } else if (edPassword.text.toString().length < 6) {
-                        Toast.makeText(
-                            context,
-                            "Пароль должен содержать не менее 6 символов",
-                            Toast.LENGTH_LONG
-                        ).show()
+                    if (edEmail.text.isNotEmpty() && edPassword.text.isNotEmpty()) {
+                        if (!edEmail.text.contains('@') || !edEmail.text.contains('.')) {
+                            Toast.makeText(
+                                context,
+                                "Поле Email должно включать символы '@' и '.'",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else if (edPassword.text.toString().length < 6) {
+                            Toast.makeText(
+                                context,
+                                "Пароль должен содержать не менее 6 символов",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            fbAuth.signUpWithEmail(
+                                edEmail.text.toString(),
+                                edPassword.text.toString(),
+                                context as MainActivity
+                            )
+                        }
                     } else {
-                        fbAuth.signUpWithEmail(
-                            edEmail.text.toString(),
-                            edPassword.text.toString(),
-                            context as MainActivity
+                        Toast.makeText(
+                            context,
+                            "Вы забыли ввести Email или Password",
+                            Toast.LENGTH_LONG
                         )
+                            .show()
                     }
-                } else {
-                    Toast.makeText(
-                        context,
-                        "Вы забыли ввести Email или Password",
-                        Toast.LENGTH_LONG
-                    )
-                        .show()
                 }
             }
         }

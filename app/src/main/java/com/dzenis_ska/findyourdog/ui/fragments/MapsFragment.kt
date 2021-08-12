@@ -32,6 +32,7 @@ import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
+import kotlinx.android.synthetic.main.fragment_add_shelter.*
 import kotlinx.android.synthetic.main.fragment_maps.*
 import kotlin.random.Random
 
@@ -78,18 +79,22 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
 
         viewModel.liveAdsDataAllShelter.observe(viewLifecycleOwner,{list ->
-
             val list1 = list
             if (::mMap.isInitialized) {
-
                 getAllMarkers(list1)
             }
         })
 
+        init()
 
         floatBtnGPS.setOnClickListener() {
             getLocation()
             floatBtnGPS.visibility = View.GONE
+        }
+    }
+    private fun init(){
+        if(viewModel.dbManager.auth.currentUser?.isAnonymous == false && viewModel.dbManager.auth.currentUser != null){
+            rootElement?.floatBtnAddShelter?.visibility = View.VISIBLE
         }
     }
 

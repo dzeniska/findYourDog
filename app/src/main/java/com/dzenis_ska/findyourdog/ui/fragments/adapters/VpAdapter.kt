@@ -1,6 +1,7 @@
 package com.dzenis_ska.findyourdog.ui.fragments.adapters
 
 
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -8,24 +9,35 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.dzenis_ska.findyourdog.databinding.VpAdapterItemBinding
+import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.AddShelterFragment
 import com.dzenis_ska.findyourdog.ui.utils.imageManager.ImageManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.VpHolder>() {
 
-    val arrayPhoto = mutableListOf<String>()
+    val scope = CoroutineScope(Dispatchers.Main)
+    val arrayPhoto = mutableListOf<Uri>()
 
     class VpHolder(val binding: VpAdapterItemBinding) : RecyclerView.ViewHolder(binding.root) {
-        //        binding.imgItemVp as SubsamplingScaleImageView
-        fun setData(bitmap: String, addSF: AddShelterFragment) {
+
+        fun setData(uri: Uri, addSF: AddShelterFragment, scope: CoroutineScope) {
             binding.imgItemVp.setOnClickListener{
                 addSF.fullScreen(250, 0.50f)
             }
-            binding.imgItemVp.orientation = ImageManager.imageRotationPreview(bitmap)
+           /* binding.imgItemVp.orientation = ImageManager.imageRotationPreview(bitmap)
 //            binding.imgItemVp.setImageBitmap(bitmap)
             binding.imgItemVp.setImage(ImageSource.uri(bitmap))
-//            binding.imgItemVp.setImage(ImageSource.bitmap(bitmap))
+//            binding.imgItemVp.setImage(ImageSource.bitmap(bitmap))*/
+
+            scope.launch {
+                binding.imgItemVp.orientation = ImageManager.imageRotationPreview(uri, addSF.activity as MainActivity)
+                binding.imgItemVp.setImage(ImageSource.uri(uri))
+            }
+
         }
     }
 
@@ -36,14 +48,14 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
     }
 
     override fun onBindViewHolder(holder: VpHolder, position: Int) {
-        holder.setData(arrayPhoto[position], addSF)
+            holder.setData(arrayPhoto[position], addSF, scope)
     }
 
     override fun getItemCount(): Int {
         return arrayPhoto.size
     }
 
-    fun updateAdapter(arrayListPhoto: MutableList<String>) {
+    fun updateAdapter(arrayListPhoto: List<Uri>) {
         arrayPhoto.clear()
         arrayPhoto.addAll(arrayListPhoto)
         addSF.rootElement!!.apply {
@@ -58,7 +70,7 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
         notifyDataSetChanged()
 
     }
-    fun updateAdapterForSinglePhoto(arrayListPhoto: MutableList<String>) {
+    fun updateAdapterForSinglePhoto(arrayListPhoto: List<Uri>) {
         arrayPhoto.addAll(arrayListPhoto)
         if (arrayPhoto.size == 5) addSF.rootElement!!.fabAddImage.visibility = View.GONE
 //        notifyItemInserted(0)
@@ -85,7 +97,7 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
         }
         notifyItemRemoved(numPage)
     }
-    fun replaceItemAdapter( arrayListPhoto: MutableList<String>){
+    fun replaceItemAdapter( arrayListPhoto: List<Uri>){
         arrayPhoto.removeAt(addSF.viewModel.numPage)
         arrayPhoto.add(addSF.viewModel.numPage, arrayListPhoto[0])
         notifyDataSetChanged()

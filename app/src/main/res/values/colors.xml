@@ -30,11 +30,11 @@
     <color name="white_38">#60FFFFFF</color>
     <color name="back_pressed_color">#612962FF</color>
 
-    <!-- Image Picker -->
+    <!-- Image Picker
     <color name="video_counter_color_pix">#E53935</color>
     <color name="primary_color_pix">#075e54</color>
     <color name="primary_light_color_pix">#80075e54</color>
     <color name="surface_color_pix">#ffffff</color>
-    <color name="text_color_pix">#807f7f</color>
+    <color name="text_color_pix">#807f7f</color>-->
 
 </resources>
