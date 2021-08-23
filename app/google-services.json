@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "874879451711",
+    "firebase_url": "https://findyourdog-6fa93-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "findyourdog-6fa93",
+    "storage_bucket": "findyourdog-6fa93.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:874879451711:android:4425dd9d26d9aa10f9ae8a",
+        "android_client_info": {
+          "package_name": "com.dzenis_ska.findyourdog"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "874879451711-bgc2sei0mvdi5lkpd23550bj9njp8t9a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dzenis_ska.findyourdog",
+            "certificate_hash": "c75fc54a22a45821a5bb77438a027e0dd0e8320b"
+          }
+        },
+        {
+          "client_id": "874879451711-u3meh6n85rdrqpetiko3h1s8m3mj6eei.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC6VTTCt3UqqfMyfiWo1VYDmxijM5iq5fM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "874879451711-u3meh6n85rdrqpetiko3h1s8m3mj6eei.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
