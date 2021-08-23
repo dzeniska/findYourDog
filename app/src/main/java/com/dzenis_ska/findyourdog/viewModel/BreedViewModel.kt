@@ -1,6 +1,8 @@
 package com.dzenis_ska.findyourdog.viewModel
 
 
+import android.app.AlertDialog
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -18,6 +20,7 @@ import kotlinx.coroutines.withContext
 class BreedViewModel(val repository: Repository) : ViewModel() {
 
 
+
     private val scope = CoroutineScope(Dispatchers.IO)
 
     val  imgBreedList = mutableListOf<String>()
@@ -27,6 +30,7 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     var locationManagerBool: Boolean = false
     var countSelectedPhoto: Int = 0
     var numPage: Int = 0
+    var btnDelState: Boolean? = false
 
 
     //    val breedLive: MutableLiveData<MutableList<DogBreeds>> by lazy {
@@ -58,8 +62,13 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     var shelter: AdShelter? = null
     val liveAdsDataAllShelter = MutableLiveData<ArrayList<AdShelter>>()
     val liveAdsDataAddShelter = MutableLiveData<AdShelter?>()
+    val listPhoto = arrayListOf<String>()
+    val dialog = MutableLiveData<AlertDialog>()
 
-
+    fun listPhoto(listP: ArrayList<String>) {
+        listPhoto.clear()
+        listPhoto.addAll(listP)
+    }
 
     fun uiUpdateMain(user: FirebaseUser?) {
         userUpdate.postValue(user)
@@ -98,38 +107,41 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
             }
         })
     }
-
-    suspend fun publishPhoto(adTemp: ArrayList<ByteArray>, adShelter: AdShelter, writedDataCallback: WritedDataCallback) = withContext(Dispatchers.IO) {
-        dbManager.addPhotoToStorage(adTemp, adShelter/* object: DbManager.WriteDataCallback{
-            override fun writeData() {
-//                getAllAds()
-                writedDataCallback.writedData()
-            }
-        }*/){
-
+    fun deletePhoto(uri: String, callback:()-> Unit ){
+        dbManager.deletePhoto(uri){
+            callback()
         }
     }
-    fun publishAdShelter(adTemp: AdShelter, writedDataCallback: WritedDataCallback) {
-        dbManager.publishAdShelter(adTemp, object: DbManager.WriteDataCallback{
-            override fun writeData() {
-                getAllAds()
-                writedDataCallback.writedData()
+    fun publishPhoto(adTemp: ByteArray, callback: (imageUri: Uri?)-> Unit) {
+            dbManager.addPhotoToStorage(adTemp) { task ->
+                if (task.isSuccessful) {
+                    callback(task.result)
+                    Log.d("!!!itTaskSuccessful2", "${task.result}")
+                } else {
+                    Log.d("!!!itTask", "${task}")
+                }
             }
-        })
+        }
+
+    fun publishAdShelter(adTemp: AdShelter, dialogq: AlertDialog, callback: (text: String) -> Unit) {
+        dbManager.publishAdShelter(adTemp){
+//            getAllAds()
+            dialog.value = dialogq
+            callback("task")
+        }
     }
 
     fun getAllAds(){
+        //Вызывается два раза
+        Log.d("!!!publishAdShelterDB", "qwerty")
         dbManager.getAllAds(object: DbManager.ReadDataCallback{
             override fun readData(list: ArrayList<AdShelter>) {
-
-                liveAdsDataAllShelter.setValue(list)
+                liveAdsDataAllShelter.value = list
                 listShelter.clear()
                 listShelter.addAll(list)
             }
         })
     }
-
-
 
     //одного фото запрос
     fun getOnePhoto(url: String) {
@@ -227,6 +239,4 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     interface WritedDataCallback {
         fun writedData()
     }
-
-
 }

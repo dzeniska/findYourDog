@@ -2,6 +2,7 @@ package com.dzenis_ska.findyourdog.ui.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
@@ -28,6 +29,7 @@ import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.FragmentMapsBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
 import com.dzenis_ska.findyourdog.ui.MainActivity
+import com.dzenis_ska.findyourdog.ui.utils.ProgressDialog
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
@@ -55,6 +57,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var lastLat: Double = 0.0
     var lastLng: Double = 0.0
     var mapFragment: SupportMapFragment? = null
+    var dialogF: AlertDialog? = null
 
 
     //для определения последней локации
@@ -78,6 +81,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
 
+        viewModel.dialog.observe(viewLifecycleOwner, {dialog->
+            dialogF = dialog
+        })
+
         viewModel.liveAdsDataAllShelter.observe(viewLifecycleOwner,{list ->
             val list1 = list
             if (::mMap.isInitialized) {
@@ -86,12 +93,21 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         })
 
         init()
+        initClick()
 
+    }
+
+    private fun initClick() {
         floatBtnGPS.setOnClickListener() {
             getLocation()
             floatBtnGPS.visibility = View.GONE
         }
+        floatBtnAddShelter.setOnClickListener() {
+            viewModel.btnDelState = true
+            navController.navigate(R.id.addShelterFragment)
+        }
     }
+
     private fun init(){
         if(viewModel.dbManager.auth.currentUser?.isAnonymous == false && viewModel.dbManager.auth.currentUser != null){
             rootElement?.floatBtnAddShelter?.visibility = View.VISIBLE
@@ -129,9 +145,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mMap.setInfoWindowAdapter(CustomInfoWindowAdapter())
         mMap.setOnInfoWindowClickListener(this)
         getPermission()
-//        val sydney = LatLng(42.276871, 18.831676)
-////        googleMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-//        googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
     }
 
 
@@ -239,7 +252,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         if(lat != lastLat && lng != lastLng) {
             locationManager.removeUpdates(this)
             viewModel.locationManagerBool = false
-            floatBtnGPS.visibility = View.VISIBLE
+            rootElement!!.floatBtnGPS.visibility = View.VISIBLE
         }
     }
 
@@ -263,10 +276,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 marker.alpha = 0.6f
             }
         }
+        dialogF?.dismiss()
     }
     override fun onInfoWindowClick(markerInfo: Marker) {
         for(info in viewModel.listShelter){
             if(info.key == markerInfo.tag){
+                if(viewModel.btnDelState == true) viewModel.btnDelState = false
                 viewModel.openFragShelter(info)
                 navController.navigate(R.id.addShelterFragment)
                 Toast.makeText(context as MainActivity, "${info.key}", Toast.LENGTH_LONG).show()

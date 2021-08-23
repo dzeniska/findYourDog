@@ -24,11 +24,6 @@
                     android:icon="@drawable/ic_map"
                     app:actionViewClass="android.widget.TextView"
                     android:title="@string/treasure_map" />
-                <item
-                    android:id="@+id/add_shelter_item"
-                    android:icon="@drawable/ic_add_dog"
-                    app:actionViewClass="android.widget.TextView"
-                    android:title="@string/add_shelter_string" />
             </menu>
         </item>
 

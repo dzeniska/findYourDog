@@ -69,6 +69,7 @@
 
     <!-- Maps fragment-->
     <string name="state_badge_label">State badge</string>
+    <string name="wait_download_photo">Please wait for All photo uploaded</string>
 
 
 </resources>

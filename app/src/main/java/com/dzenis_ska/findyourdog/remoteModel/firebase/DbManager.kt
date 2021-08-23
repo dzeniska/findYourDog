@@ -4,6 +4,8 @@ package com.dzenis_ska.findyourdog.remoteModel.firebase
 import android.net.Uri
 import android.util.Log
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnSuccessListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -20,46 +22,49 @@ class DbManager() {
     val auth = Firebase.auth
     val ref = Firebase.storage.getReference(STORAGE_NODE)
 
-    fun publishAdShelter(adTemp: AdShelter, writeDataCallback: WriteDataCallback?) {
-        if(auth.uid != null) {
-            db.child(adTemp.key?: "empty").child(auth.uid!!).child("adShelter").setValue(adTemp)
-                .addOnCompleteListener { task->
-                    if(task.isSuccessful){
-                        writeDataCallback?.writeData()
+
+    fun publishAdShelter(adTemp: AdShelter, callback: (text: String)-> Unit) {
+        if (auth.uid != null) {
+            db.child(adTemp.key ?: "empty").child(auth.uid!!).child("adShelter").setValue(adTemp)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("!!!publishAdShelterDBtask", "${adTemp}")
+                        callback("task")
                     }
                 }
         }
     }
-    suspend fun addPhotoToStorage(adTemp: ArrayList<ByteArray>, adShelter: AdShelter, listener: OnCompleteListener<Uri>/*, writeDataCallback: WriteDataCallback?*/) = withContext(Dispatchers.IO){
-//        adTemp.forEach {
+    fun deletePhoto(url: String, listener: OnSuccessListener<Void>) {
+        val desertRef = ref
+            .child(auth.uid!!)
+            .child(url)
+        desertRef.delete().addOnSuccessListener(listener).addOnFailureListener {
+            Log.d("!!!deletePhotoExeption", "${it}")
+        }
+    }
+
+    fun addPhotoToStorage(adTemp: ByteArray, listener: OnCompleteListener<Uri>) {
+
             val imStorageRef = ref
                 .child(auth.uid!!)
                 .child("image_${System.currentTimeMillis()}")
 
-        val upTask = imStorageRef.putBytes(adTemp[0])
-        upTask.continueWithTask{task->
-            imStorageRef.downloadUrl
-        }.addOnCompleteListener(listener)
-                /*.putBytes(it)
-            uploadTask.addOnFailureListener {
-                // Handle unsuccessful uploads
-            }.addOnSuccessListener { taskSnapshot ->
-                Log.d("!!!sus", "${taskSnapshot.metadata}")
-                // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
-                writeDataCallback?.writeData()*/
-//            }
-//        }
-
+            val upTask = imStorageRef.putBytes(adTemp)
+            upTask.continueWithTask{task->
+//                Log.d("!!!itTaskSuccessful3", "${task.result}")
+                imStorageRef.downloadUrl
+            }.addOnCompleteListener(listener)
     }
 
-    fun getAllAds(readDataCallback: ReadDataCallback?){
+    fun getAllAds(readDataCallback: ReadDataCallback?) {
         val query = db.orderByChild(auth.uid + "/adShelter/tel")
         readDataFromDB(query, readDataCallback)
     }
-    fun deleteAdShelter(adShelter: AdShelter?, listener: FinishWorkListener){
-        if(adShelter?.key == null || adShelter.uid == null) return
-        db.child(adShelter.key).child(adShelter.uid).removeValue().addOnCompleteListener {task->
-            if(task.isSuccessful) listener.onFinish()
+
+    fun deleteAdShelter(adShelter: AdShelter?, listener: FinishWorkListener) {
+        if (adShelter?.key == null || adShelter.uid == null) return
+        db.child(adShelter.key).child(adShelter.uid).removeValue().addOnCompleteListener { task ->
+            if (task.isSuccessful) listener.onFinish()
         }
         db.child(adShelter.key).child(INFO_NODE).removeValue()
 //        придумать логику загрузки
@@ -78,14 +83,15 @@ class DbManager() {
                 }
     }
 
-   private fun readDataFromDB(query: Query, readDataCallback: ReadDataCallback?){
-        query.addListenerForSingleValueEvent(object : ValueEventListener{
+    private fun readDataFromDB(query: Query, readDataCallback: ReadDataCallback?) {
+        query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val adShelterArray = ArrayList<AdShelter>()
-                for(item in snapshot.children){
+                for (item in snapshot.children) {
                     var adShelter: AdShelter? = null
-                    item.children.forEach {data ->
-                        if(adShelter == null) adShelter = data.child(AD_SHELTER_NODE).getValue(AdShelter::class.java)
+                    item.children.forEach { data ->
+                        if (adShelter == null) adShelter =
+                            data.child(AD_SHELTER_NODE).getValue(AdShelter::class.java)
                     }
                     val infoItem = item.child(INFO_NODE).getValue(InfoItem::class.java)
 //                    adShelter = item.children.iterator().next().child("adShelter").getValue(AdShelter::class.java)
@@ -102,20 +108,17 @@ class DbManager() {
 
         })
     }
+
     interface ReadDataCallback {
         fun readData(list: ArrayList<AdShelter>)
 
     }
 
-    interface WriteDataCallback {
-        fun writeData()
-    }
-
-    interface  FinishWorkListener{
+    interface FinishWorkListener {
         fun onFinish()
     }
 
-    companion object{
+    companion object {
         const val AD_SHELTER_NODE = "adShelter"
         const val INFO_NODE = "info"
         const val MAIN_NODE = "main"

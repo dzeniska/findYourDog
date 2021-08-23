@@ -2,13 +2,14 @@ package com.dzenis_ska.findyourdog.ui.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -19,6 +20,7 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
@@ -31,6 +33,8 @@ import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.dzenis_ska.findyourdog.databinding.FragmentAddShelterBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.VpAdapter
+import com.dzenis_ska.findyourdog.ui.utils.ProgressDialog
+import com.dzenis_ska.findyourdog.ui.utils.SortListPhoto
 import com.dzenis_ska.findyourdog.ui.utils.imageManager.ImageManager
 import com.dzenis_ska.findyourdog.ui.utils.imageManager.ImagePicker
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -41,11 +45,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_add_shelter.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
+import kotlinx.coroutines.*
 import kotlin.random.Random
 
 class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
@@ -79,11 +79,16 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var shLng: Double? = null
     var adShelterToEdit: AdShelter? = null
     var boolEditOrNew: Boolean? = false
+    var imageIndex = 0
+    val photoArrayList = mutableListOf<String>()
+    var adapterArraySize = 0
 
     var job: Job? = null
 
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
+
+
 
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -114,28 +119,44 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
 
-        init()
+        val dialog = ProgressDialog.createProgressDialog(activity as MainActivity)
         initViewModel()
         initRecyclerView()
-        onClick(this)
+        onClick(this, dialog)
 
     }
-    fun hideAddShelterButton(bool:Boolean){
-        rootElement!!.fabAddShelter.visibility = if(!bool)  View.GONE else View.VISIBLE
+
+    fun hideAddShelterButton(bool: Boolean, btnDelState: Int) {
+        rootElement!!.apply{
+            fabAddShelter.visibility = if (!bool) View.GONE else View.VISIBLE
+            if(viewModel.btnDelState == false) {
+                fabDeleteShelter.visibility = if (!bool) View.GONE else View.VISIBLE
+            }else{
+                fabDeleteShelter.visibility = View.GONE
+            }
+        }
+    }
+    fun hidePhotoButtons(b: Boolean){
+        if(!b){
+        rootElement.apply {
+                fab_replace_image.visibility = View.GONE
+                fab_add_image.visibility = View.GONE
+                fab_delete_image.visibility = View.GONE
+            }
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun initViewModel() {
-
-//        виёв модель не катит или покатило
-        viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner,{adShelter ->
+        //Открываем AddShelterFragment и передаём данные
+        viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner, { adShelter ->
             rootElement.apply {
                 if (adShelter != null) {
-                    if(adShelter.uid == viewModel.dbManager.auth.uid){
+                    if (adShelter.uid == viewModel.dbManager.auth.uid) {
                         fillFrag(adShelter, true)
                         boolEditOrNew = true
                         fabDeleteShelter.isVisible = true
-                    }else {
+                    } else {
                         fillFrag(adShelter, false)
                     }
 //                setMarker((adShelter.lat)!!.toDouble(), (adShelter.lng)!!.toDouble(), 11f)
@@ -145,25 +166,44 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun fillFrag(adShelter: AdShelter, isEnabled: Boolean) {
+        val listPhoto = adShelter.photoes
+
         rootElement.apply {
-            imgAddPhoto.setImageDrawable(
-                ContextCompat.getDrawable(
-                    context as MainActivity,
-                    R.drawable.ic_no_one_photo
+            if(listPhoto == null){
+                imgAddPhoto.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context as MainActivity,
+                        R.drawable.ic_no_one_photo
+                    )
                 )
-            )
+            }else{
+                CoroutineScope(Dispatchers.Main).launch {
+                    adapterArraySize = listPhoto.size
+                    val listUri = arrayListOf<Uri>()
+                    viewModel.listPhoto(listPhoto)
+                    listPhoto.forEach {
+//                        val listUri = ImageManager.fromStorageToByteArray(it, activity as MainActivity)
+                        listUri.add(it.toUri())
+                        Log.d("!!!listUri", "1")
+                    }
+                    Log.d("!!!listUri", "2")
+                    vpAdapter.updateAdapter(listUri, true)
+                }
+            }
             edTelNum.setText(adShelter.tel)
             edTelNum.isEnabled = isEnabled
             edDescription.setText(adShelter.description)
             edDescription.isEnabled = isEnabled
 
-            if(!isEnabled) {
+            hidePhotoButtons(isEnabled)
+            if (!isEnabled) {
                 shLat = (adShelter.lat)!!.toDouble()
                 shLng = (adShelter.lng)!!.toDouble()
                 fabAddShelter.visibility = View.GONE
+
                 clMain.background =
                     resources.getDrawable(R.drawable.background_write_fragment)
-            }else{
+            } else {
                 Log.d("!!!!", "${adShelter}")
                 adShelterToEdit = adShelter
             }
@@ -171,21 +211,23 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    private fun fillAdShelter(): AdShelter {
-        val adShelter: AdShelter
+
+    private fun fillAdShelter(photoUrlList: ArrayList<String>): AdShelter {
+        var adShelter: AdShelter
         rootElement.apply {
-                adShelter = AdShelter(
-                    "",
-                    edTelNum.text.toString(),
-                    targetLat.toString(),
-                    targetLng.toString(),
-                    edDescription.text.toString(),
-                    "",
-                    viewModel.dbManager.db.push().key,
-                    viewModel.dbManager.auth.uid,
-                    (Random.nextInt(0,  360)).toFloat()
-                )
-            }
+            adShelter = AdShelter(
+                "",
+                edTelNum.text.toString(),
+                targetLat.toString(),
+                targetLng.toString(),
+                edDescription.text.toString(),
+                photoUrlList,
+                "empty",
+                viewModel.dbManager.db.push().key,
+                viewModel.dbManager.auth.uid,
+                (Random.nextInt(0, 360)).toFloat()
+            )
+        }
         return adShelter
     }
 
@@ -230,7 +272,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 false
             )
         )
-        if(zoom != 11f) {
+        if (zoom != 11f) {
             mMap.setOnCameraMoveListener {
                 marker!!.position = mMap.cameraPosition.target //to center in map
                 target = marker.position
@@ -243,17 +285,22 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    private fun onClick(addShelterFragment: AddShelterFragment) {
+    private fun onClick(addShelterFragment: AddShelterFragment, dialog: AlertDialog) {
         rootElement!!.apply {
             imgAddPhoto.setOnClickListener() {
                 fullScreen(250, 0.50f)
                 imgAddPhoto.alpha = 0.8f
-                hideAddShelterButton(false)
-                ImagePicker.choosePhotoes(activity as MainActivity, addShelterFragment, 5, ADD_PHOTO)
+                hideAddShelterButton(false, 0)
+                ImagePicker.choosePhotoes(
+                    activity as MainActivity,
+                    addShelterFragment,
+                    5,
+                    ADD_PHOTO
+                )
             }
             fabAddImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
-                hideAddShelterButton(false)
+                hideAddShelterButton(false, 0)
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
@@ -270,7 +317,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             fabReplaceImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
-                hideAddShelterButton(false)
+                hideAddShelterButton(false, 0)
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
@@ -278,52 +325,22 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     REPLACE_IMAGE
                 )
             }
-            
-            fabDeleteShelter.setOnClickListener { 
-                viewModel.deleteAdShelter(adShelterToEdit, object : BreedViewModel.WritedDataCallback{
-                    override fun writedData() {
-                        navController.popBackStack(R.id.addShelterFragment, true)
-                        navController.navigate(R.id.mapsFragment)
 
-                    }
+            fabDeleteShelter.setOnClickListener {
+                viewModel.deleteAdShelter(
+                    adShelterToEdit,
+                    object : BreedViewModel.WritedDataCallback {
+                        override fun writedData() {
+                            navController.popBackStack(R.id.addShelterFragment, true)
+                            navController.navigate(R.id.mapsFragment)
 
-                })
+                        }
+
+                    })
             }
-            
+
             fabAddShelter.setOnClickListener() {
-                job = CoroutineScope(Dispatchers.Main).launch {
-                    val list = ImageManager.imageResize( vpAdapter.arrayPhoto, activity as MainActivity)
-                    Log.d("!!!resize","${list}")
-                    val adShelter = fillAdShelter()
-                    val byteArray = prepareImageBiteArray(list[0])
-                    viewModel.publishPhoto(byteArray, adShelter, object : BreedViewModel.WritedDataCallback{
-                        override fun writedData() {
-                            Log.d("susses", "susses")
-                        }
-                    })
-                }
-
-
-
-                /*val adTemp = fillAdShelter()
-                if(boolEditOrNew == true){
-                    Log.d("!!!uid", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
-
-                    viewModel.publishAdShelter(adTemp.copy(key = adShelterToEdit?.key, markerColor = adShelterToEdit?.markerColor ), object : BreedViewModel.WritedDataCallback{
-                        override fun writedData() {
-                            navController.popBackStack(R.id.addShelterFragment, true)
-                            navController.navigate(R.id.mapsFragment)
-                        }
-                    })
-                }else {
-                    Log.d("!!!uid", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
-                    viewModel.publishAdShelter(adTemp, object : BreedViewModel.WritedDataCallback {
-                        override fun writedData() {
-                            navController.popBackStack(R.id.addShelterFragment, true)
-                            navController.navigate(R.id.mapsFragment)
-                        }
-                    })
-                }*/
+                    publishImagesAd(dialog)
             }
             vp2.setOnClickListener {
                 fullScreen(250, 0.50f)
@@ -332,19 +349,96 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 if (fs == 250) fullScreen(1000, 0.22f)
                 else fullScreen(250, 0.50f)
             }
-            ibGetLocation.setOnClickListener{
+            ibGetLocation.setOnClickListener {
                 getLocation()
                 ibGetLocation.visibility = View.GONE
             }
         }
     }
-    private fun prepareImageBiteArray(bitMap: Bitmap): ArrayList<ByteArray>{
-        val outStream = ByteArrayOutputStream()
-        bitMap.compress(Bitmap.CompressFormat.JPEG, 25, outStream)
-        val list = ArrayList<ByteArray>()
-        list.add(outStream.toByteArray())
-        return list
+
+    private fun publishImagesAd(dialog: AlertDialog) {
+        Log.d("!!!transpImage1", "$imageIndex")
+        dialog.show()
+        val vpArray = vpAdapter.arrayPhoto
+        val listPhotoForDel = SortListPhoto.listPhotoForDel(viewModel.listPhoto, vpArray)
+        if (listPhotoForDel.size != 0) listPhotoForDel.forEach { deletePhoto(it) }
+        if(vpAdapter.arrayPhoto.size != 0) {
+            addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
+        }else{
+            addPhoto(null, dialog)
+        }
     }
+
+    private fun addPhoto(uri: Uri?, dialog: AlertDialog) {
+        if (vpAdapter.arrayPhoto.size == imageIndex) {
+            publishAdShelter(fillAdShelter(photoArrayList as ArrayList<String>), dialog)
+            return
+        }
+        if(uri != null) oldOrNew(uri, dialog)
+    }
+
+    private fun oldOrNew(it: Uri, dialog: AlertDialog) {
+        if (it.toString().contains("content")) {
+            val arrayListUri = arrayListOf<Uri>()
+            arrayListUri.add(it)
+            CoroutineScope(Dispatchers.Main).launch {
+                Log.d("!!!transpImageNew1", "1")
+                val arrayListByteArray =
+                    ImageManager.imageResize(arrayListUri, activity as MainActivity)
+                Log.d("!!!transpImageNew2", "2")
+                viewModel.publishPhoto(arrayListByteArray[0]) { uri ->
+
+                    if (uri != null) {
+                        photoArrayList.add(uri.toString())
+
+                        imageIndex++
+                        if(vpAdapter.arrayPhoto.size == imageIndex) {
+                            addPhoto(null, dialog)
+                        }else{
+                            addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
+                        }
+                        Log.d("!!!transpImageNew3", "3")
+                    }
+                }
+            }
+        } else {
+            photoArrayList.add(it.toString())
+            imageIndex++
+            if(vpAdapter.arrayPhoto.size == imageIndex) {
+                addPhoto(null, dialog)
+            }else{
+                addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
+            }
+
+            Log.d("!!!transpImageNew5", "${it}")
+        }
+    }
+
+    private fun deletePhoto(s: String) {
+        viewModel.deletePhoto(s){
+            Log.d("!!!deletePhotoExeption", "Deleted")
+        }
+    }
+
+    fun publishAdShelter(adTemp: AdShelter, dialog: AlertDialog) {
+        if (boolEditOrNew == true) {
+//            Log.d("!!!uid", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
+            viewModel.publishAdShelter(adTemp.copy(key = adShelterToEdit?.key, markerColor = adShelterToEdit?.markerColor), dialog){
+//                Log.d("!!!uidIt", "${it}}")
+                navController.popBackStack(R.id.addShelterFragment, true)
+                navController.navigate(R.id.mapsFragment)
+            }
+        } else {
+//            Log.d("!!!uid2", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
+            viewModel.publishAdShelter(adTemp, dialog) {
+//                Log.d("!!!uidIt2", "${it}")
+                navController.popBackStack(R.id.addShelterFragment, true)
+                navController.navigate(R.id.mapsFragment)
+            }
+        }
+
+    }
+
 
     fun fullScreen(height: Int, percent: Float) {
         if (fs != height) {
@@ -356,11 +450,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             else rootElement!!.ibFullScreen.setImageResource(R.drawable.ic_open_in_full)
             fs = height
         }
-    }
-
-
-    private fun init() {
-
     }
 
     private fun initRecyclerView() {
@@ -403,7 +492,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
 
-
     override fun onResume() {
         super.onResume()
         Log.d("!!!", "onResume")
@@ -437,9 +525,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d("!!!", "onMapReady")
         mMap = googleMap
-        if(shLat != null){
+        if (shLat != null) {
             setMarker(shLat!!, shLng!!, 11f)
-        }else{
+        } else {
             getPermission()
         }
 

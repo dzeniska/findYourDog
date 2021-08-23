@@ -169,15 +169,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.dogs_list -> {
-//                dogListFragment = DogsListFragment()
-//                val fm = supportFragmentManager?.beginTransaction()
-//                fm?.replace(R.id.drawerLayout, dogListFragment!!)
-//                fm?.commit()
                 navController.navigate(R.id.dogsListFragment)
-                closeDrawer()
-            }
-            R.id.add_shelter_item -> {
-                navController.navigate(R.id.addShelterFragment)
                 closeDrawer()
             }
             R.id.show_fav -> {

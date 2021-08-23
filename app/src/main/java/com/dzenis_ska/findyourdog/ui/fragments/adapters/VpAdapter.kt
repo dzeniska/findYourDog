@@ -12,6 +12,7 @@ import com.dzenis_ska.findyourdog.databinding.VpAdapterItemBinding
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.AddShelterFragment
 import com.dzenis_ska.findyourdog.ui.utils.imageManager.ImageManager
+import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,10 +22,19 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
 
     val scope = CoroutineScope(Dispatchers.Main)
     val arrayPhoto = mutableListOf<Uri>()
+    val arrayPhotoBool = mutableMapOf<Int, Boolean>()
+    var boolStorage = false
+
 
     class VpHolder(val binding: VpAdapterItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun setData(uri: Uri, addSF: AddShelterFragment, scope: CoroutineScope) {
+        fun setData(
+            addSF: AddShelterFragment,
+            scope: CoroutineScope,
+            uri: Uri,
+            b: Boolean
+        ) {
+
             binding.imgItemVp.setOnClickListener{
                 addSF.fullScreen(250, 0.50f)
             }
@@ -33,9 +43,23 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
             binding.imgItemVp.setImage(ImageSource.uri(bitmap))
 //            binding.imgItemVp.setImage(ImageSource.bitmap(bitmap))*/
 
-            scope.launch {
-                binding.imgItemVp.orientation = ImageManager.imageRotationPreview(uri, addSF.activity as MainActivity)
-                binding.imgItemVp.setImage(ImageSource.uri(uri))
+//            scope.launch {
+//                Picasso.get()
+//                    .load(uri)
+//                    .into(binding.imgItemVp)
+//            }
+
+            if(!b) {
+                scope.launch {
+                    binding.imgItemVpSub.visibility = View.VISIBLE
+                    binding.imgItemVp.visibility = View.GONE
+                    binding.imgItemVpSub.orientation = ImageManager.imageRotationPreview(uri, addSF.activity as MainActivity)
+                    binding.imgItemVpSub.setImage(ImageSource.uri(uri))
+                }
+            }else{
+                binding.imgItemVpSub.visibility = View.GONE
+                binding.imgItemVp.visibility = View.VISIBLE
+                Picasso.get().load(uri).into(binding.imgItemVp)
             }
 
         }
@@ -48,16 +72,22 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
     }
 
     override fun onBindViewHolder(holder: VpHolder, position: Int) {
-            holder.setData(arrayPhoto[position], addSF, scope)
+            holder.setData( addSF, scope, arrayPhoto[position], arrayPhotoBool[position]!!)
     }
 
     override fun getItemCount(): Int {
         return arrayPhoto.size
     }
 
-    fun updateAdapter(arrayListPhoto: List<Uri>) {
+    fun updateAdapter(arrayListPhoto: List<Uri>, b: Boolean) {
         arrayPhoto.clear()
         arrayPhoto.addAll(arrayListPhoto)
+        arrayPhotoBool.clear()
+        Log.d("!!!parseUri", "${arrayPhotoBool}")
+        for (n in 0..4){
+            arrayPhotoBool.put(n, b)
+        }
+        Log.d("!!!parseUri", "${arrayPhotoBool}")
         addSF.rootElement!!.apply {
             imgAddPhoto.visibility = View.GONE
             clEditPhoto.visibility = View.VISIBLE
@@ -68,10 +98,30 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
             addSF.tabLayoutMediator(true)
         }
         notifyDataSetChanged()
-
     }
+    /*fun updateAdapterFromStorage(photoes: ArrayList<String>, b: Boolean) {
+        arrayPhotoFromStorage.clear()
+        arrayPhotoFromStorage.addAll(photoes)
+        addSF.rootElement!!.apply {
+            imgAddPhoto.visibility = View.GONE
+            clEditPhoto.visibility = View.VISIBLE
+            if (arrayPhotoFromStorage.size == 5) fabAddImage.visibility = View.GONE
+        }
+        Log.d("!!!addPhotoo",  "${photoes}")
+        if(arrayPhotoFromStorage.size > 1) {
+            addSF.tabLayoutMediator(true)
+        }
+        notifyDataSetChanged()
+    }*/
     fun updateAdapterForSinglePhoto(arrayListPhoto: List<Uri>) {
+        var size = arrayPhoto.size
         arrayPhoto.addAll(arrayListPhoto)
+        Log.d("!!!parseUri", "${arrayPhotoBool}")
+        arrayListPhoto.forEach { _ ->
+            arrayPhotoBool.put(size, false)
+            size++
+        }
+        Log.d("!!!parseUri", "${arrayPhotoBool}")
         if (arrayPhoto.size == 5) addSF.rootElement!!.fabAddImage.visibility = View.GONE
 //        notifyItemInserted(0)
         Log.d("!!!addPhotoo",  "${arrayPhoto.size}")
@@ -84,8 +134,16 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
 
     fun removeItemAdapter(numPage: Int){
         arrayPhoto.removeAt(numPage)
-//        Log.d("!!!delPhotoo",  "${arrayPhoto}")
-//        Log.d("!!!delPhotoo",  "${numPage}")
+        Log.d("!!!parseUri", "${arrayPhotoBool}")
+        for(n in 0..4) {
+            if(n in numPage..3) {
+                if(n<4) arrayPhotoBool[n+1]?.let { arrayPhotoBool.put(n, it) }
+            }
+
+        }
+
+        Log.d("!!!parseUri", "${arrayPhotoBool}")
+
         if (arrayPhoto.size < 5) addSF.rootElement!!.fabAddImage.visibility = View.VISIBLE
         if(arrayPhoto.size < 2) {
             addSF.tabLayoutMediator(false)
@@ -98,8 +156,12 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
         notifyItemRemoved(numPage)
     }
     fun replaceItemAdapter( arrayListPhoto: List<Uri>){
+        Log.d("!!!parseUri", "${arrayPhotoBool}")
         arrayPhoto.removeAt(addSF.viewModel.numPage)
+        arrayPhotoBool[addSF.viewModel.numPage] = false
+        Log.d("!!!parseUri", "${arrayPhotoBool}")
         arrayPhoto.add(addSF.viewModel.numPage, arrayListPhoto[0])
         notifyDataSetChanged()
     }
+
 }
