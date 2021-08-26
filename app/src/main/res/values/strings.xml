@@ -71,5 +71,8 @@
     <string name="state_badge_label">State badge</string>
     <string name="wait_download_photo">Please wait for All photo uploaded</string>
 
+    <!-- Intro fragment-->
+    <string name="content_description">Intro Fragment</string>
+    <string name="title_1">Описание того, для чего нужно это приложение! Описание того, для чего нужно это приложение!</string>
 
 </resources>

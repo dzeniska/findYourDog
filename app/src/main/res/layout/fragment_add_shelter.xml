@@ -151,6 +151,7 @@
                     android:inputType="phone"
                     android:padding="10dp"
 
+                    android:phoneNumber="true"
                     android:textColor="@color/back_menu_add_color"
                     android:textColorHint="@color/text_hint_add"
                     app:layout_constraintEnd_toEndOf="parent"

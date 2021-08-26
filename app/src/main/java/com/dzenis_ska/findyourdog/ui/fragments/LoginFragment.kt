@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -22,13 +21,10 @@ import com.dzenis_ska.findyourdog.remoteModel.firebase.AuthInterface
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.android.synthetic.main.fragment_login.*
 
 
-class LoginFragment() : Fragment(), AuthInterface {
+class LoginFragment : Fragment(), AuthInterface {
 
     val viewModel: BreedViewModel by activityViewModels()
     var rootElement: FragmentLoginBinding? = null
@@ -40,9 +36,10 @@ class LoginFragment() : Fragment(), AuthInterface {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        rootElement = FragmentLoginBinding.inflate(inflater)
+        val rootElement = FragmentLoginBinding.inflate(inflater)
+        this.rootElement = rootElement
         // Inflate the layout for this fragment
-        return rootElement!!.root
+        return rootElement.root
     }
 
     override fun onResume() {
@@ -52,14 +49,12 @@ class LoginFragment() : Fragment(), AuthInterface {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         init()
         onClick()
-
     }
 
     fun showElements(bool: Boolean) {
-        rootElement.apply {
+        rootElement?.apply {
             if (bool) {
                 imgButtonEnter.setImageResource(R.drawable.ic_in_white)
                 tvEnter.text = "Вход"
@@ -73,20 +68,17 @@ class LoginFragment() : Fragment(), AuthInterface {
     @SuppressLint("SetTextI18n")
     private fun currentUser(currentUser: FirebaseUser?) {
 
-        rootElement.apply {
+        rootElement?.apply {
             if (currentUser == null) {
                 fbAuth.signInAnonimously(context as MainActivity, object : FBAuth.Listener {
                     override fun onComplete() {
                         tvRegIn.text = "Вы вошли как Гость"
                         Log.d("!!!userLFonComplete", "${currentUser?.uid}")
-
                     }
                 })
             } else if (currentUser.isAnonymous) {
                 Log.d("!!!userLFisAnonimous", "${currentUser?.uid}")
                 tvRegIn.text = "Привет, Незнакомец!)"
-
-
             } else if (!currentUser.isAnonymous) {
                 tvForgotPas.visibility = View.GONE
                 imgButtonForgot.visibility = View.GONE
@@ -100,31 +92,27 @@ class LoginFragment() : Fragment(), AuthInterface {
         }
     }
 
-
-    private fun onClick() = with(rootElement) {
-//        val scope = CoroutineScope(Dispatchers.Main)
-
-        imgButtonEnter.setOnClickListener(enterEmailAndPassword(fbAuth))
-
-        imgButtonExit.setOnClickListener {
-            if (fbAuth.mAuth.currentUser?.email != null) {
-                fbAuth.mAuth.signOut()
-                tvForgotPas.visibility = View.GONE
-                imgButtonForgot.visibility = View.GONE
-                currentUser(null)
+    private fun onClick() {
+        rootElement?.apply {
+            imgButtonEnter.setOnClickListener(enterEmailAndPassword(fbAuth))
+            imgButtonExit.setOnClickListener {
+                if (fbAuth.mAuth.currentUser?.email != null) {
+                    fbAuth.mAuth.signOut()
+                    tvForgotPas.visibility = View.GONE
+                    imgButtonForgot.visibility = View.GONE
+                    currentUser(null)
+                }
+                viewModel.uiUpdateMain(null)
             }
-            viewModel.uiUpdateMain(null)
-        }
-
-        imgButtonForgot.setOnClickListener() {
-            setOnClickResetPassword()
+            imgButtonForgot.setOnClickListener() {
+                setOnClickResetPassword()
+            }
         }
     }
 
-
     private fun init() {
         navController = findNavController()
-        rootElement.apply {
+        rootElement?.apply {
             edEmail.apply {
                 afterTextChanged {
                     if (it.length > 1) {
@@ -157,88 +145,96 @@ class LoginFragment() : Fragment(), AuthInterface {
     }
 
     fun uiUpdateMain(user: FirebaseUser?) {
-        viewModel.uiUpdateMain(user)
-        tvRegIn.animation = AnimationUtils.loadAnimation(context, R.anim.alpha_replace_user_up)
-        tvRegIn.visibility = View.VISIBLE
-        currentUser(user)
+        rootElement?.apply {
+            viewModel.uiUpdateMain(user)
+            tvRegIn.animation = AnimationUtils.loadAnimation(context, R.anim.alpha_replace_user_up)
+            tvRegIn.visibility = View.VISIBLE
+            currentUser(user)
+        }
     }
 
     override fun uiReplacePassword() {
-        rootElement!!.tvForgotPas.visibility = View.VISIBLE
-        rootElement!!.imgButtonForgot.visibility = View.VISIBLE
+        rootElement?.apply {
+            tvForgotPas.visibility = View.VISIBLE
+            imgButtonForgot.visibility = View.VISIBLE
+        }
     }
 
     private fun setOnClickResetPassword() {
-        if (edEmail.text.isNotEmpty()) {
-            fbAuth.mAuth.sendPasswordResetEmail(edEmail.text.toString())
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Toast.makeText(
-                            activity,
-                            R.string.email_reset_password_was_send,
-                            Toast.LENGTH_LONG
-                        ).show()
-                        rootElement!!.tvForgotPas.visibility = View.GONE
-                        rootElement!!.imgButtonForgot.visibility = View.GONE
-                    } else {
-                        Toast.makeText(
-                            activity,
-                            R.string.email_reset_password_was_not_send,
-                            Toast.LENGTH_LONG
-                        ).show()
+        rootElement?.apply {
+            if (edEmail.text.isNotEmpty()) {
+                fbAuth.mAuth.sendPasswordResetEmail(edEmail.text.toString())
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Toast.makeText(
+                                activity,
+                                R.string.email_reset_password_was_send,
+                                Toast.LENGTH_LONG
+                            ).show()
+                            tvForgotPas.visibility = View.GONE
+                            imgButtonForgot.visibility = View.GONE
+                        } else {
+                            Toast.makeText(
+                                activity,
+                                R.string.email_reset_password_was_not_send,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
-                }
-        } else {
-            Toast.makeText(activity, R.string.fill_the_email, Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(activity, R.string.fill_the_email, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 
     private fun enterEmailAndPassword(fbAuth: FBAuth): View.OnClickListener {
         return View.OnClickListener {
-            if (tvEnter.text == "Карта") {
-                navController.navigate(R.id.mapsFragment)
-            } else {
-                rootElement.apply {
-                    imgInUp.animation = AnimationUtils.loadAnimation(context, R.anim.rotation)
-                    tvRegIn.animation =
-                        AnimationUtils.loadAnimation(context, R.anim.alpha_replace_user_down)
-                    tvRegIn.visibility = View.GONE
+            rootElement?.apply {
+                if (tvEnter.text == "Карта") {
+                    navController.navigate(R.id.mapsFragment)
+                } else {
+                    rootElement.apply {
+                        imgInUp.animation = AnimationUtils.loadAnimation(context, R.anim.rotation)
+                        tvRegIn.animation =
+                            AnimationUtils.loadAnimation(context, R.anim.alpha_replace_user_down)
+                        tvRegIn.visibility = View.GONE
 
-                    if (edEmail.text.isNotEmpty() && edPassword.text.isNotEmpty()) {
-                        if (!edEmail.text.contains('@') || !edEmail.text.contains('.')) {
-                            Toast.makeText(
-                                context,
-                                "Поле Email должно включать символы '@' и '.'",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        } else if (edPassword.text.toString().length < 6) {
-                            Toast.makeText(
-                                context,
-                                "Пароль должен содержать не менее 6 символов",
-                                Toast.LENGTH_LONG
-                            ).show()
+                        if (edEmail.text.isNotEmpty() && edPassword.text.isNotEmpty()) {
+                            if (!edEmail.text.contains('@') || !edEmail.text.contains('.')) {
+                                Toast.makeText(
+                                    context,
+                                    "Поле Email должно включать символы '@' и '.'",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            } else if (edPassword.text.toString().length < 6) {
+                                Toast.makeText(
+                                    context,
+                                    "Пароль должен содержать не менее 6 символов",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            } else {
+                                fbAuth.signUpWithEmail(
+                                    edEmail.text.toString(),
+                                    edPassword.text.toString(),
+                                    context as MainActivity
+                                )
+                            }
                         } else {
-                            fbAuth.signUpWithEmail(
-                                edEmail.text.toString(),
-                                edPassword.text.toString(),
-                                context as MainActivity
+                            Toast.makeText(
+                                context,
+                                "Вы забыли ввести Email или Password",
+                                Toast.LENGTH_LONG
                             )
+                                .show()
                         }
-                    } else {
-                        Toast.makeText(
-                            context,
-                            "Вы забыли ввести Email или Password",
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
                     }
                 }
             }
         }
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         rootElement = null
-        super.onDestroy()
+        super.onDestroyView()
     }
 }

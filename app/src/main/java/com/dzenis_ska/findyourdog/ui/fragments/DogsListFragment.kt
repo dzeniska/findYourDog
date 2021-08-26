@@ -30,6 +30,7 @@ class DogsListFragment : Fragment() {
     private var job2: Job? = null
 
 
+
     //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
 //        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
@@ -51,7 +52,7 @@ class DogsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.showAllBreeds()
+        isFavRecycler(viewModel.isFav)
         navController = findNavController()
         initSearchView()
 
@@ -77,6 +78,21 @@ class DogsListFragment : Fragment() {
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(activity)
         adapter.notifyDataSetChanged()
+
+        fabLike.setOnClickListener() {
+            viewModel.isFav = !viewModel.isFav
+            isFavRecycler(viewModel.isFav)
+        }
+    }
+
+    private fun isFavRecycler(boolean: Boolean){
+        if(boolean){
+            viewModel.selectFavorites()
+            fabLike.setImageResource(R.drawable.paw_red_2)
+        }else{
+            viewModel.showAllBreeds()
+            fabLike.setImageResource(R.drawable.paw_blue)
+        }
     }
 
     private fun initSwipeRefresh() {
@@ -115,16 +131,14 @@ class DogsListFragment : Fragment() {
             viewModel.getItemImg(breeds[position].name?.lowercase(Locale.ROOT).toString() )
     }
 
-    fun initSearchView(){
+    private fun initSearchView(){
+
         searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
-            override fun onQueryTextChange(newText: String?): Boolean {
-
-                var txt = ""
-                txt = newText!!
-                viewModel.searchView(arrayOf("%$txt%"))
+            override fun onQueryTextChange(newText: String): Boolean {
+                        viewModel.searchView(arrayOf("%$newText%"), newText)
                 return true
             }
         })

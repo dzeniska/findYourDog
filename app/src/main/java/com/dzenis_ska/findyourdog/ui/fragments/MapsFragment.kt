@@ -117,6 +117,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         Log.d("!!!", "getLoc")
+        dialogF?.dismiss()
         // получаем последнюю локацию
         fusedLocationClient.lastLocation
                 .addOnSuccessListener { location : Location? ->
@@ -248,6 +249,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         Log.d("!!!", "onLocationChanged")
         lat = location.latitude
         lng = location.longitude
+
         setMarker(lat, lng, 10f)
         if(lat != lastLat && lng != lastLng) {
             locationManager.removeUpdates(this)
@@ -276,7 +278,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 marker.alpha = 0.6f
             }
         }
-        dialogF?.dismiss()
     }
     override fun onInfoWindowClick(markerInfo: Marker) {
         for(info in viewModel.listShelter){

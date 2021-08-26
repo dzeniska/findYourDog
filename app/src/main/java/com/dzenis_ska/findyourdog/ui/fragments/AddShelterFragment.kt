@@ -116,6 +116,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mapView.getMapAsync(this)
         mapView.requestDisallowInterceptTouchEvent(false)
 
+
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
 
@@ -327,15 +328,15 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
 
             fabDeleteShelter.setOnClickListener {
+                val listDel = SortListPhoto.subStringDel(viewModel.listPhoto)
+                if (listDel.size != 0) listDel.forEach { deletePhoto(it) }
                 viewModel.deleteAdShelter(
                     adShelterToEdit,
                     object : BreedViewModel.WritedDataCallback {
                         override fun writedData() {
                             navController.popBackStack(R.id.addShelterFragment, true)
                             navController.navigate(R.id.mapsFragment)
-
                         }
-
                     })
             }
 
@@ -603,25 +604,17 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     }
 
-//    override fun onRequestPermissionsResult(
-//        requestCode: Int,
-//        permissions: Array<out String>,
-//        grantResults: IntArray
-//    ) {
-//        if (requestCode != AddShelterFragment.LOCATION_PERMISSION_REQUEST_CODE_1) {
-//            return
-//        }
-//        if (requestCode == locationPermissionCode) {
-//            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                Toast.makeText(activity as MainActivity, "Permission Granted", Toast.LENGTH_SHORT)
-//                    .show()
-//            } else {
-//                Toast.makeText(activity as MainActivity, "Permission Denied", Toast.LENGTH_SHORT)
-//                    .show()
-//            }
-//        }
+//    override fun onLocationChanged(location: Location) {
+//        listener?.onLocationUpdated(LocationParserUtil.getLocationMapFromLocation(location))
 //    }
 
+    override fun onProviderDisabled(provider: String) {
+        // nop
+    }
+
+    override fun onProviderEnabled(provider: String) {
+        // nop
+    }
 }
 
 

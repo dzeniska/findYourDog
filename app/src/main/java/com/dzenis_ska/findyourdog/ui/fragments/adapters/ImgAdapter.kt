@@ -20,7 +20,7 @@ class ImgAdapter(val list: MutableList<String>, val breed: DogBreeds, val contex
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val photo = itemView.findViewById<ImageView>(R.id.imgItemView)
-        val progressBar = itemView.findViewById<View>(R.id.progressBar)
+        val progressBar = itemView.findViewById<View>(R.id.progressBarL)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

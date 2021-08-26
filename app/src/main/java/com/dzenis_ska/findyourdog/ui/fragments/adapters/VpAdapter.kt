@@ -8,14 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.ImageSource
+import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.VpAdapterItemBinding
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.AddShelterFragment
 import com.dzenis_ska.findyourdog.ui.utils.imageManager.ImageManager
+import com.squareup.picasso.Callback
+import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 
 
 class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.VpHolder>() {
@@ -59,7 +63,25 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
             }else{
                 binding.imgItemVpSub.visibility = View.GONE
                 binding.imgItemVp.visibility = View.VISIBLE
-                Picasso.get().load(uri).into(binding.imgItemVp)
+//                Picasso.get().load(uri).into(binding.imgItemVp)
+                binding.progressBarS.visibility = View.VISIBLE
+                Picasso.get()
+                    .load(uri)
+                    .placeholder(R.drawable.ic_wait_a_litle)
+                    .error(R.drawable.ic_no_connection)
+//            .resize(100, 100)
+                    .centerCrop()
+                    .fit()
+                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+//                .into(pict)
+                    .into(binding.imgItemVp, object : Callback {
+                        override fun onSuccess() {
+                            binding.progressBarS.visibility = View.GONE
+                        }
+                        override fun onError(e: Exception?) {
+                            binding.progressBarS.visibility = View.GONE
+                        }
+                    })
             }
 
         }

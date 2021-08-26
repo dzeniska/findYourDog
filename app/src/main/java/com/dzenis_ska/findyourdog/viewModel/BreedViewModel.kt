@@ -14,7 +14,6 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 
 class BreedViewModel(val repository: Repository) : ViewModel() {
@@ -31,6 +30,7 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     var countSelectedPhoto: Int = 0
     var numPage: Int = 0
     var btnDelState: Boolean? = false
+    var isFav: Boolean = false
 
 
     //    val breedLive: MutableLiveData<MutableList<DogBreeds>> by lazy {
@@ -229,10 +229,19 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
         }
     }
 
-    fun searchView(breed: Array<String>) {
+    fun searchView(breed: Array<String>, newText: String) {
         scope.launch {
             val data = repository.searchView(breed)
-            breedLive.postValue(data)
+            if(!isFav) {
+                breedLive.postValue(data)
+            }else{
+
+                val list = mutableListOf<DogBreeds>()
+                data.forEach {
+                    if(it.isFavorite == 1) list.add(it)
+                }
+                breedLive.postValue(list)
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 package com.dzenis_ska.findyourdog.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 
 import android.content.pm.PackageManager
@@ -10,6 +11,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 
 import android.view.*
 import android.widget.TextView
@@ -37,7 +39,7 @@ import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
-import kotlinx.android.synthetic.main.fragment_first.constraintLayout
+//import kotlinx.android.synthetic.main.fragment_first.constraintLayout
 import kotlinx.android.synthetic.main.intro_main.*
 import javax.inject.Inject
 
@@ -104,7 +106,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 super.onDrawerSlide(drawerView, slideOffset)
                 val slideX = drawerView.width * slideOffset
                 apptool.alpha = (1 - slideOffset)
-                constraintLayout.visibility = View.VISIBLE
+//                constraintLayout.visibility = View.VISIBLE
                 constraintLayout.setTranslationX(slideX)
                 constraintLayout.setScaleX(1 - slideOffset)
                 // constraintLayout.setScaleY(1 - slideOffset)
@@ -146,7 +148,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawerLayout.setScrimColor(Color.TRANSPARENT)
 
         //открываем drawer
-        drawerLayout.openDrawer(GravityCompat.START)
+//        drawerLayout.openDrawer(GravityCompat.START)
         tvHeaderAcc = nav_view.getHeaderView(0).findViewById(R.id.tvHeaderAcc)
     }
 
@@ -166,7 +168,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+//            navController.popBackStack()
         when (item.itemId) {
             R.id.dogs_list -> {
                 navController.navigate(R.id.dogsListFragment)

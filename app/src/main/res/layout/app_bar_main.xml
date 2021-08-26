@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/apptool"
-    android:alpha="0.0"
+    android:alpha="1.0"
     tools:context=".ui.MainActivity">
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"

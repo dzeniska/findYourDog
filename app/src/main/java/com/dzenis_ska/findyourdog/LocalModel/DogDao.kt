@@ -36,6 +36,7 @@ interface DogDao {
 
     @Query("SELECT * FROM breeds WHERE name LIKE :breed")
     suspend fun searchView(breed: kotlin.Array<kotlin.String>):MutableList<DogBreeds>
+
     @Insert
     suspend fun insertOnePost(newBreed: DogBreeds)
 

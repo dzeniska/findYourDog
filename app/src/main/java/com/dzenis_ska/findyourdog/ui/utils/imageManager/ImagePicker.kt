@@ -55,6 +55,8 @@ object ImagePicker {
                 }
                 PixEventCallback.Status.BACK_PRESSED -> {
                     Log.d("!!!PixBackPressed", "Pix")
+                    addSF.hideAddShelterButton(true, 1)
+                    closePixFragment(mAct)
                 }
             }
         }
