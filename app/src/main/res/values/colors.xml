@@ -6,8 +6,8 @@
     <color name="colorBackgroundStatusBar">#41FF9800</color>
     <color name="nav_bar_color">#663d00</color>
     <color name="main_background">#FFD54F</color>
-    <color name="intro_back_button">#F4D77E</color>
-    <color name="intro_back_button_pressed">#FFEEB8</color>
+    <color name="intro_back_button_pressed">#F4D77E</color>
+    <color name="intro_back_button">#FFEEB8</color>
     <color name="main_background_50">#83FFD54F</color>
     <color name="nav_color_title">#FF3D00</color>
     <color name="background_drawer">#3B4BF4DB</color>
@@ -19,6 +19,7 @@
     <color name="back_menu_one_breed_color">#42A5F5</color>
     <color name="back_color_login">#26A69A</color>
     <color name="img_color">#80B7E3</color>
+    <color name="img_color_map">#85E3D680</color>
     <color name="float_button">#1A42A5F5</color>
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>

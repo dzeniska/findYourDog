@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
@@ -20,28 +19,31 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.FragmentMapsBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
 import com.dzenis_ska.findyourdog.ui.MainActivity
-import com.dzenis_ska.findyourdog.ui.utils.ProgressDialog
+import com.dzenis_ska.findyourdog.ui.fragments.adapters.MapPhotoAdapter
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
-import kotlinx.android.synthetic.main.fragment_add_shelter.*
 import kotlinx.android.synthetic.main.fragment_maps.*
-import kotlin.random.Random
+import kotlinx.coroutines.*
 
 
 class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMyLocationButtonClickListener,
-    GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener {
+    GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener,
+    GoogleMap.OnMarkerClickListener {
 
     val viewModel: BreedViewModel by activityViewModels()
     var rootElement: FragmentMapsBinding? = null
@@ -50,6 +52,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
     private lateinit var mMap: GoogleMap
+    var adapter: MapPhotoAdapter? = null
     var marker: Marker? = null
     var addCircle: Circle? = null
     var lat: Double = 0.0
@@ -58,6 +61,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var lastLng: Double = 0.0
     var mapFragment: SupportMapFragment? = null
     var dialogF: AlertDialog? = null
+    val listAdShelter = arrayListOf<AdShelter>()
+    val listAdShelterMainPhoto = mutableListOf<String>()
+    var job2: Job? = null
+    var job3: Job? = null
+    val cs = ConstraintSet()
 
 
     //для определения последней локации
@@ -88,7 +96,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         viewModel.liveAdsDataAllShelter.observe(viewLifecycleOwner,{list ->
             val list1 = list
             if (::mMap.isInitialized) {
-                getAllMarkers(list1)
+                getAllMarkers(list1, null)
+                listAdShelter.clear()
+                listAdShelter.addAll(list1)
             }
         })
 
@@ -109,9 +119,15 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun init(){
-        if(viewModel.dbManager.auth.currentUser?.isAnonymous == false && viewModel.dbManager.auth.currentUser != null){
-            rootElement?.floatBtnAddShelter?.visibility = View.VISIBLE
+        if(viewModel.dbManager.auth.currentUser?.isAnonymous == false && viewModel.dbManager.auth.currentUser != null ){
+            if(viewModel.dbManager.auth.currentUser!!.isEmailVerified == true)rootElement?.floatBtnAddShelter?.visibility = View.VISIBLE
         }
+        adapter = MapPhotoAdapter(this)
+        rootElement!!.rcViewMapPhoto.adapter = adapter
+        rootElement!!.rcViewMapPhoto.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        val snapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(rootElement!!.rcViewMapPhoto)
+
     }
 
     @SuppressLint("MissingPermission")
@@ -145,8 +161,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mMap.setOnMyLocationClickListener(this)
         mMap.setInfoWindowAdapter(CustomInfoWindowAdapter())
         mMap.setOnInfoWindowClickListener(this)
+        mMap.setOnMarkerClickListener(this)
+
         getPermission()
     }
+
+
 
 
     /** Demonstrates customizing the info window and/or its contents.  */
@@ -158,6 +178,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         private val contents: View = layoutInflater.inflate(R.layout.custom_info_contents, null)
 
         override fun getInfoWindow(marker: Marker): View? {
+
             render(marker, window)
             return window
         }
@@ -169,8 +190,30 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         private fun render(marker: Marker, view: View) {
             val badge = R.drawable.add_photo
-
+            var uri = ""
+            listAdShelter.forEach {
+                if (it.key == marker.tag) {
+                    uri = it.photoes?.get(0) ?: ""
+                }
+            }
+//            for(info in viewModel.listShelter){
+//                if(info.key == marker.tag){
+//                    view.findViewById<ImageView>(R.id.badge).setImageURI(info.photoes?.get(0)?.toUri())
+//                }
+//            }
             view.findViewById<ImageView>(R.id.badge).setImageResource(badge)
+//            val viewPhoto = view.findViewById<ImageView>(R.id.badge)
+//            Log.d("!!!photoMark", "${uri}")
+
+//                Picasso.get()
+//                    .load(uri)
+//                    .placeholder(R.drawable.ic_wait_a_litle)
+//                    .error(R.drawable.ic_no_connection)
+//                .resize(10, 10)
+//                    .transform(CropSquareTransformation())
+//                .centerCrop()
+////                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
+//                    .into(viewPhoto)
 
             // Set the title and snippet for the custom info window
             val title: String? = marker.title
@@ -258,8 +301,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    private fun getAllMarkers(list: List<AdShelter>){
+    private fun getAllMarkers(list: List<AdShelter>, chose: String?){
         mMap.clear()
+        val listMainPhoto = arrayListOf<String>()
         for(item in list){
             val target = LatLng(item.lat!!.toDouble(), item.lng!!.toDouble())
             val marker = mMap.addMarker(
@@ -273,11 +317,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             )
 
             marker!!.tag = item.key
+            if(marker.tag == chose) marker.showInfoWindow()
+            item.photoes?.get(0)?.let { listMainPhoto.add(it) }
             if(item.uid == viewModel.dbManager.auth.uid) {
-                marker.showInfoWindow()
+//                marker.showInfoWindow()
                 marker.alpha = 0.6f
             }
         }
+        adapter?.updateAdapter(listMainPhoto)
     }
     override fun onInfoWindowClick(markerInfo: Marker) {
         for(info in viewModel.listShelter){
@@ -290,8 +337,22 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
+    fun animateCamera(pos: Int){
+        if(job2 == null) {
+            job2 = CoroutineScope(Dispatchers.Main).launch {
+                getAllMarkers(listAdShelter, listAdShelter[pos].key)
+                val target =
+                    LatLng(listAdShelter[pos].lat!!.toDouble(), listAdShelter[pos].lng!!.toDouble())
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 10f))
+                delay(1500)
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 16f))
+                job2 = null
+            }
+        }
+    }
+
     private fun setMarker(lat: Double, lng: Double, zoom: Float) {
-        var target = LatLng(lat, lng)
+        val target = LatLng(lat, lng)
         marker?.remove()
         addCircle?.remove()
         val circleOptions = CircleOptions()
@@ -317,7 +378,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
         Log.d("!!!", "onStatusChanged $provider")
     }
@@ -336,6 +396,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onStop() {
+        job3?.cancel()
         mapFragment?.onStop()
         super.onStop()
         Log.d("!!!", "onStop")
@@ -366,8 +427,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onDestroy() {
         Log.d("!!!", "onDestroy")
         mapFragment?.onDestroy()
-        rootElement = null
         super.onDestroy()
+    }
+    override fun onDestroyView() {
+        Log.d("!!!", "onDestroyView")
+        rootElement = null
+        super.onDestroyView()
     }
 
     override fun onPause() {
@@ -378,5 +443,42 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onLowMemory() {
         super.onLowMemory()
         mapFragment?.onLowMemory()
+    }
+
+    override fun onMarkerClick(m: Marker): Boolean {
+        Log.d("!!!marker", "${m.tag}")
+        clickMarker(m)
+        return false
+    }
+
+    private fun clickMarker(m: Marker) {
+        listAdShelter.forEach {
+            if (it.key == m.tag) {
+                val index = listAdShelter.indexOf(it)
+                if(job3 == null) {
+                    job3 = CoroutineScope(Dispatchers.Main).launch {
+                        var height = rootElement!!.rcViewMapPhoto.height
+                        constraint(height.minus(10))
+                        delay(10)
+                        scrollToPos(index)
+                        delay(4000)
+                        constraint(ConstraintSet.MATCH_CONSTRAINT)
+
+                        job3 = null
+                    }
+                }
+            }
+        }
+    }
+
+    private fun scrollToPos(index: Int) {
+        rootElement!!.rcViewMapPhoto.smoothScrollToPosition(index)
+    }
+
+    private fun constraint(i: Int) {
+            cs.clone(rootElement!!.clFM)
+            cs.constrainWidth(R.id.rcViewMapPhoto, i)
+            Log.d("!!!markInd", "${i}")
+            cs.applyTo(rootElement!!.clFM)
     }
 }

@@ -4,6 +4,7 @@ package com.dzenis_ska.findyourdog.viewModel
 import android.app.AlertDialog
 import android.net.Uri
 import android.util.Log
+import androidx.constraintlayout.helper.widget.Carousel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
@@ -64,6 +65,7 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     val liveAdsDataAddShelter = MutableLiveData<AdShelter?>()
     val listPhoto = arrayListOf<String>()
     val dialog = MutableLiveData<AlertDialog>()
+//////////////////////////////////////////////////////////////////////
 
     fun listPhoto(listP: ArrayList<String>) {
         listPhoto.clear()

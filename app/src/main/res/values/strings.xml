@@ -21,7 +21,7 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="dogs_list">Список пород</string>
     <string name="add_dog">Добавить в список</string>
-    <string name="first">Привет</string>
+    <string name="first">Привет всем!</string>
     <string name="favorites">Самые прикольные</string>
     <string name="note_edit">Редактор заметки</string>
     <string name="one_breed">Вот такой пёсель</string>
@@ -48,7 +48,7 @@
     <string name="reg_up_is_successful">Удачная регистрация, человек!</string>
     <string name="error_reg">Ошибка регистрации!</string>
     <string name="error_enter">Ошибка входа!</string>
-    <string name="email_add">Проверте Вашу почту для подтверждения Email!</string>
+    <string name="email_add">Подтвердите регистрацию по Email и нажмите \"войти\"</string>
     <string name="email_no_add">Ошибка отправки подтверждения регистрации по Email!</string>
 
 
@@ -73,6 +73,9 @@
 
     <!-- Intro fragment-->
     <string name="content_description">Intro Fragment</string>
-    <string name="title_1">Описание того, для чего нужно это приложение! Описание того, для чего нужно это приложение!</string>
+    <string name="title_1"> \n DogTherapy расскажет Вам, как круто  и  важно дружить с собаками! \n Они же такие разные</string>
+    <string name="title_2">Можете прогуляться с собакеном </string>
+    <string name="more_photo">Больше фото</string>
+    <string name="first_photo">Капитан</string>
 
 </resources>

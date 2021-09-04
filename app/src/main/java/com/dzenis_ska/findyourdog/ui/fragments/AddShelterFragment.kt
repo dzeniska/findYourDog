@@ -362,7 +362,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         dialog.show()
         val vpArray = vpAdapter.arrayPhoto
         val listPhotoForDel = SortListPhoto.listPhotoForDel(viewModel.listPhoto, vpArray)
-        if (listPhotoForDel.size != 0) listPhotoForDel.forEach { deletePhoto(it) }
+        if (listPhotoForDel.size != 0 && viewModel.btnDelState == false) listPhotoForDel.forEach { deletePhoto(it) }
         if(vpAdapter.arrayPhoto.size != 0) {
             addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
         }else{

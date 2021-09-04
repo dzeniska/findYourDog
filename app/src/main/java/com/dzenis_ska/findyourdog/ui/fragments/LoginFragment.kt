@@ -79,7 +79,7 @@ class LoginFragment : Fragment(), AuthInterface {
             } else if (currentUser.isAnonymous) {
                 Log.d("!!!userLFisAnonimous", "${currentUser?.uid}")
                 tvRegIn.text = "Привет, Незнакомец!)"
-            } else if (!currentUser.isAnonymous) {
+            } else if (!currentUser.isAnonymous && currentUser.isEmailVerified){
                 tvForgotPas.visibility = View.GONE
                 imgButtonForgot.visibility = View.GONE
                 Log.d("!!!userLFisNoAnonimous", "${currentUser?.uid}")
@@ -87,7 +87,14 @@ class LoginFragment : Fragment(), AuthInterface {
                     |${currentUser.email}
                 """.trimMargin()
                 showElements(false)
-
+            } else if (!currentUser.isAnonymous) {
+                tvForgotPas.visibility = View.GONE
+                imgButtonForgot.visibility = View.GONE
+                Log.d("!!!userLFisNoAnonimous", "${currentUser?.uid}")
+                tvRegIn.text = """Привет
+                    |${currentUser.email}
+                """.trimMargin()
+//                showElements(false)
             }
         }
     }
