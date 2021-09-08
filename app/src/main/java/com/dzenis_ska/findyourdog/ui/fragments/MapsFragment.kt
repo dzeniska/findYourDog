@@ -122,6 +122,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         if(viewModel.dbManager.auth.currentUser?.isAnonymous == false && viewModel.dbManager.auth.currentUser != null ){
             if(viewModel.dbManager.auth.currentUser!!.isEmailVerified == true)rootElement?.floatBtnAddShelter?.visibility = View.VISIBLE
         }
+
         adapter = MapPhotoAdapter(this)
         rootElement!!.rcViewMapPhoto.adapter = adapter
         rootElement!!.rcViewMapPhoto.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
@@ -372,7 +373,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mMap.setOnCameraMoveListener {
 //            marker?.position = mMap.getCameraPosition().target //to center in map
 //            target = marker!!.position
-
             //здесь сохраняем данные местоположения
 //            Log.d("!!!target", "target $target")
         }

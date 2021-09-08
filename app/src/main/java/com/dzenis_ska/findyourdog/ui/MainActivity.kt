@@ -27,9 +27,12 @@ import androidx.core.view.MenuItemCompat
 import androidx.lifecycle.Observer
 
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.NavHostFragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.dzenis_ska.findyourdog.R
+import com.dzenis_ska.findyourdog.databinding.ActivityMainBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.fragments.LoginFragment
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
@@ -37,10 +40,7 @@ import com.dzenis_ska.findyourdog.viewModel.BreedViewModelFactory
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.app_bar_main.*
-//import kotlinx.android.synthetic.main.fragment_first.constraintLayout
-import kotlinx.android.synthetic.main.intro_main.*
+
 import javax.inject.Inject
 
 
@@ -56,6 +56,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     val fragment = LoginFragment()
     val fbAuth = FBAuth(fragment)
 
+    var rootElement: ActivityMainBinding? = null
+
     @Inject
     lateinit var factory: BreedViewModelFactory
     private val viewModel: BreedViewModel by viewModels {
@@ -64,14 +66,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        rootElement = ActivityMainBinding.inflate(layoutInflater)
+
+//        return rootElement.root
+        setContentView(rootElement!!.root )
 
 
         init()
 
         getPermission()
-
-        nav_view.setNavigationItemSelectedListener(this)
+        rootElement!!.navView.setNavigationItemSelectedListener(this)
 
         openCloseDrawer()
 
@@ -99,20 +103,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun openCloseDrawer() {
         //работа при откр-закр drawer
+
         val toggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(
-            this, drawerLayout, toolbar, android.R.string.yes, android.R.string.no
+            this, rootElement!!.drawerLayout, rootElement!!.appBar.toolbar, android.R.string.yes, android.R.string.no
         ) {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 super.onDrawerSlide(drawerView, slideOffset)
                 val slideX = drawerView.width * slideOffset
-                apptool.alpha = (1 - slideOffset)
+                rootElement!!.appBar.apptool.alpha = (1 - slideOffset)
 //                constraintLayout.visibility = View.VISIBLE
-                constraintLayout.setTranslationX(slideX)
-                constraintLayout.setScaleX(1 - slideOffset)
+                    rootElement!!.appBar.introMain.constraintLayout.setTranslationX(slideX)
+                    rootElement!!.appBar.introMain.constraintLayout.setScaleX(1 - slideOffset)
+
                 // constraintLayout.setScaleY(1 - slideOffset)
             }
         }
-        drawerLayout.addDrawerListener(toggle)
+        rootElement!!.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
     }
@@ -131,7 +137,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         viewModel.breedFavLive.observe(this, Observer {
             //добавляем счётчик в item menu_drawer
             mSlideshowTextView = MenuItemCompat.getActionView(
-                nav_view.menu.findItem(R.id.show_fav)
+                rootElement!!.navView.menu.findItem(R.id.show_fav)
             ) as (TextView)
             initializeCountDrawer(it.size)
         })
@@ -139,17 +145,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         viewModel.selectBreed()
 
-        navController = findNavController(navHost)
-        toolbar.setupWithNavController(navController, drawerLayout)
-        //nav_view.setupWithNavController(navController)
-        setSupportActionBar(toolbar)
+//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHost) as NavHostFragment
+        navController = findNavController(R.id.navHost)
+//        navController = findNavController(navHost)
+        rootElement!!.apply {
+            appBar.toolbar.setupWithNavController(navController, drawerLayout)
+            //nav_view.setupWithNavController(navController)
+            setSupportActionBar(appBar.toolbar)
 
-        //убираем затемнение
-        drawerLayout.setScrimColor(Color.TRANSPARENT)
+            //убираем затемнение
+            drawerLayout.setScrimColor(Color.TRANSPARENT)
 
-        //открываем drawer
+            //открываем drawer
 //        drawerLayout.openDrawer(GravityCompat.START)
-        tvHeaderAcc = nav_view.getHeaderView(0).findViewById(R.id.tvHeaderAcc)
+            tvHeaderAcc = navView.getHeaderView(0).findViewById(R.id.tvHeaderAcc)
+        }
+
     }
 
     //рисуем счётчик
@@ -160,7 +171,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mSlideshowTextView.text = "${count}"
     }
 
-    override fun onBackPressed() {
+    override fun onBackPressed() = with(rootElement!!) {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START)
         } else {
@@ -171,22 +182,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     @SuppressLint("RestrictedApi")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 //            navController.popBackStack()
+
         when (item.itemId) {
-            R.id.dogs_list -> {
-                navController.navigate(R.id.dogsListFragment)
-                closeDrawer()
-            }
             R.id.show_fav -> {
-                navController.navigate(R.id.favoritesFragment)
+                navController.popBackStack()
+                navController.navigate(R.id.dogsListFragment)
                 closeDrawer()
                 Toast.makeText(applicationContext, "Любимчики", Toast.LENGTH_SHORT).show()
             }
             R.id.mapFr -> {
-
+                navController.popBackStack()
                 navController.navigate(R.id.mapsFragment)
                 closeDrawer()
             }
             R.id.auth -> {
+                navController.popBackStack()
                 navController.navigate(R.id.loginFragment)
                 closeDrawer()
 //                Toast.makeText(applicationContext, "loginFragment", Toast.LENGTH_LONG).show()
@@ -196,7 +206,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun closeDrawer() {
-        drawerLayout.closeDrawer(GravityCompat.START)
+        rootElement!!.drawerLayout.closeDrawer(GravityCompat.START)
     }
 
     fun checkNetwork() {

@@ -19,134 +19,78 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:inputType="textMultiLine"
             android:fontFamily="@font/t_bold"
+            android:inputType="textMultiLine"
             android:text="@string/title_1"
-            android:textSize="20sp"
             android:textColor="@color/nav_bar_color"
+            android:textSize="20sp"
             android:textStyle="bold|italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="TextViewEdits" />
 
-
-        <androidx.constraintlayout.motion.widget.MotionLayout
-            android:id="@+id/motionLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rcFF"
             android:layout_marginTop="16dp"
-            app:layoutDescription="@xml/activity_main_scene"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title_1">
-
-            <androidx.constraintlayout.utils.widget.ImageFilterView
-                android:id="@+id/imageView1"
-                android:layout_width="80dp"
-                android:layout_height="200dp"
-                android:layout_marginEnd="16dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/bryce_canyon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:round="16dp" />
-
-            <androidx.constraintlayout.utils.widget.ImageFilterView
-                android:id="@+id/imageView2"
-                android:layout_width="0dp"
-                android:layout_height="200dp"
-                android:layout_marginEnd="16dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/fitzgerald_marine_reserve"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/imageView3"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:round="16dp" />
-
-            <androidx.constraintlayout.utils.widget.ImageFilterView
-                android:id="@+id/imageView3"
-                android:layout_width="80dp"
-                android:layout_height="200dp"
-                android:layout_marginStart="16dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/death_valley"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:round="16dp" />
-
-            <androidx.constraintlayout.utils.widget.ImageFilterView
-                android:id="@+id/imageView4"
-                android:layout_width="80dp"
-                android:layout_height="200dp"
-                android:layout_marginStart="16dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/goldengate"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageView3"
-                app:layout_constraintTop_toTopOf="parent"
-                app:round="16dp" />
-
-            <androidx.constraintlayout.helper.widget.Carousel
-                android:id="@+id/carousel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:carousel_backwardTransition="@+id/backward"
-                app:carousel_firstView="@+id/imageView2"
-                app:carousel_forwardTransition="@+id/forward"
-                app:carousel_infinite="true"
-                app:carousel_nextState="@+id/next"
-                app:carousel_previousState="@+id/previous"
-                app:constraint_referenced_ids="imageView1,imageView2,imageView3,imageView4" />
-
-        </androidx.constraintlayout.motion.widget.MotionLayout>
-
-        <TextView
-            android:id="@+id/tvDesk"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/first_photo"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/t_regular"
-            android:layout_marginTop="16dp"
-            app:layout_constraintEnd_toEndOf="@+id/title_1"
-            app:layout_constraintStart_toStartOf="@+id/title_1"
-            app:layout_constraintTop_toBottomOf="@+id/motionLayout"/>
+            app:layout_constraintTop_toBottomOf="@+id/title_1" />
 
         <ImageButton
             android:id="@+id/imageButton1"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="240dp"
             android:background="@drawable/intro_but_back"
             android:elevation="16dp"
             android:padding="8dp"
             android:scaleType="fitCenter"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/title_1"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/title_1"
-            app:layout_constraintTop_toBottomOf="@+id/tvDesk" />
+            app:layout_constraintTop_toBottomOf="@+id/rcFF" />
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:id="@+id/imageView1"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="32dp"
+            android:elevation="24dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bryce_canyon"
+            app:layout_constraintEnd_toEndOf="@+id/imageButton1"
+            app:layout_constraintStart_toStartOf="@+id/imageButton1"
+            app:layout_constraintTop_toBottomOf="@id/imageButton1"
+            app:round="16dp" />
+
+        <TextView
+            android:id="@+id/tvDesk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/t_regular"
+            android:text="@string/first_photo"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@+id/title_1"
+            app:layout_constraintStart_toStartOf="@+id/title_1"
+            app:layout_constraintTop_toBottomOf="@+id/imageView1" />
 
         <TextView
             android:id="@+id/tvButtonMore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/more_photo"
-            android:textSize="28sp"
-            android:textColor="@color/nav_bar_color"
             android:elevation="17dp"
-            android:textStyle="bold"
             android:fontFamily="@font/t_bold"
+            android:text="@string/more_photo"
+            android:textColor="@color/nav_bar_color"
+            android:textSize="28sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/imageButton1"
             app:layout_constraintEnd_toEndOf="@+id/imageButton1"
             app:layout_constraintStart_toStartOf="@+id/imageButton1"
             app:layout_constraintTop_toTopOf="@+id/imageButton1" />
+
 
         <TextView
             android:id="@+id/title_2"
@@ -155,16 +99,94 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:inputType="textMultiLine"
             android:fontFamily="@font/t_bold"
+            android:inputType="textMultiLine"
             android:text="@string/title_2"
-            android:textSize="20sp"
             android:textColor="@color/nav_bar_color"
+            android:textSize="20sp"
             android:textStyle="bold|italic"
-            app:layout_constraintEnd_toEndOf="@+id/imageButton1"
-            app:layout_constraintStart_toStartOf="@+id/imageButton1"
-            app:layout_constraintTop_toBottomOf="@+id/imageButton1" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDesk"
+            tools:ignore="TextViewEdits" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageButton
+            android:id="@+id/imBtnMap"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/intro_but_back"
+            android:elevation="16dp"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toEndOf="@+id/title_1"
+            app:layout_constraintStart_toStartOf="@+id/title_1"
+            app:layout_constraintTop_toBottomOf="@+id/title_2" />
+
+        <TextView
+            android:id="@+id/tvBtnMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="17dp"
+            android:fontFamily="@font/t_bold"
+            android:text="@string/map"
+            android:textColor="@color/nav_bar_color"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/imBtnMap"
+            app:layout_constraintEnd_toEndOf="@+id/imBtnMap"
+            app:layout_constraintStart_toStartOf="@+id/imBtnMap"
+            app:layout_constraintTop_toTopOf="@+id/imBtnMap" />
+
+        <TextView
+            android:id="@+id/title_3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/t_bold"
+            android:inputType="textMultiLine"
+            android:text="@string/title_3"
+            android:textColor="@color/nav_bar_color"
+            android:textSize="20sp"
+            android:textStyle="bold|italic"
+            app:layout_constraintEnd_toEndOf="@id/imBtnMap"
+            app:layout_constraintStart_toStartOf="@id/imBtnMap"
+            app:layout_constraintTop_toBottomOf="@id/imBtnMap"
+            tools:ignore="TextViewEdits" />
+
+        <ImageButton
+            android:id="@+id/imBtnAuth"
+            android:layout_width="0dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="160dp"
+            android:background="@drawable/intro_but_back"
+            android:elevation="16dp"
+            android:padding="8dp"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/title_3"
+            app:layout_constraintStart_toStartOf="@+id/title_3"
+            app:layout_constraintTop_toBottomOf="@+id/title_3" />
+
+        <TextView
+            android:id="@+id/tvAuthMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="17dp"
+            android:fontFamily="@font/t_bold"
+            android:text="@string/authFirst"
+            android:textColor="@color/nav_bar_color"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/imBtnAuth"
+            app:layout_constraintEnd_toEndOf="@id/imBtnAuth"
+            app:layout_constraintStart_toStartOf="@id/imBtnAuth"
+            app:layout_constraintTop_toTopOf="@id/imBtnAuth" />
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

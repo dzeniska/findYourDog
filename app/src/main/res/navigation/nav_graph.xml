@@ -11,7 +11,7 @@
         android:id="@+id/firstFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.FirstFragment"
         android:label="@string/first"
-        tools:layout="@layout/fragment_first" />
+        tools:layout="@layout/frag_intro" />
     <fragment
         android:id="@+id/dogsListFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.DogsListFragment"
@@ -27,11 +27,6 @@
         android:name="com.dzenis_ska.findyourdog.ui.fragments.OneBreedFragment"
         android:label="@string/one_breed"
         tools:layout="@layout/fragment_one_breed" />
-    <fragment
-        android:id="@+id/favoritesFragment"
-        android:name="com.dzenis_ska.findyourdog.ui.fragments.FavoritesFragment"
-        android:label="@string/favorites"
-        tools:layout="@layout/fragment_favorites" />
     <fragment
         android:id="@+id/editNoteFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.EditNoteFragment"

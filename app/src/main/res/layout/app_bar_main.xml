@@ -19,5 +19,6 @@
                 android:layout_height="?attr/actionBarSize"
                 android:layout_width="match_parent"/>
     </com.google.android.material.appbar.AppBarLayout>
-    <include layout="@layout/intro_main" />
+    <include layout="@layout/intro_main"
+        android:id="@+id/introMain"/>
 </RelativeLayout>

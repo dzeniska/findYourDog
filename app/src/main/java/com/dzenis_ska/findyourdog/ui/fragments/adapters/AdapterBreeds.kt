@@ -12,13 +12,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
 import com.dzenis_ska.findyourdog.ui.fragments.DogsListFragment
-import com.dzenis_ska.findyourdog.ui.fragments.FavoritesFragment
 import com.dzenis_ska.findyourdog.ui.utils.CropSquareTransformation
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 
 
-class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val fragment: Fragment
+class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val fragment: DogsListFragment
 ): RecyclerView.Adapter<AdapterBreeds.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -33,18 +32,10 @@ class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val
         val holder = ViewHolder(itemView)
 
         itemView.setOnClickListener(){
-            if(fragment is DogsListFragment) {
                 fragment.onBreedSelect(holder.adapterPosition)
-            }else if(fragment is FavoritesFragment){
-                fragment.onBreedFavSelect(holder.adapterPosition)
-            }
         }
         holder.description.setOnClickListener(){
-            if(fragment is DogsListFragment) {
                 fragment.onBreedSelect(holder.adapterPosition)
-            }else if(fragment is FavoritesFragment){
-                fragment.onBreedFavSelect(holder.adapterPosition)
-            }
         }
         return holder
     }

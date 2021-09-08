@@ -1,16 +1,16 @@
 package com.dzenis_ska.findyourdog.ui.fragments.adapters
 
 import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.ItemLayoutForMapFrBinding
+import com.dzenis_ska.findyourdog.ui.fragments.FirstFragment
 import com.dzenis_ska.findyourdog.ui.fragments.MapsFragment
 import com.dzenis_ska.findyourdog.ui.utils.CropSquareTransformation
-import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 
