@@ -13,9 +13,7 @@ import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -30,6 +28,7 @@ import androidx.recyclerview.widget.LinearSnapHelper
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.FragmentMapsBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
+import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.MapPhotoAdapter
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
@@ -62,11 +61,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var mapFragment: SupportMapFragment? = null
     var dialogF: AlertDialog? = null
     val listAdShelter = arrayListOf<AdShelter>()
+    val listAdShelterForAllSh = arrayListOf<AdShelter>()
     val listAdShelterMainPhoto = mutableListOf<String>()
     var job2: Job? = null
     var job3: Job? = null
     val cs = ConstraintSet()
 
+    var isEditing: Boolean = false
 
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -83,6 +84,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!", "onViewCreated")
         navController = findNavController()
+
+//        6546546gffc https://developer.android.com/guide/fragments/appbar
+//        https://developer.android.com/guide/fragments/apphttps://developer.android.com/guide/fragments/appbarbar
         mapFragment = childFragmentManager.findFragmentById(R.id.mapFr) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
@@ -93,8 +97,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             dialogF = dialog
         })
 
+
         viewModel.liveAdsDataAllShelter.observe(viewLifecycleOwner,{list ->
             val list1 = list
+            if(list.size == 0) (activity as MainActivity).checkNetwork(0)
             if (::mMap.isInitialized) {
                 getAllMarkers(list1, null)
                 listAdShelter.clear()
@@ -105,6 +111,57 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         init()
         initClick()
 
+    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.sample_menu, menu)
+        val item = menu.findItem(R.id.action_done)
+        if(!isEmailVeryfied()) item.icon = resources.getDrawable(R.drawable.ic_replay)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d("!!!onOptionsItemSelected", "${isEditing}")
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                // navigate to settings screen
+                true
+            }
+            R.id.action_done -> {
+                if(!isEmailVeryfied()){
+                    showAllAds()
+                }else{
+                    if(!isEditing){
+                        showMyAds()
+                        item.icon = resources.getDrawable(R.drawable.ic_all)
+                    }else{
+                        showAllAds()
+                        item.icon = resources.getDrawable(R.drawable.ic_my)
+                    }
+                    isEditing = !isEditing
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+    private fun showAllAds(){
+        listAdShelter.clear()
+        listAdShelter.addAll(listAdShelterForAllSh)
+        viewModel.getAllAds()
+    }
+
+    private fun showMyAds() {
+        val fbAuth = FBAuth(this)
+        val listAll = arrayListOf<AdShelter>()
+        listAdShelterForAllSh.clear()
+        listAdShelterForAllSh.addAll(listAdShelter)
+        listAdShelter.forEach {
+            if(fbAuth.mAuth.uid == it.uid) listAll.add(it)
+        }
+        if(listAll.size != 0) {
+            listAdShelter.clear()
+            listAdShelter.addAll(listAll)
+            getAllMarkers(listAll, null)
+        }
     }
 
     private fun initClick() {
@@ -120,7 +177,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     private fun init(){
         if(viewModel.dbManager.auth.currentUser?.isAnonymous == false && viewModel.dbManager.auth.currentUser != null ){
-            if(viewModel.dbManager.auth.currentUser!!.isEmailVerified == true)rootElement?.floatBtnAddShelter?.visibility = View.VISIBLE
+            if(isEmailVeryfied()) {
+
+                rootElement?.floatBtnAddShelter?.visibility = View.VISIBLE
+            }
         }
 
         adapter = MapPhotoAdapter(this)
@@ -130,6 +190,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         snapHelper.attachToRecyclerView(rootElement!!.rcViewMapPhoto)
 
     }
+    private fun isEmailVeryfied() = viewModel.dbManager.auth.currentUser!!.isEmailVerified
 
     @SuppressLint("MissingPermission")
     private fun getLocation() {
@@ -326,8 +387,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
         }
         adapter?.updateAdapter(listMainPhoto)
+        setHasOptionsMenu(true)
     }
     override fun onInfoWindowClick(markerInfo: Marker) {
+        isEditing = false
         for(info in viewModel.listShelter){
             if(info.key == markerInfo.tag){
                 if(viewModel.btnDelState == true) viewModel.btnDelState = false
@@ -461,9 +524,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         constraint(height.minus(10))
                         delay(10)
                         scrollToPos(index)
-                        delay(4000)
+                        delay(2000)
                         constraint(ConstraintSet.MATCH_CONSTRAINT)
-
                         job3 = null
                     }
                 }

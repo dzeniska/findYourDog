@@ -9,14 +9,19 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.FragIntroBinding
+import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
+import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.FirstFrAdapter
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
+import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.*
 
 
@@ -24,6 +29,7 @@ class FirstFragment : Fragment() {
     var rootElement: FragIntroBinding? = null
     lateinit var navController: NavController
     var job: Job? = null
+    private val fbAuth = FBAuth(this)
     var adapter: FirstFrAdapter? = null
     val viewModel: BreedViewModel by activityViewModels()
 
@@ -47,14 +53,23 @@ class FirstFragment : Fragment() {
     }
     private fun init(){
         val listPhoto = arrayListOf(
-            R.drawable.butch,
-            R.drawable.nelya,
-            R.drawable.bryce_canyon
+            R.drawable.sobaka_ulibaka_1,
+            R.drawable.sobaka_podozrevaka_1,
+            R.drawable.sobaka_ispugaka_1,
+            R.drawable.sobaka_plavaka_1
+        )
+        val listTitle = arrayListOf(
+            "Улыбыка",
+            "Подозревака",
+            "Испугака",
+            "Капитака"
         )
         adapter = FirstFrAdapter()
         rootElement!!.rcFF.adapter = adapter
         rootElement!!.rcFF.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
-        adapter!!.updateAdapter(listPhoto)
+        adapter!!.updateAdapter(listPhoto, listTitle)
+        val snapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(rootElement!!.rcFF)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -108,6 +123,7 @@ class FirstFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        currentUser(fbAuth.mAuth.currentUser)
         Log.d("!!!on", "onResume")
     }
 
@@ -120,5 +136,19 @@ class FirstFragment : Fragment() {
         rootElement = null
         super.onDestroyView()
         Log.d("!!!on", "onDestroyView")
+    }
+    private fun currentUser(currentUser: FirebaseUser?) {
+        (activity as MainActivity).checkNetwork(null)
+        if (currentUser == null) {
+            fbAuth.signInAnonimously(context as MainActivity, object : FBAuth.Listener {
+                override fun onComplete() {
+                    Toast.makeText(
+                        activity,
+                        "Вы вошли как Гость",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            })
+        }
     }
 }

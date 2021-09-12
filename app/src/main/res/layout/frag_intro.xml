@@ -23,7 +23,7 @@
             android:inputType="textMultiLine"
             android:text="@string/title_1"
             android:textColor="@color/nav_bar_color"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:textStyle="bold|italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +32,7 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rcFF"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="0dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -42,14 +42,33 @@
         <ImageButton
             android:id="@+id/imageButton1"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="100dp"
             android:background="@drawable/intro_but_back"
             android:elevation="16dp"
             android:padding="8dp"
-            android:scaleType="fitCenter"
+            android:scaleType="fitStart"
+            android:src="@drawable/ic_photo_library"
             app:layout_constraintEnd_toEndOf="@+id/title_1"
             app:layout_constraintStart_toStartOf="@+id/title_1"
-            app:layout_constraintTop_toBottomOf="@+id/rcFF" />
+            app:layout_constraintTop_toBottomOf="@+id/rcFF"
+            app:tint="@color/white"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <TextView
+            android:id="@+id/tvButtonMore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:elevation="17dp"
+            android:fontFamily="@font/t_bold"
+            android:text="@string/more_photo"
+            android:textColor="@color/nav_bar_color"
+            android:textSize="36sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/imageButton1"
+            app:layout_constraintEnd_toEndOf="@+id/imageButton1"
+            app:layout_constraintHorizontal_bias="0.70"
+            app:layout_constraintStart_toStartOf="@+id/imageButton1"
+            app:layout_constraintTop_toTopOf="@+id/imageButton1" />
 
         <androidx.constraintlayout.utils.widget.ImageFilterView
             android:id="@+id/imageView1"
@@ -76,20 +95,7 @@
             app:layout_constraintStart_toStartOf="@+id/title_1"
             app:layout_constraintTop_toBottomOf="@+id/imageView1" />
 
-        <TextView
-            android:id="@+id/tvButtonMore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:elevation="17dp"
-            android:fontFamily="@font/t_bold"
-            android:text="@string/more_photo"
-            android:textColor="@color/nav_bar_color"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/imageButton1"
-            app:layout_constraintEnd_toEndOf="@+id/imageButton1"
-            app:layout_constraintStart_toStartOf="@+id/imageButton1"
-            app:layout_constraintTop_toTopOf="@+id/imageButton1" />
+
 
 
         <TextView
@@ -103,7 +109,7 @@
             android:inputType="textMultiLine"
             android:text="@string/title_2"
             android:textColor="@color/nav_bar_color"
-            android:textSize="20sp"
+            android:textSize="28sp"
             android:textStyle="bold|italic"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -114,11 +120,13 @@
         <ImageButton
             android:id="@+id/imBtnMap"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="200dp"
             android:layout_marginTop="16dp"
             android:background="@drawable/intro_but_back"
             android:elevation="16dp"
             android:padding="8dp"
+            android:src="@drawable/world_map"
+            app:tint="@color/white"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="@+id/title_1"
             app:layout_constraintStart_toStartOf="@+id/title_1"
@@ -148,7 +156,7 @@
             android:inputType="textMultiLine"
             android:text="@string/title_3"
             android:textColor="@color/nav_bar_color"
-            android:textSize="20sp"
+            android:textSize="22sp"
             android:textStyle="bold|italic"
             app:layout_constraintEnd_toEndOf="@id/imBtnMap"
             app:layout_constraintStart_toStartOf="@id/imBtnMap"
@@ -158,13 +166,15 @@
         <ImageButton
             android:id="@+id/imBtnAuth"
             android:layout_width="0dp"
-            android:layout_height="50dp"
+            android:layout_height="100dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="160dp"
             android:background="@drawable/intro_but_back"
             android:elevation="16dp"
             android:padding="8dp"
-            android:scaleType="fitCenter"
+            android:src="@drawable/ic_reg"
+            app:tint="@color/white"
+            android:scaleType="fitStart"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/title_3"
             app:layout_constraintStart_toStartOf="@+id/title_3"
@@ -178,7 +188,7 @@
             android:fontFamily="@font/t_bold"
             android:text="@string/authFirst"
             android:textColor="@color/nav_bar_color"
-            android:textSize="28sp"
+            android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/imBtnAuth"
             app:layout_constraintEnd_toEndOf="@id/imBtnAuth"

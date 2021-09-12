@@ -51,6 +51,7 @@
         map:layout_constraintStart_toStartOf="parent"
         map:srcCompat="@android:drawable/ic_input_add" />
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rcViewMapPhoto"
         android:layout_width="0dp"

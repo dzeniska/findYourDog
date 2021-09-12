@@ -1,7 +1,6 @@
 package com.dzenis_ska.findyourdog.ui.fragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.SearchView
@@ -62,16 +61,11 @@ class DogsListFragment : Fragment() {
 
 
         viewModel.breedLive.observe(viewLifecycleOwner, Observer {
-            Log.d("!!!observeDLF", it.size.toString())
-            if(it.size == 0){
-                (activity as MainActivity).checkNetwork()
-            } else{
+            if(it.size == 0) (activity as MainActivity).checkNetwork(0)
                 breeds.clear()
                 breeds.addAll(it)
                 recyclerView?.adapter?.notifyDataSetChanged()
                 tv_dog_list.alpha = 0.3f
-            }
-
         })
 
         adapter = AdapterBreeds(breeds, context, this)
@@ -102,7 +96,6 @@ class DogsListFragment : Fragment() {
                 sleepScope()
                 swipeRefreshLayout.isRefreshing = false
             }
-
         }
 
 

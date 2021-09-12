@@ -120,7 +120,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
 
-        val dialog = ProgressDialog.createProgressDialog(activity as MainActivity)
+        val dialog = ProgressDialog.createProgressDialog(activity as MainActivity, ProgressDialog.ADD_SHELTER_FRAGMENT)
         initViewModel()
         initRecyclerView()
         onClick(this, dialog)

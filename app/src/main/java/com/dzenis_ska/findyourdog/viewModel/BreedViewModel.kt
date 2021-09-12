@@ -39,28 +39,18 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
 //    }
     val breedLive = MutableLiveData<MutableList<DogBreeds>>()
 
-//    val breedFavLive: MutableLiveData<MutableList<DogBreeds>> by lazy {
-//        MutableLiveData<MutableList<DogBreeds>>()
-//    }
-
     val breedFavLive = MutableLiveData<MutableList<DogBreeds>>()
 
     val breedItemLive: MutableLiveData<MutableList<String>> by lazy {
         MutableLiveData<MutableList<String>>()
     }
 
-//    var breedItemLive = MutableLiveData<MutableList<String>>()
-
     val onePhoto: MutableLiveData<ByteArray> by lazy {
         MutableLiveData<ByteArray>()
     }
     var userUpdate = MutableLiveData<FirebaseUser?>()
-
-    var signUpInValue = MutableLiveData<Int>()
-
     val dbManager = DbManager()
     var listShelter = ArrayList<AdShelter>()
-    var shelter: AdShelter? = null
     val liveAdsDataAllShelter = MutableLiveData<ArrayList<AdShelter>>()
     val liveAdsDataAddShelter = MutableLiveData<AdShelter?>()
     val listPhoto = arrayListOf<String>()
@@ -89,7 +79,6 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
                 liveAdsDataAllShelter.postValue(updateList!!)
                 writedDataCallback.writedData()
             }
-
         })
     }
 
@@ -148,7 +137,6 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     //одного фото запрос
     fun getOnePhoto(url: String) {
         scope.launch {
-//            repository.getOnePhoto(url)
             onePhoto.postValue(repository.getOnePhoto(url))
         }
     }
@@ -163,12 +151,10 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
 
     fun selectBreed() {
         scope.launch {
-//            val optionsList: Map<String, List<String>> = mapOf()
-//            var s =  BreedOfDogListPhoto(0, optionsList, "")
             val s = repository.getBreeds()
             val mapsBreed = s.message
             for (map in mapsBreed) {
-                if (map.value.size == 0) {
+                if (map.value.isEmpty()) {
                     selectBreed.add(map.key)
                 } else {
                     for (byBreed in map.value) {
@@ -210,12 +196,8 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
         scope.launch {
             val data = repository.getImgBreeds(breed)
             imgBreedList.clear()
-//            val ibl = mutableListOf<String>()
-//                ibl.add(selectedBreed?.image?.url.toString())
             imgBreedList.add(selectedBreed?.image?.url.toString())
-//            ibl.addAll(data.message)
             imgBreedList.addAll(data.message)
-
             breedItemLive.postValue(imgBreedList)
         }
     }
@@ -237,7 +219,6 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
             if(!isFav) {
                 breedLive.postValue(data)
             }else{
-
                 val list = mutableListOf<DogBreeds>()
                 data.forEach {
                     if(it.isFavorite == 1) list.add(it)

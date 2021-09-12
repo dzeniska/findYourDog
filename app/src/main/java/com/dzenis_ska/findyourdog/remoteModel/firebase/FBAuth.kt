@@ -181,10 +181,7 @@ class FBAuth(private val fragment: Fragment) {
                 }
                 Toast.makeText(context, "Вы вошли как гость", Toast.LENGTH_LONG).show()
             } else {
-//                if(fragment is LoginFragment){
-//                    fragment.showElements(false)
-//                }
-                Toast.makeText(context, "Не удалось войти как гость", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, "Возможно отсутствует подключение к сети Internet", Toast.LENGTH_LONG).show()
             }
         }
     }

@@ -35,6 +35,7 @@ import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.ActivityMainBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.fragments.LoginFragment
+import com.dzenis_ska.findyourdog.ui.utils.ProgressDialog
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModelFactory
 import com.google.android.material.navigation.NavigationView
@@ -66,19 +67,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTheme(R.style.AppThemeNoActionBar)
         rootElement = ActivityMainBinding.inflate(layoutInflater)
-
-//        return rootElement.root
         setContentView(rootElement!!.root )
 
 
-        init()
+//        android:theme="@style/AppTheme"
+//        android:theme="@style/AppTheme.NoActionBar">
 
+        init()
         getPermission()
         rootElement!!.navView.setNavigationItemSelectedListener(this)
-
         openCloseDrawer()
-
         viewModel.userUpdate.observe(this, Observer {
             uiUpdateMain(it)
 //            Log.d("!!!", "$it")
@@ -209,18 +209,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         rootElement!!.drawerLayout.closeDrawer(GravityCompat.START)
     }
 
-    fun checkNetwork() {
+    fun checkNetwork(size: Int?) {
         //проверка на доступ к сети
+
         val cManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//getNetworkCapabilities -
         val info = cManager.getNetworkCapabilities(cManager.activeNetwork)
         if (info == null) {
-            Toast.makeText(this, "NO Network!!!", Toast.LENGTH_LONG).show()
+            if(size == null) Toast.makeText(this, resources.getString(R.string.no_network), Toast.LENGTH_LONG).show()
         } else if (info.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || info.hasTransport(
                 NetworkCapabilities.TRANSPORT_WIFI
             )
         ) {
-            Toast.makeText(this, "Network available", Toast.LENGTH_LONG).show()
+            if(size == null) Toast.makeText(this, "Network available", Toast.LENGTH_LONG).show()
         } else {
             Toast.makeText(this, "NO Network!!!", Toast.LENGTH_LONG).show()
         }
