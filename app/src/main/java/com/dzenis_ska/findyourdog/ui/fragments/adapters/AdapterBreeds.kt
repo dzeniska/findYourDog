@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
@@ -17,9 +16,8 @@ import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 
 
-class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val fragment: DogsListFragment
-): RecyclerView.Adapter<AdapterBreeds.ViewHolder>() {
-
+class AdapterBreeds(val context: Context?, val fragment: DogsListFragment): RecyclerView.Adapter<AdapterBreeds.ViewHolder>() {
+    val list = mutableListOf<DogBreeds>()
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val photo = itemView.findViewById<ImageView>(R.id.imgItemPhoto)
         val like = itemView.findViewById<ImageView>(R.id.image_like)
@@ -59,8 +57,6 @@ class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val
         }
         val pict = holder.photo
         val url: String? = list[position].image.url
-//        val ind = list[position].ind
-//        if(ind == 0){
             Picasso.get()
                 .load(url)
                 .placeholder(R.drawable.ic_wait_a_litle)
@@ -78,5 +74,10 @@ class AdapterBreeds(val list: MutableList<DogBreeds>, val context: Context?, val
         }else{
             holder.like.setImageResource(R.drawable.paw_blue)
         }
+    }
+    fun updateAdapterBreeds(list: MutableList<DogBreeds>){
+        this.list.clear()
+        this.list.addAll(list)
+        notifyDataSetChanged()
     }
 }

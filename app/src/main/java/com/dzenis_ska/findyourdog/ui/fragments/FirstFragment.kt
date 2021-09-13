@@ -27,11 +27,9 @@ import kotlinx.coroutines.*
 
 class FirstFragment : Fragment() {
     var rootElement: FragIntroBinding? = null
-    lateinit var navController: NavController
-    var job: Job? = null
+    var navController: NavController? = null
     private val fbAuth = FBAuth(this)
     var adapter: FirstFrAdapter? = null
-    val viewModel: BreedViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -82,7 +80,7 @@ class FirstFragment : Fragment() {
                 }else if (event.action == MotionEvent.ACTION_UP){
                     v.isPressed = false
                     imageButton1.elevation = 26f
-                    navController.navigate(R.id.dogsListFragment)
+                    navController?.navigate(R.id.dogsListFragment)
                 }
                 false
             }
@@ -93,7 +91,7 @@ class FirstFragment : Fragment() {
                 }else if (event.action == MotionEvent.ACTION_UP){
                     v.isPressed = false
                     imageButton1.elevation = 26f
-                    navController.navigate(R.id.mapsFragment)
+                    navController?.navigate(R.id.mapsFragment)
                 }
                 false
             }
@@ -104,7 +102,7 @@ class FirstFragment : Fragment() {
                 }else if (event.action == MotionEvent.ACTION_UP){
                     v.isPressed = false
                     imageButton1.elevation = 26f
-                    navController.navigate(R.id.loginFragment)
+                    navController?.navigate(R.id.loginFragment)
                 }
                 false
             }

@@ -17,13 +17,12 @@ class FBAuth(private val fragment: Fragment) {
 
     val mAuth = Firebase.auth
 
-    /*suspend */fun signUpWithEmail(
+    fun signUpWithEmail(
         email: String,
         password: String,
         context: Context
-    )/* =  withContext(Dispatchers.IO)*/ {
-
-        Log.d("!!!userAnDelete", "${mAuth.currentUser?.isAnonymous}")
+    ) {
+//        Log.d("!!!userAnDelete", "${mAuth.currentUser?.isAnonymous}")
         if (mAuth.currentUser?.isAnonymous == true) {
             mAuth.currentUser?.delete()?.addOnCompleteListener {
                 createUserWithEmailAndPassword(email, password, context, true)
@@ -47,20 +46,18 @@ class FBAuth(private val fragment: Fragment) {
                 }
             } else {
 //                    Toast.makeText(context, context.resources.getString(R.string.error_reg), Toast.LENGTH_SHORT).show()
-                Log.d("!!!er", task.exception.toString())
+//                Log.d("!!!er", task.exception.toString())
                 if (task.exception is FirebaseAuthUserCollisionException) {
                     val exception = task.exception as FirebaseAuthUserCollisionException
-                    Log.d("!!!erPas", exception.errorCode)
+//                    Log.d("!!!erPas", exception.errorCode)
                     if (exception.errorCode == FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE) {
-
                         signInWithEmail(email, password, context, create)
-
                         Toast.makeText(
                             context,
                             FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE,
                             Toast.LENGTH_SHORT
                         ).show()
-                        Log.d("!!!error", "${FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE}")
+//                        Log.d("!!!error", "${FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE}")
                     }
                 } else if (task.exception is FirebaseAuthInvalidCredentialsException) {
                     if(create) signInAnonimously(context, null)
@@ -71,9 +68,7 @@ class FBAuth(private val fragment: Fragment) {
                             FirebaseAuthConstants.ERROR_INVALID_EMAIL,
                             Toast.LENGTH_SHORT
                         ).show()
-
                     } else if (exception.errorCode == FirebaseAuthConstants.ERROR_WEAK_PASSWORD) {
-
                         Toast.makeText(
                             context,
                             FirebaseAuthConstants.ERROR_WEAK_PASSWORD,
@@ -96,12 +91,7 @@ class FBAuth(private val fragment: Fragment) {
         }
     }
 
-    /*suspend */fun signInWithEmail(
-        email: String,
-        password: String,
-        context: Context,
-        create: Boolean
-    )/* = withContext(Dispatchers.IO)*/ {
+    fun signInWithEmail(email: String, password: String, context: Context, create: Boolean) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -120,7 +110,6 @@ class FBAuth(private val fragment: Fragment) {
 //                        Log.d("!!!er", task.exception.toString())
                         val exception = task.exception as FirebaseAuthInvalidCredentialsException
                         if (exception.errorCode == FirebaseAuthConstants.ERROR_INVALID_EMAIL) {
-
                             Toast.makeText(
                                 context,
                                 FirebaseAuthConstants.ERROR_INVALID_EMAIL,
@@ -129,7 +118,6 @@ class FBAuth(private val fragment: Fragment) {
                         } else if (exception.errorCode == FirebaseAuthConstants.ERROR_WRONG_PASSWORD) {
                             if (fragment is LoginFragment) {
                                 fragment.uiReplacePassword()
-
                             }
                             Toast.makeText(
                                 context,
@@ -185,7 +173,6 @@ class FBAuth(private val fragment: Fragment) {
             }
         }
     }
-
     interface Listener {
         fun onComplete()
     }

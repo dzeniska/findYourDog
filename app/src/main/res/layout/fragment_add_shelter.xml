@@ -148,9 +148,9 @@
                     android:background="@android:drawable/editbox_background"
                     android:ems="10"
                     android:hint="@string/tel_num_shelter"
+
                     android:inputType="phone"
                     android:padding="10dp"
-
                     android:phoneNumber="true"
                     android:textColor="@color/back_menu_add_color"
                     android:textColorHint="@color/text_hint_add"
@@ -158,37 +158,34 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <EditText
-                    android:id="@+id/edName"
-                    android:layout_width="0dp"
-                    android:layout_height="44dp"
-                    android:background="@android:drawable/editbox_background"
-                    android:ems="10"
-                    android:gravity="top|left"
-                    android:hint="@string/tel_num_shelter"
-                    android:inputType="textMultiLine|phone"
-                    android:padding="10dp"
-                    android:textColor="@color/back_menu_add_color"
-                    android:textColorHint="@color/text_hint_add"
+                <ImageView
+                    android:id="@+id/ivTel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_phone"
                     android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="@+id/edTelNum"
                     app:layout_constraintEnd_toEndOf="@+id/edTelNum"
-                    app:layout_constraintStart_toStartOf="@+id/edTelNum"
-                    app:layout_constraintTop_toBottomOf="@+id/edTelNum" />
+                    app:layout_constraintTop_toTopOf="@+id/edTelNum" />
+
 
                 <com.dzenis_ska.findyourdog.ui.fragments.customMapView.CustomMapView
                     android:id="@+id/mapView"
                     android:layout_width="0dp"
                     android:layout_height="100dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp"
-                    app:layout_constraintEnd_toEndOf="@+id/edTelNum"
-                    app:layout_constraintStart_toStartOf="@+id/edTelNum"
-                    app:layout_constraintTop_toBottomOf="@+id/edName" />
+                    android:layout_marginStart="19dp"
+                    android:layout_marginEnd="19dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/edTelNum" />
 
                 <EditText
                     android:id="@+id/edDescription"
                     android:layout_width="0dp"
                     android:layout_height="300dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
                     android:background="@android:drawable/editbox_background"
                     android:ems="10"
                     android:gravity="top|left"
@@ -196,8 +193,8 @@
                     android:padding="10dp"
                     android:textColor="@color/back_menu_add_color"
                     android:textColorHint="@color/text_hint_add"
-                    app:layout_constraintEnd_toEndOf="@+id/edTelNum"
-                    app:layout_constraintStart_toStartOf="@+id/edTelNum"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/mapView" />
 
                 <ImageButton
@@ -228,6 +225,7 @@
                     app:layout_constraintTop_toTopOf="@+id/mapView"
                     app:layout_constraintVertical_bias="1.0"
                     app:srcCompat="@drawable/ic_baseline_gps_fixed_24" />
+
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>

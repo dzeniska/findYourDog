@@ -9,38 +9,30 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.dzenis_ska.findyourdog.databinding.FragmentOnePhotoBinding
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
-import kotlinx.android.synthetic.main.fragment_one_photo.*
 import java.io.File
 import java.io.InputStream
 
 
 class OnePhotoFragment : Fragment() {
-    lateinit var viewModel: BreedViewModel
-
+    val viewModel: BreedViewModel by activityViewModels()
+    var rootElement: FragmentOnePhotoBinding? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        viewModel = ViewModelProvider(activity as MainActivity).get(BreedViewModel::class.java)
-        // Inflate the layout for this fragment
-
-        return inflater.inflate(
-            com.dzenis_ska.findyourdog.R.layout.fragment_one_photo,
-            container,
-            false
-        )
+    ): View {
+        rootElement = FragmentOnePhotoBinding.inflate(inflater)
+        return rootElement!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        val context = context
 
         viewModel.onePhoto.observe(viewLifecycleOwner, Observer {
             Log.d("!!!px", it.toString())
@@ -56,11 +48,12 @@ class OnePhotoFragment : Fragment() {
                 inputStream = it.inputStream()
                 inputStream.saveToFile(f)
                 val uri = Uri.fromFile(f)
-                imgOnePhoto.visibility = View.VISIBLE
-                imgOnePhoto as SubsamplingScaleImageView
-                imgOnePhoto.setImage(ImageSource.uri(uri))
-
-                progressBarLine.visibility = View.GONE
+                rootElement!!.apply {
+                    imgOnePhoto.visibility = View.VISIBLE
+                    imgOnePhoto as SubsamplingScaleImageView
+                    imgOnePhoto.setImage(ImageSource.uri(uri))
+                    progressBarLine.visibility = View.GONE
+                }
             } else {
                 Toast.makeText(
                     activity as MainActivity,
@@ -73,15 +66,18 @@ class OnePhotoFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        imgOnePhoto.visibility = View.GONE
-        progressBarLine.visibility = View.VISIBLE
+        rootElement!!.apply {
+            imgOnePhoto.visibility = View.GONE
+            progressBarLine.visibility = View.VISIBLE
+        }
+    }
+    fun InputStream.saveToFile(f: File) = use { input ->
+        f.outputStream().use { output ->
+            input.copyTo(output)
+        }
     }
 }
 
-fun InputStream.saveToFile(f: File) = use { input ->
-    f.outputStream().use { output ->
-        input.copyTo(output)
-    }
-}
+
 
 

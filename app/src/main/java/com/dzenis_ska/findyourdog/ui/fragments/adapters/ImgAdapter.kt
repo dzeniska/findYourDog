@@ -15,9 +15,9 @@ import com.squareup.picasso.Picasso
 import java.lang.Exception
 
 
-class ImgAdapter(val list: MutableList<String>, val breed: DogBreeds, val context: Context?, val fragment: OneBreedFragment
+class ImgAdapter(val breed: DogBreeds, val fragment: OneBreedFragment
 ): RecyclerView.Adapter<ImgAdapter.ViewHolder>() {
-
+    val list = mutableListOf<String>()
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val photo = itemView.findViewById<ImageView>(R.id.imgItemView)
         val progressBar = itemView.findViewById<View>(R.id.progressBarL)
@@ -66,6 +66,11 @@ class ImgAdapter(val list: MutableList<String>, val breed: DogBreeds, val contex
             holder.itemView.visibility = View.GONE
         }
 
+    }
+    fun updateImgAdapter(list: MutableList<String>){
+        this.list.clear()
+        this.list.addAll(list)
+        notifyDataSetChanged()
     }
 
 }

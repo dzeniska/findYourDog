@@ -53,7 +53,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMyLocationClickListener {
     val viewModel: BreedViewModel by activityViewModels()
     lateinit var breed: DogBreeds
-    lateinit var textName: String
     lateinit var vpAdapter: VpAdapter
 
     var rootElement: FragmentAddShelterBinding? = null
@@ -83,19 +82,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     val photoArrayList = mutableListOf<String>()
     var adapterArraySize = 0
 
-    var job: Job? = null
-
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
 
 
-
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
-//    var launcherMultiSelectImage: ActivityResultLauncher<Intent>? = null
-//    var launcherSingleSelectImage: ActivityResultLauncher<Intent>? = null
-//    var launcherReplaceSelectedImage: ActivityResultLauncher<Intent>? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -108,14 +100,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = findNavController()
-//        val mapFragment = childFragmentManager.findFragmentById(R.id.mapView) as SupportMapFragment?
-//        mapFragment?.getMapAsync(this)
+
         val mapViewBundle = savedInstanceState?.getBundle(MAPVIEW_BUNDLE_KEY)
         mapView = rootElement!!.mapView
         mapView.onCreate(mapViewBundle)
         mapView.getMapAsync(this)
         mapView.requestDisallowInterceptTouchEvent(false)
-
 
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
@@ -201,6 +191,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 shLat = (adShelter.lat)!!.toDouble()
                 shLng = (adShelter.lng)!!.toDouble()
                 fabAddShelter.visibility = View.GONE
+                ivTel.visibility = View.VISIBLE
 
                 clMain.background =
                     resources.getDrawable(R.drawable.background_write_fragment)
@@ -504,9 +495,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onDestroy() {
         mapView.onDestroy()
         super.onDestroy()
-        rootElement = null
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rootElement = null
+    }
 
     override fun onStart() {
         super.onStart()
@@ -521,7 +515,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
         super.onStop()
     }
-
 
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d("!!!", "onMapReady")
@@ -603,10 +596,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onMyLocationClick(p0: Location) {
 
     }
-
-//    override fun onLocationChanged(location: Location) {
-//        listener?.onLocationUpdated(LocationParserUtil.getLocationMapFromLocation(location))
-//    }
 
     override fun onProviderDisabled(provider: String) {
         // nop

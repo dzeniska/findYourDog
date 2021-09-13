@@ -171,7 +171,7 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
             countFavorites()
         }
     }
-
+    //сохраняю заметку в БД
     fun saveNote(id: Long, note: String) {
         scope.launch {
             repository.saveNote(id, note)

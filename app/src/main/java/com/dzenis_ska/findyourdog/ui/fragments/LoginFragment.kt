@@ -23,14 +23,12 @@ import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.firebase.auth.FirebaseUser
 
-
 class LoginFragment : Fragment(), AuthInterface {
 
     val viewModel: BreedViewModel by activityViewModels()
     var rootElement: FragmentLoginBinding? = null
     private val fbAuth = FBAuth(this)
-    lateinit var navController: NavController
-
+    var navController: NavController? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,7 +36,6 @@ class LoginFragment : Fragment(), AuthInterface {
     ): View {
         val rootElement = FragmentLoginBinding.inflate(inflater)
         this.rootElement = rootElement
-        // Inflate the layout for this fragment
         return rootElement.root
     }
 
@@ -77,12 +74,12 @@ class LoginFragment : Fragment(), AuthInterface {
                     }
                 })
             } else if (currentUser.isAnonymous) {
-                Log.d("!!!userLFisAnonimous", "${currentUser?.uid}")
+                Log.d("!!!userLFisAnonimous", currentUser.uid)
                 tvRegIn.text = "Привет, Незнакомец!)"
             } else if (!currentUser.isAnonymous && currentUser.isEmailVerified){
                 tvForgotPas.visibility = View.GONE
                 imgButtonForgot.visibility = View.GONE
-                Log.d("!!!userLFisNoAnonimous", "${currentUser?.uid}")
+                Log.d("!!!userLFisNoAnonimous", currentUser.uid)
                 tvRegIn.text = """Привет
                     |${currentUser.email}
                 """.trimMargin()
@@ -90,7 +87,7 @@ class LoginFragment : Fragment(), AuthInterface {
             } else if (!currentUser.isAnonymous) {
                 tvForgotPas.visibility = View.GONE
                 imgButtonForgot.visibility = View.GONE
-                Log.d("!!!userLFisNoAnonimous", "${currentUser?.uid}")
+                Log.d("!!!userLFisNoAnonimous", currentUser.uid)
                 tvRegIn.text = """Привет
                     |${currentUser.email}
                 """.trimMargin()
@@ -144,9 +141,7 @@ class LoginFragment : Fragment(), AuthInterface {
             override fun afterTextChanged(editable: Editable?) {
                 afterTextChanged.invoke(editable.toString())
             }
-
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
     }
@@ -198,7 +193,7 @@ class LoginFragment : Fragment(), AuthInterface {
         return View.OnClickListener {
             rootElement?.apply {
                 if (tvEnter.text == "Карта") {
-                    navController.navigate(R.id.mapsFragment)
+                    navController?.navigate(R.id.mapsFragment)
                 } else {
                     rootElement.apply {
                         imgInUp.animation = AnimationUtils.loadAnimation(context, R.anim.rotation)

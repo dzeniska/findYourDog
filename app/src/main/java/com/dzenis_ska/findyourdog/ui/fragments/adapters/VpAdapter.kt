@@ -27,11 +27,8 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
     val scope = CoroutineScope(Dispatchers.Main)
     val arrayPhoto = mutableListOf<Uri>()
     val arrayPhotoBool = mutableMapOf<Int, Boolean>()
-    var boolStorage = false
-
 
     class VpHolder(val binding: VpAdapterItemBinding) : RecyclerView.ViewHolder(binding.root) {
-
         fun setData(
             addSF: AddShelterFragment,
             scope: CoroutineScope,

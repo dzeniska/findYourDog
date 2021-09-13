@@ -4,17 +4,14 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
-import com.dzenis_ska.findyourdog.ui.fragments.saveToFile
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
-
 
 object ImageManager {
 

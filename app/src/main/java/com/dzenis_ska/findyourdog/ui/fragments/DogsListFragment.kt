@@ -4,32 +4,27 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
 import android.widget.SearchView
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dzenis_ska.findyourdog.R
+import com.dzenis_ska.findyourdog.databinding.FragmentDogsListBinding
 import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.AdapterBreeds
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
-import kotlinx.android.synthetic.main.fragment_dogs_list.*
 import kotlinx.coroutines.*
 import java.util.*
 
-
 class DogsListFragment : Fragment() {
-
-    lateinit var navController: NavController
-    lateinit var adapter: AdapterBreeds
-    lateinit var viewModel: BreedViewModel
+    var rootElement: FragmentDogsListBinding? = null
+    val viewModel: BreedViewModel by activityViewModels()
+    var navController: NavController? = null
+    var adapter: AdapterBreeds? = null
     private val breeds = mutableListOf<DogBreeds>()
     private var job: Job? = null
     private var job2: Job? = null
-
-
-
     //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
 //        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
@@ -42,44 +37,36 @@ class DogsListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        viewModel = ViewModelProvider(activity as MainActivity).get(BreedViewModel::class.java)
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dogs_list, container, false)
+    ): View {
+        rootElement = FragmentDogsListBinding.inflate(inflater)
+        return rootElement!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        initAdapter()
         isFavRecycler(viewModel.isFav)
         navController = findNavController()
         initSearchView()
-
         initSwipeRefresh()
+        initClick()
 
-        val context = context
-
-
-        viewModel.breedLive.observe(viewLifecycleOwner, Observer {
+        viewModel.breedLive.observe(viewLifecycleOwner, {
             if(it.size == 0) (activity as MainActivity).checkNetwork(0)
-                breeds.clear()
-                breeds.addAll(it)
-                recyclerView?.adapter?.notifyDataSetChanged()
-                tv_dog_list.alpha = 0.3f
+            breeds.clear()
+            breeds.addAll(it)
+            adapter?.updateAdapterBreeds(it)
+            rootElement!!.tvDogList.alpha = 0.3f
         })
-
-        adapter = AdapterBreeds(breeds, context, this)
-        recyclerView.adapter = adapter
-        recyclerView.layoutManager = LinearLayoutManager(activity)
-        adapter.notifyDataSetChanged()
-
-        fabLike.setOnClickListener() {
-            viewModel.isFav = !viewModel.isFav
-            isFavRecycler(viewModel.isFav)
+    }
+    private fun initAdapter(){
+        adapter = AdapterBreeds(context, this)
+        rootElement!!.apply {
+            recyclerView.adapter = adapter
+            recyclerView.layoutManager = LinearLayoutManager(activity)
         }
     }
-
-    private fun isFavRecycler(boolean: Boolean){
+    private fun isFavRecycler(boolean: Boolean) = with(rootElement!!){
         if(boolean){
             viewModel.selectFavorites()
             fabLike.setImageResource(R.drawable.paw_red_2)
@@ -89,7 +76,7 @@ class DogsListFragment : Fragment() {
         }
     }
 
-    private fun initSwipeRefresh() {
+    private fun initSwipeRefresh() = with(rootElement!!) {
         swipeRefreshLayout.setOnRefreshListener {
             job = CoroutineScope(Dispatchers.Main).launch {
                 viewModel.showAllBreeds()
@@ -97,8 +84,6 @@ class DogsListFragment : Fragment() {
                 swipeRefreshLayout.isRefreshing = false
             }
         }
-
-
         swipeRefreshLayout.setColorSchemeResources(
             android.R.color.holo_blue_bright,
             android.R.color.holo_green_light,
@@ -107,26 +92,8 @@ class DogsListFragment : Fragment() {
         )
     }
 
-    private suspend fun sleepScope() = withContext(Dispatchers.IO) {
-        delay(3000)
-    }
-
-    fun onBreedSelect(position:Int){
-        job2 = CoroutineScope(Dispatchers.Main).launch {
-            goToFrag(position)
-//            sleepScope()
-            navController.navigate(R.id.oneBreedFragment)
-        }
-    }
-
-    private suspend fun goToFrag(position: Int) = withContext(Dispatchers.IO) {
-            viewModel.selectedBreed = breeds[position]
-            viewModel.getItemImg(breeds[position].name?.lowercase(Locale.ROOT).toString() )
-    }
-
     private fun initSearchView(){
-
-        searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+        rootElement!!.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
@@ -135,5 +102,24 @@ class DogsListFragment : Fragment() {
                 return true
             }
         })
+    }
+    private fun initClick() = with(rootElement!!){
+        fabLike.setOnClickListener() {
+            viewModel.isFav = !viewModel.isFav
+            isFavRecycler(viewModel.isFav)
+        }
+    }
+    private suspend fun sleepScope() = withContext(Dispatchers.IO) {
+        delay(3000)
+    }
+    fun onBreedSelect(position: Int) {
+        viewModel.selectedBreed = breeds[position]
+        viewModel.getItemImg(breeds[position].name?.lowercase(Locale.ROOT).toString())
+        navController?.navigate(R.id.oneBreedFragment)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        rootElement = null
     }
 }
