@@ -1,7 +1,9 @@
 package com.dzenis_ska.findyourdog.ui.fragments
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -9,8 +11,8 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.fragment.app.activityViewModels
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,9 +22,7 @@ import com.dzenis_ska.findyourdog.databinding.FragIntroBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.FirstFrAdapter
-import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.*
 
 
 class FirstFragment : Fragment() {
@@ -30,6 +30,11 @@ class FirstFragment : Fragment() {
     var navController: NavController? = null
     private val fbAuth = FBAuth(this)
     var adapter: FirstFrAdapter? = null
+
+    private val requestPermissions =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+//            updatePermissionsState()
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,28 +86,49 @@ class FirstFragment : Fragment() {
                     v.isPressed = false
                     imageButton1.elevation = 26f
                     navController?.navigate(R.id.dogsListFragment)
+                }else if (event.action == MotionEvent.ACTION_CANCEL){
+                    v.isPressed = false
+                    imageButton1.elevation = 26f
                 }
                 false
             }
             imBtnMap.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     v.isPressed = true
-                    imageButton1.elevation = 5f
+                    imBtnMap.elevation = 5f
                 }else if (event.action == MotionEvent.ACTION_UP){
                     v.isPressed = false
-                    imageButton1.elevation = 26f
-                    navController?.navigate(R.id.mapsFragment)
+                    imBtnMap.elevation = 26f
+                    if (ContextCompat.checkSelfPermission(requireContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        requestPermissions.launch(permissions)
+                    } else {
+                        if (fbAuth.mAuth.currentUser == null) {
+                            fbAuth.signInAnonimously(context as MainActivity) {
+                                navController?.navigate(R.id.mapsFragment)
+                            }
+                        } else {
+                            navController?.navigate(R.id.mapsFragment)
+                        }
+                    }
+                }else if (event.action == MotionEvent.ACTION_CANCEL){
+                    v.isPressed = false
+                    imBtnMap.elevation = 26f
                 }
                 false
             }
             imBtnAuth.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     v.isPressed = true
-                    imageButton1.elevation = 5f
+                    imBtnAuth.elevation = 5f
                 }else if (event.action == MotionEvent.ACTION_UP){
                     v.isPressed = false
-                    imageButton1.elevation = 26f
+                    imBtnAuth.elevation = 26f
                     navController?.navigate(R.id.loginFragment)
+                }else if (event.action == MotionEvent.ACTION_CANCEL){
+                    v.isPressed = false
+                    imBtnAuth.elevation = 26f
                 }
                 false
             }
@@ -136,17 +162,15 @@ class FirstFragment : Fragment() {
         Log.d("!!!on", "onDestroyView")
     }
     private fun currentUser(currentUser: FirebaseUser?) {
+        Log.d("!!!currentUser", "currentUser")
         (activity as MainActivity).checkNetwork(null)
         if (currentUser == null) {
-            fbAuth.signInAnonimously(context as MainActivity, object : FBAuth.Listener {
-                override fun onComplete() {
-                    Toast.makeText(
-                        activity,
-                        "Вы вошли как Гость",
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            })
+            fbAuth.signInAnonimously(context as MainActivity){}
         }
+    }
+    companion object {
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
     }
 }

@@ -44,13 +44,18 @@ class DbManager() {
     }
 
     fun addPhotoToStorage(adTemp: ByteArray, listener: OnCompleteListener<Uri>) {
-
+        Log.d("!!!itTaskJopa", "${adTemp}")
             val imStorageRef = ref
                 .child(auth.uid!!)
                 .child("image_${System.currentTimeMillis()}")
 
             val upTask = imStorageRef.putBytes(adTemp)
             upTask.continueWithTask{task->
+                if (!task.isSuccessful) {
+                    task.exception?.let {
+                        throw it
+                    }
+                }
 //                Log.d("!!!itTaskSuccessful3", "${task.result}")
                 imStorageRef.downloadUrl
             }.addOnCompleteListener(listener)

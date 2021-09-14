@@ -51,7 +51,6 @@
     <string name="email_add">Подтвердите регистрацию по Email и нажмите \"войти\"</string>
     <string name="email_no_add">Ошибка отправки подтверждения регистрации по Email!</string>
 
-
     <!-- Login fragment-->
     <string name="auth_ic">Войдите или \n
         Зарегистрируйтесь</string>
@@ -75,9 +74,12 @@
 
     <!-- Intro fragment-->
     <string name="content_description">Intro Fragment</string>
-    <string name="title_1"> \n DogTherapy расскажет Вам, как круто  и  важно дружить с собаками! \nОни же такие разные</string>
-    <string name="title_2">Можете прогуляться с собакеном! \n Он ждёт от Вас лишь вкусняшку \n и внимание!</string>
-    <string name="title_3">Если Вы не против того, чтобы Вашего пупсика выгуляли \n То необходимо зарегиться \n и подтвердить Email</string>
+    <string name="title_1"> DogTherapy расскажет Вам, какие собаки бывают разные!
+        \n Чёрные, белые, грязные!!)
+        </string>
+    <string name="title_2"> Вам  очень нравятся собаки!? \n Но нет возможности завести свою? \n Тогда собакены ждут Вас в гости!! </string>
+    <string name="title_3">Если Вы хотите, чтобы к Вашему питомцу пришли в гости \n То необходимо зарегиться \n и подтвердить Email</string>
+    <string name="title_4">*** \n Собакены приветствуют вкусняшки </string>
     <string name="more_photo">Больше фото</string>
     <string name="map">КАрта</string>
     <string name="authFirst">Регистрация</string>
@@ -85,5 +87,6 @@
 
     <!-- Progress Dialog-->
     <string name="no_network">Для приложения необходимо подключение к сети Internet</string>
+    <string name="no_network_anon">Возможно отсутствует подключение к сети Internet</string>
 
 </resources>

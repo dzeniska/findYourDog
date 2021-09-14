@@ -18,10 +18,11 @@ class MapPhotoAdapter(val mapFr: MapsFragment): RecyclerView.Adapter<MapPhotoAda
         @SuppressLint("ResourceAsColor")
         fun setData(uri: String, mapFr: MapsFragment) {
             val imageView = rootElement.ivMapFrAdapter as ImageView
+
             Picasso.get()
                 .load(uri)
                 .placeholder(R.drawable.ic_wait_a_litle)
-                .error(R.drawable.ic_no_connection)
+                .error(R.drawable.drawer_back_6)
 //                .resize(w, h)
                 .transform(CropSquareTransformation())
 //                .centerCrop()
@@ -48,15 +49,10 @@ class MapPhotoAdapter(val mapFr: MapsFragment): RecyclerView.Adapter<MapPhotoAda
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateAdapter(newList: ArrayList<String>){
-
 //        val diffResult = DiffUtil.calculateDiff(DiffUtilHelper(listPhoto, newList))
 //        diffResult.dispatchUpdatesTo(this)
         listPhoto.clear()
         listPhoto.addAll(newList)
         notifyDataSetChanged()
-    }
-
-    fun updateItem(index: Int) {
-        notifyItemChanged(index)
     }
 }

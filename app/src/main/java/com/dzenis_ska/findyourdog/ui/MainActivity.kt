@@ -11,15 +11,14 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 
 import android.view.*
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 
 import androidx.core.view.GravityCompat
@@ -28,19 +27,19 @@ import androidx.lifecycle.Observer
 
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.fragment.NavHostFragment.findNavController
+import androidx.navigation.get
 import androidx.navigation.ui.setupWithNavController
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.ActivityMainBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
+import com.dzenis_ska.findyourdog.ui.fragments.FirstFragment
 import com.dzenis_ska.findyourdog.ui.fragments.LoginFragment
-import com.dzenis_ska.findyourdog.ui.utils.ProgressDialog
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModelFactory
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
+import io.ak1.pix.helpers.PixBus
 
 import javax.inject.Inject
 
@@ -48,35 +47,35 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    private val locationPermissionCode = 2
     private lateinit var tvHeaderAcc: TextView
-    lateinit var navController: NavController
+    var navController: NavController? = null
     lateinit var mSlideshowTextView: TextView
 
     //    private var optionsList: Map<String, List<String>> = mapOf()
-    val fragment = LoginFragment()
-    val fbAuth = FBAuth(fragment)
-
+    private val fragmentLogin = LoginFragment()
+    private val fbAuth = FBAuth(fragmentLogin)
     var rootElement: ActivityMainBinding? = null
 
     @Inject
     lateinit var factory: BreedViewModelFactory
-    private val viewModel: BreedViewModel by viewModels {
-        factory
-    }
+    private val viewModel: BreedViewModel by viewModels { factory }
+    private val requestPermissions =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+//            updatePermissionsState()
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.AppThemeNoActionBar)
         rootElement = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(rootElement!!.root )
+        setContentView(rootElement!!.root)
 
 
 //        android:theme="@style/AppTheme"
 //        android:theme="@style/AppTheme.NoActionBar">
 
         init()
-        getPermission()
+//        getPermission()
         rootElement!!.navView.setNavigationItemSelectedListener(this)
         openCloseDrawer()
         viewModel.userUpdate.observe(this, Observer {
@@ -145,11 +144,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         viewModel.selectBreed()
 
-//        val navHostFragment = supportFragmentManager.findFragmentById(R.id.navHost) as NavHostFragment
         navController = findNavController(R.id.navHost)
-//        navController = findNavController(navHost)
+
         rootElement!!.apply {
-            appBar.toolbar.setupWithNavController(navController, drawerLayout)
+            appBar.toolbar.setupWithNavController(navController!!, drawerLayout)
             //nav_view.setupWithNavController(navController)
             setSupportActionBar(appBar.toolbar)
 
@@ -160,7 +158,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 //        drawerLayout.openDrawer(GravityCompat.START)
             tvHeaderAcc = navView.getHeaderView(0).findViewById(R.id.tvHeaderAcc)
         }
-
     }
 
     //рисуем счётчик
@@ -171,11 +168,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         mSlideshowTextView.text = "${count}"
     }
 
-    override fun onBackPressed() = with(rootElement!!) {
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed();
+    override fun onBackPressed() {
+        if(viewModel.backPressed) {
+            PixBus.onBackPressedEvent()
+            viewModel.backPressed = !viewModel.backPressed
+        }else {
+            super.onBackPressed()
         }
     }
 
@@ -185,21 +183,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         when (item.itemId) {
             R.id.show_fav -> {
-                navController.popBackStack()
-                navController.navigate(R.id.dogsListFragment)
+                navController!!.popBackStack()
+                navController!!.navigate(R.id.dogsListFragment)
                 closeDrawer()
                 Toast.makeText(applicationContext, "Любимчики", Toast.LENGTH_SHORT).show()
             }
             R.id.mapFr -> {
-                navController.popBackStack()
-                navController.navigate(R.id.mapsFragment)
-                closeDrawer()
+                if (ContextCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    requestPermissions.launch(permissions)
+                } else {
+                    if (fbAuth.mAuth.currentUser == null) {
+                        fbAuth.signInAnonimously(this) {
+                            navController!!.popBackStack()
+                            navController!!.navigate(R.id.mapsFragment)
+                            closeDrawer()
+                        }
+                    } else {
+                        navController!!.popBackStack()
+                        navController!!.navigate(R.id.mapsFragment)
+                        closeDrawer()
+                    }
+                }
             }
             R.id.auth -> {
-                navController.popBackStack()
-                navController.navigate(R.id.loginFragment)
+                navController!!.popBackStack()
+                navController!!.navigate(R.id.loginFragment)
                 closeDrawer()
-//                Toast.makeText(applicationContext, "loginFragment", Toast.LENGTH_LONG).show()
             }
         }
         return true
@@ -226,32 +239,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private fun getPermission() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                locationPermissionCode
-            )
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == locationPermissionCode) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(this, "Permission Denied", Toast.LENGTH_SHORT).show()
-            }
-        }
+    companion object {
+        val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
     }
 }

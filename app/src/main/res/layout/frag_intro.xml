@@ -194,7 +194,21 @@
             app:layout_constraintEnd_toEndOf="@id/imBtnAuth"
             app:layout_constraintStart_toStartOf="@id/imBtnAuth"
             app:layout_constraintTop_toTopOf="@id/imBtnAuth" />
-
+        <TextView
+            android:id="@+id/title_4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/t_bold"
+            android:inputType="textMultiLine"
+            android:text="@string/title_4"
+            android:textColor="@color/nav_bar_color"
+            android:textSize="22sp"
+            android:textStyle="bold|italic"
+            app:layout_constraintEnd_toEndOf="@id/imBtnAuth"
+            app:layout_constraintStart_toStartOf="@id/imBtnAuth"
+            app:layout_constraintTop_toBottomOf="@id/imBtnAuth"
+            tools:ignore="TextViewEdits" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

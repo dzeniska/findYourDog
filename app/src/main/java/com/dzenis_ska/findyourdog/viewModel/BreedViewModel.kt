@@ -28,7 +28,6 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     var fileName: String = ""
     var selectedBreed: DogBreeds? = null
     var locationManagerBool: Boolean = false
-    var countSelectedPhoto: Int = 0
     var numPage: Int = 0
     var btnDelState: Boolean? = false
     var isFav: Boolean = false
@@ -55,6 +54,9 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     val liveAdsDataAddShelter = MutableLiveData<AdShelter?>()
     val listPhoto = arrayListOf<String>()
     val dialog = MutableLiveData<AlertDialog>()
+
+    //Для backPressed
+    var backPressed: Boolean = false
 //////////////////////////////////////////////////////////////////////
 
     fun listPhoto(listP: ArrayList<String>) {
@@ -104,6 +106,7 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
         }
     }
     fun publishPhoto(adTemp: ByteArray, callback: (imageUri: Uri?)-> Unit) {
+        Log.d("!!!itTask", "${adTemp}")
             dbManager.addPhotoToStorage(adTemp) { task ->
                 if (task.isSuccessful) {
                     callback(task.result)

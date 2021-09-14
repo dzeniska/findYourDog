@@ -175,12 +175,15 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
         notifyItemRemoved(numPage)
     }
     fun replaceItemAdapter( arrayListPhoto: List<Uri>){
-        Log.d("!!!parseUri", "${arrayPhotoBool}")
-        arrayPhoto.removeAt(addSF.viewModel.numPage)
-        arrayPhotoBool[addSF.viewModel.numPage] = false
-        Log.d("!!!parseUri", "${arrayPhotoBool}")
-        arrayPhoto.add(addSF.viewModel.numPage, arrayListPhoto[0])
-        notifyDataSetChanged()
+        if(arrayListPhoto.size == 1) {
+            Log.d("!!!parseUri", "${arrayPhotoBool}")
+            Log.d("!!!numPage", "${addSF.viewModel.numPage}")
+            arrayPhoto.removeAt(addSF.viewModel.numPage)
+            arrayPhotoBool[addSF.viewModel.numPage] = false
+            Log.d("!!!parseUri", "${arrayPhotoBool}")
+            arrayPhoto.add(addSF.viewModel.numPage, arrayListPhoto[0])
+            notifyDataSetChanged()
+        }
     }
 
 }

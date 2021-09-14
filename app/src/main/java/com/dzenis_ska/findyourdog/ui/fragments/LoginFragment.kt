@@ -67,12 +67,10 @@ class LoginFragment : Fragment(), AuthInterface {
 
         rootElement?.apply {
             if (currentUser == null) {
-                fbAuth.signInAnonimously(context as MainActivity, object : FBAuth.Listener {
-                    override fun onComplete() {
-                        tvRegIn.text = "Вы вошли как Гость"
-                        Log.d("!!!userLFonComplete", "${currentUser?.uid}")
-                    }
-                })
+                fbAuth.signInAnonimously(context as MainActivity) {
+                    tvRegIn.text = "Вы вошли как Гость"
+                    Log.d("!!!userLFonComplete", "${currentUser?.uid}")
+                }
             } else if (currentUser.isAnonymous) {
                 Log.d("!!!userLFisAnonimous", currentUser.uid)
                 tvRegIn.text = "Привет, Незнакомец!)"

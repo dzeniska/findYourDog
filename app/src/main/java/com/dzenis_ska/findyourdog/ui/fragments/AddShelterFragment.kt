@@ -283,6 +283,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 fullScreen(250, 0.50f)
                 imgAddPhoto.alpha = 0.8f
                 hideAddShelterButton(false, 0)
+                viewModel.backPressed = true
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
@@ -293,6 +294,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             fabAddImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
                 hideAddShelterButton(false, 0)
+                viewModel.backPressed = true
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
@@ -310,6 +312,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             fabReplaceImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
                 hideAddShelterButton(false, 0)
+                viewModel.backPressed = true
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
@@ -377,19 +380,31 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 Log.d("!!!transpImageNew1", "1")
                 val arrayListByteArray =
                     ImageManager.imageResize(arrayListUri, activity as MainActivity)
-                Log.d("!!!transpImageNew2", "2")
-                viewModel.publishPhoto(arrayListByteArray[0]) { uri ->
+                Log.d("!!!transpImageNew2", "jopa")
+                Log.d("!!!transpImageNew2", "${arrayListByteArray.stream().count()}")
+                if(arrayListByteArray.size == 0){
+                    imageIndex++
+                    if (vpAdapter.arrayPhoto.size == imageIndex) {
+                        addPhoto(null, dialog)
+                    } else {
+                        addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
+                    }
+//                    photoArrayList.add("https://firebasestorage.googleapis.com/v0/b/findyourdog-6fa93.appspot.com/o/storage%2FdnUUHb4of0WAoF4xuDlV0J95hBy1%2Fimage_1631654334261?alt=media&token=d66cffec-f403-498c-b2e6-30afa473db41")
+                    Toast.makeText(context, "Не удалось загрузить фото, возможно они повреждены", Toast.LENGTH_LONG).show()
+                } else {
+                    viewModel.publishPhoto(arrayListByteArray[0]) { uri ->
 
-                    if (uri != null) {
-                        photoArrayList.add(uri.toString())
-
-                        imageIndex++
-                        if(vpAdapter.arrayPhoto.size == imageIndex) {
-                            addPhoto(null, dialog)
-                        }else{
-                            addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
+                        if (uri != null) {
+                            photoArrayList.add(uri.toString())
+                            Log.d("!!!transpImageNew3", "${uri.toString()}")
+                            imageIndex++
+                            if (vpAdapter.arrayPhoto.size == imageIndex) {
+                                addPhoto(null, dialog)
+                            } else {
+                                addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
+                            }
+                            Log.d("!!!transpImageNew3", "3")
                         }
-                        Log.d("!!!transpImageNew3", "3")
                     }
                 }
             }

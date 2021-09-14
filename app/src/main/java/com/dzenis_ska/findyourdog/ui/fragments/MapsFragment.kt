@@ -17,6 +17,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -72,21 +73,19 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
+        Log.d("!!!on", "onCreateViewMF")
         rootElement = FragmentMapsBinding.inflate(inflater)
         return rootElement!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Log.d("!!!", "onViewCreated")
+        Log.d("!!!on", "onViewCreatedMF")
         navController = findNavController()
 
-//        6546546gffc https://developer.android.com/guide/fragments/appbar
-//        https://developer.android.com/guide/fragments/apphttps://developer.android.com/guide/fragments/appbarbar
         mapFragment = childFragmentManager.findFragmentById(R.id.mapFr) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
 
@@ -112,6 +111,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         initClick()
 
     }
+//    private fun updatePermissionsState() {
+//        val permissionsStates: Map<String, Boolean> = permissions.associateWith { permission ->
+//            ActivityCompat.checkSelfPermission(context!!, permission) == PackageManager.PERMISSION_GRANTED
+//        }
+//    }
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.sample_menu, menu)
         val item = menu.findItem(R.id.action_done)
@@ -217,7 +221,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        Log.d("!!!", "onMapReady")
+        Log.d("!!!on", "onMapReady")
         mMap = googleMap
         mMap.setOnMyLocationButtonClickListener(this)
         mMap.setOnMyLocationClickListener(this)
@@ -380,14 +384,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
             marker!!.tag = item.key
             if(marker.tag == chose) marker.showInfoWindow()
-            item.photoes?.get(0)?.let { listMainPhoto.add(it) }
+            listMainPhoto.add(item.photoes?.get(0) ?: "empty")
             if(item.uid == viewModel.dbManager.auth.uid) {
 //                marker.showInfoWindow()
                 marker.alpha = 0.6f
             }
         }
+
         adapter?.updateAdapter(listMainPhoto)
         setHasOptionsMenu(true)
+
     }
     override fun onInfoWindowClick(markerInfo: Marker) {
         isEditing = false
@@ -454,6 +460,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onStart() {
+        Log.d("!!!on", "onStartMF")
         super.onStart()
         mapFragment?.onStart()
     }
@@ -462,15 +469,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         job3?.cancel()
         mapFragment?.onStop()
         super.onStop()
-        Log.d("!!!", "onStop")
+        Log.d("!!!on", "onStopMF")
         if(viewModel.locationManagerBool){
             locationManager.removeUpdates(this)
             viewModel.locationManagerBool = false
         }
-    }
-
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
     }
 
     override fun onMyLocationButtonClick(): Boolean {
@@ -483,27 +486,32 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onResume() {
+        Log.d("!!!on", "onResumeMF")
         super.onResume()
         mapFragment?.onResume()
+
     }
 
     override fun onDestroy() {
-        Log.d("!!!", "onDestroy")
+        Log.d("!!!", "onDestroyMF")
         mapFragment?.onDestroy()
         super.onDestroy()
     }
+
     override fun onDestroyView() {
-        Log.d("!!!", "onDestroyView")
+        Log.d("!!!on", "onDestroyView")
         rootElement = null
         super.onDestroyView()
     }
 
     override fun onPause() {
+        Log.d("!!!on", "onPauseMF")
         mapFragment?.onPause()
         super.onPause()
     }
 
     override fun onLowMemory() {
+        Log.d("!!!on", "onDestroyViewMF")
         super.onLowMemory()
         mapFragment?.onLowMemory()
     }
@@ -542,5 +550,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             cs.constrainWidth(R.id.rcViewMapPhoto, i)
             Log.d("!!!markInd", "${i}")
             cs.applyTo(rootElement!!.clFM)
+    }
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
     }
 }

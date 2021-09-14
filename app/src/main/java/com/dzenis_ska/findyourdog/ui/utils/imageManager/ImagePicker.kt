@@ -44,6 +44,7 @@ object ImagePicker {
                         Log.d("!!!result", "showCameraFragment: ${it.path}")
                         listMap.set(false, it)
                     }
+                    addSF.viewModel.backPressed = false
                     when (const) {
                         AddShelterFragment.ADD_PHOTO -> addSF.vpAdapter.updateAdapter(result.data, false)
                         AddShelterFragment.ADD_IMAGE -> addSF.vpAdapter.updateAdapterForSinglePhoto(result.data)
@@ -55,8 +56,11 @@ object ImagePicker {
                 }
                 PixEventCallback.Status.BACK_PRESSED -> {
                     Log.d("!!!PixBackPressed", "Pix")
-                    addSF.hideAddShelterButton(true, 1)
-                    closePixFragment(mAct)
+                    //Не работает
+                    mAct.onBackPressed()
+
+//                    addSF.hideAddShelterButton(true, 1)
+//                    closePixFragment(mAct)
                 }
             }
         }
