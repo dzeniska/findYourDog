@@ -66,7 +66,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private lateinit var mMap: GoogleMap
     private lateinit var mapView: MapView
 
-    val cs = ConstraintSet()
+    private val cs = ConstraintSet()
     var fs = 250
     var lat: Double = 0.0
     var lng: Double = 0.0
@@ -78,6 +78,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var shLng: Double? = null
     var adShelterToEdit: AdShelter? = null
     var boolEditOrNew: Boolean? = false
+    var boolEditAd: Boolean? = false
     var imageIndex = 0
     val photoArrayList = mutableListOf<String>()
     var adapterArraySize = 0
@@ -147,6 +148,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         fillFrag(adShelter, true)
                         boolEditOrNew = true
                         fabDeleteShelter.isVisible = true
+                        ibGetLocation.isVisible = true
                     } else {
                         fillFrag(adShelter, false)
                     }
@@ -283,7 +285,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 fullScreen(250, 0.50f)
                 imgAddPhoto.alpha = 0.8f
                 hideAddShelterButton(false, 0)
-                viewModel.backPressed = true
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
@@ -294,7 +295,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             fabAddImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
                 hideAddShelterButton(false, 0)
-                viewModel.backPressed = true
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
@@ -312,7 +312,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             fabReplaceImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
                 hideAddShelterButton(false, 0)
-                viewModel.backPressed = true
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
@@ -369,6 +368,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             publishAdShelter(fillAdShelter(photoArrayList as ArrayList<String>), dialog)
             return
         }
+        Log.d("!!!transpImageNewUri", "${uri}")
         if(uri != null) oldOrNew(uri, dialog)
     }
 
@@ -427,23 +427,25 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    fun publishAdShelter(adTemp: AdShelter, dialog: AlertDialog) {
+    private fun publishAdShelter(adTemp: AdShelter, dialog: AlertDialog) {
         if (boolEditOrNew == true) {
 //            Log.d("!!!uid", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
             viewModel.publishAdShelter(adTemp.copy(key = adShelterToEdit?.key, markerColor = adShelterToEdit?.markerColor), dialog){
 //                Log.d("!!!uidIt", "${it}}")
                 navController.popBackStack(R.id.addShelterFragment, true)
+                navController.popBackStack(R.id.mapsFragment, true)
                 navController.navigate(R.id.mapsFragment)
             }
         } else {
 //            Log.d("!!!uid2", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
             viewModel.publishAdShelter(adTemp, dialog) {
 //                Log.d("!!!uidIt2", "${it}")
+//                viewModel.getAllAds()
                 navController.popBackStack(R.id.addShelterFragment, true)
+                navController.popBackStack(R.id.mapsFragment, true)
                 navController.navigate(R.id.mapsFragment)
             }
         }
-
     }
 
 
@@ -537,6 +539,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         if (shLat != null) {
             setMarker(shLat!!, shLng!!, 11f)
         } else {
+//            setMarker(shLat!!, shLng!!, 12f)
             getPermission()
         }
 

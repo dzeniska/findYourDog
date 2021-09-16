@@ -56,7 +56,7 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     val dialog = MutableLiveData<AlertDialog>()
 
     //Для backPressed
-    var backPressed: Boolean = false
+    var backPressed: Int = 0
 //////////////////////////////////////////////////////////////////////
 
     fun listPhoto(listP: ArrayList<String>) {

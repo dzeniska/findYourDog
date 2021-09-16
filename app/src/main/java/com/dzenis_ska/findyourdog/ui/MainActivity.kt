@@ -11,8 +11,10 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -69,7 +71,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setTheme(R.style.AppThemeNoActionBar)
         rootElement = ActivityMainBinding.inflate(layoutInflater)
         setContentView(rootElement!!.root)
-
 
 //        android:theme="@style/AppTheme"
 //        android:theme="@style/AppTheme.NoActionBar">
@@ -169,11 +170,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
-        if(viewModel.backPressed) {
-            PixBus.onBackPressedEvent()
-            viewModel.backPressed = !viewModel.backPressed
-        }else {
-            super.onBackPressed()
+        Log.d("!!!bakPressed", "${viewModel.backPressed}")
+        when (viewModel.backPressed) {
+            0 -> {
+                super.onBackPressed()
+            }
+            2 -> {
+                PixBus.onBackPressedEvent()
+                viewModel.backPressed--
+            }
+            1 -> {
+                val fList = supportFragmentManager.fragments
+                fList.forEach { frag ->
+                    if (frag.toString().startsWith("PixFragment")) {
+                        supportFragmentManager.beginTransaction().remove(frag).commit()
+                    }
+                }
+                viewModel.backPressed--
+            }
         }
     }
 
