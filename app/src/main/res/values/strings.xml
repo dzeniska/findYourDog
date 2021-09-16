@@ -64,7 +64,13 @@
     <!-- Add Shelter fragment-->
     <string name="name_shelter">Название</string>
     <string name="tel_num_shelter">Номер телефона</string>
+    <string name="dog_name">Кличка</string>
     <string name="description">Описание</string>
+    <string name="gendMan">Мальчик</string>
+    <string name="gendWoMan">Девочка</string>
+    <string name="sizeS">Маленький(ая)</string>
+    <string name="sizeM">Средний(ая)</string>
+    <string name="sizeL">Большой(ая)</string>
 
     <!-- Maps fragment-->
     <string name="state_badge_label">State badge</string>

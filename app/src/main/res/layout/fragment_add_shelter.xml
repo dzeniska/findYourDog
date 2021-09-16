@@ -148,7 +148,6 @@
                     android:background="@android:drawable/editbox_background"
                     android:ems="10"
                     android:hint="@string/tel_num_shelter"
-
                     android:inputType="phone"
                     android:padding="10dp"
                     android:phoneNumber="true"
@@ -169,16 +168,58 @@
                     app:layout_constraintEnd_toEndOf="@+id/edTelNum"
                     app:layout_constraintTop_toTopOf="@+id/edTelNum" />
 
+                <EditText
+                    android:id="@+id/edName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:ems="10"
+                    android:hint="@string/dog_name"
+                    android:inputType="textPersonName"
+                    android:padding="10dp"
+                    android:textColor="@color/back_menu_add_color"
+                    android:textColorHint="@color/text_hint_add"
+                    app:layout_constraintEnd_toEndOf="@id/edTelNum"
+                    app:layout_constraintStart_toStartOf="@id/edTelNum"
+                    app:layout_constraintTop_toBottomOf="@id/edTelNum" />
+
+                <TextView
+                    android:id="@+id/tvGender"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:text="@string/gendMan"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:textColor="@color/back_menu_add_color"
+                    app:layout_constraintStart_toStartOf="@id/edName"
+                    app:layout_constraintEnd_toStartOf="@id/tvSize"
+                    app:layout_constraintTop_toBottomOf="@id/edName" />
+
+                <TextView
+                    android:id="@+id/tvSize"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:text="@string/sizeS"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:textColor="@color/back_menu_add_color"
+                    app:layout_constraintEnd_toEndOf="@id/edName"
+                    app:layout_constraintStart_toEndOf="@id/tvGender"
+                    app:layout_constraintTop_toTopOf="@+id/tvGender" />
+
 
                 <com.dzenis_ska.findyourdog.ui.fragments.customMapView.CustomMapView
                     android:id="@+id/mapView"
                     android:layout_width="0dp"
                     android:layout_height="100dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginStart="19dp"
                     android:layout_marginEnd="19dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/edTelNum" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvGender" />
 
                 <EditText
                     android:id="@+id/edDescription"

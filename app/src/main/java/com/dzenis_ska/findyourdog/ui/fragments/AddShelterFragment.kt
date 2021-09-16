@@ -82,6 +82,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var imageIndex = 0
     val photoArrayList = mutableListOf<String>()
     var adapterArraySize = 0
+    var sizeDog: Int = 1
 
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
@@ -184,6 +185,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             edTelNum.setText(adShelter.tel)
             edTelNum.isEnabled = isEnabled
+            edName.setText(adShelter.name)
+            edName.isEnabled = isEnabled
+            tvGender.text = adShelter.gender
+            tvGender.isClickable = isEnabled
+            tvSize.text = adShelter.size
+            tvSize.isClickable = isEnabled
             edDescription.setText(adShelter.description)
             edDescription.isEnabled = isEnabled
             shLat = (adShelter.lat)!!.toDouble()
@@ -209,8 +216,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         var adShelter: AdShelter
         rootElement.apply {
             adShelter = AdShelter(
-                "",
+                edName.text.toString(),
                 edTelNum.text.toString(),
+                tvGender.text.toString(),
+                tvSize.text.toString(),
                 targetLat.toString(),
                 targetLng.toString(),
                 edDescription.text.toString(),
@@ -344,6 +353,21 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             ibGetLocation.setOnClickListener {
                 getLocation()
                 ibGetLocation.visibility = View.GONE
+            }
+            tvGender.setOnClickListener{
+                if(tvGender.text == resources.getString(R.string.gendMan))
+                    tvGender.text = resources.getText(R.string.gendWoMan)
+                else tvGender.text = resources.getString(R.string.gendMan)
+            }
+            tvSize.setOnClickListener{
+                when(sizeDog){
+                    0-> {tvSize.text = resources.getString(R.string.sizeS)
+                        sizeDog = 1}
+                    1-> {tvSize.text = resources.getString(R.string.sizeM)
+                        sizeDog = 2}
+                    2-> {tvSize.text = resources.getString(R.string.sizeL)
+                        sizeDog = 0}
+                }
             }
         }
     }

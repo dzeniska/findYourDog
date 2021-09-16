@@ -360,8 +360,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             val marker = mMap.addMarker(
                 MarkerOptions().position(target)
                     .icon(BitmapDescriptorFactory.defaultMarker(item.markerColor?:15f))
-                    .title("${item.tel}")
-                    .snippet(item.viewsCounter)
+                    .title("${item.gender}")
+                    .snippet(item.name)
                     .draggable(false)
 
 //                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.paw_mark))

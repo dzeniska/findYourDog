@@ -39,7 +39,7 @@ object ImagePicker {
         mAct.addPixToActivity(R.id.clMain, getOptions(imageCount)) { result ->
             when (result.status) {
                 PixEventCallback.Status.SUCCESS -> {
-
+                    addSF.viewModel.backPressed = 0
                     val listMap = mutableMapOf<Boolean, Uri>()
                     result.data.forEach {
                         Log.d("!!!result", "showCameraFragment: ${it.path}")
