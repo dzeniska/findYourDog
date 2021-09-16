@@ -115,7 +115,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         initViewModel()
         initRecyclerView()
         onClick(this, dialog)
-
     }
 
     fun hideAddShelterButton(bool: Boolean, btnDelState: Int) {
@@ -187,11 +186,11 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             edTelNum.isEnabled = isEnabled
             edDescription.setText(adShelter.description)
             edDescription.isEnabled = isEnabled
-
+            shLat = (adShelter.lat)!!.toDouble()
+            shLng = (adShelter.lng)!!.toDouble()
             hidePhotoButtons(isEnabled)
             if (!isEnabled) {
-                shLat = (adShelter.lat)!!.toDouble()
-                shLng = (adShelter.lng)!!.toDouble()
+
                 fabAddShelter.visibility = View.GONE
                 ivTel.visibility = View.VISIBLE
 
@@ -270,7 +269,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             mMap.setOnCameraMoveListener {
                 marker!!.position = mMap.cameraPosition.target //to center in map
                 target = marker.position
-
                 //здесь сохраняем данные местоположения
                 targetLat = target.latitude
                 targetLng = target.longitude
@@ -537,7 +535,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         Log.d("!!!", "onMapReady")
         mMap = googleMap
         if (shLat != null) {
-            setMarker(shLat!!, shLng!!, 11f)
+//            if(viewModel.btnDelState == false)
+                setMarker(shLat!!, shLng!!, 11f)
+//            else
+//                setMarker(shLat!!, shLng!!, 12f)
         } else {
 //            setMarker(shLat!!, shLng!!, 12f)
             getPermission()

@@ -255,31 +255,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
 
         private fun render(marker: Marker, view: View) {
-            val badge = R.drawable.add_photo
+//            val badge = R.drawable.add_photo
+            val badge = R.drawable.ic_waling_man_dog
             var uri = ""
             listAdShelter.forEach {
                 if (it.key == marker.tag) {
                     uri = it.photoes?.get(0) ?: ""
                 }
             }
-//            for(info in viewModel.listShelter){
-//                if(info.key == marker.tag){
-//                    view.findViewById<ImageView>(R.id.badge).setImageURI(info.photoes?.get(0)?.toUri())
-//                }
-//            }
-            view.findViewById<ImageView>(R.id.badge).setImageResource(badge)
-//            val viewPhoto = view.findViewById<ImageView>(R.id.badge)
-//            Log.d("!!!photoMark", "${uri}")
 
-//                Picasso.get()
-//                    .load(uri)
-//                    .placeholder(R.drawable.ic_wait_a_litle)
-//                    .error(R.drawable.ic_no_connection)
-//                .resize(10, 10)
-//                    .transform(CropSquareTransformation())
-//                .centerCrop()
-////                    .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-//                    .into(viewPhoto)
+            view.findViewById<ImageView>(R.id.badge).setImageResource(badge)
 
             // Set the title and snippet for the custom info window
             val title: String? = marker.title

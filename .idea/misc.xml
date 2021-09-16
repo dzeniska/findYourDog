@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable-anydpi/add_photo.xml" value="0.21614583333333334" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable-anydpi/ic_my.xml" value="0.12604166666666666" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable-hdpi/background_img_item.xml" value="0.2203125" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable-hdpi/intro_back_normal.xml" value="0.2203125" />
@@ -16,6 +17,8 @@
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable/ic_map.xml" value="0.2203125" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable/ic_my.xml" value="0.12604166666666666" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable/ic_phone.xml" value="0.2203125" />
+        <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable/ic_replay.xml" value="0.21614583333333334" />
+        <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable/ic_waing_man_dog.xml" value="1.296875" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable/paw_red_2.xml" value="0.2203125" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable/viewpager_selected.xml" value="0.2203125" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/layout/activity_main.xml" value="0.20416666666666666" />

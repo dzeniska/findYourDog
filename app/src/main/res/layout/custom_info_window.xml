@@ -22,8 +22,8 @@
     <ImageView
         android:id="@+id/badge"
         android:contentDescription="@string/state_badge_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginRight="5dp"
         android:layout_marginEnd="5dp"
         android:adjustViewBounds="true"/>
