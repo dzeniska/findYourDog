@@ -26,7 +26,7 @@ class DogsListFragment : Fragment() {
     private val breeds = mutableListOf<DogBreeds>()
     private var job: Job? = null
     private var job2: Job? = null
-    private val check: CheckNetwork = CheckNetwork()
+//    private val check: CheckNetwork = CheckNetwork()
     //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
 //        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
@@ -54,7 +54,7 @@ class DogsListFragment : Fragment() {
         initClick()
 
         viewModel.breedLive.observe(viewLifecycleOwner, {
-            if(it.size == 0) check.check(activity as MainActivity)
+            if(it.size == 0) CheckNetwork.check(activity as MainActivity)
             breeds.clear()
             breeds.addAll(it)
             adapter?.updateAdapterBreeds(it)

@@ -172,7 +172,6 @@ class FBAuth(private val fragment: Fragment) {
             } else {
                 callback(false)
             }
-
         }
     }
 }

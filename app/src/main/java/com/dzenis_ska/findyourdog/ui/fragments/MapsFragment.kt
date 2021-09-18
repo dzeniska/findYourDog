@@ -70,7 +70,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     val cs = ConstraintSet()
 
     var isEditing: Boolean = false
-    private val check: CheckNetwork = CheckNetwork()
+//    private val check: CheckNetwork = CheckNetwork()
 
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -101,7 +101,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         viewModel.liveAdsDataAllShelter.observe(viewLifecycleOwner,{list ->
             val list1 = list
-            if(list.size == 0) check.check(activity as MainActivity)
+            if(list.size == 0) CheckNetwork.check(activity as MainActivity)
             if (::mMap.isInitialized) {
                 getAllMarkers(list1, null)
                 listAdShelter.clear()

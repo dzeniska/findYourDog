@@ -32,8 +32,8 @@ class FirstFragment : Fragment() {
     var navController: NavController? = null
     private val fbAuth = FBAuth(this)
     var adapter: FirstFrAdapter? = null
-    private val check: CheckNetwork = CheckNetwork()
-    private var isClick: Boolean = true
+//    private val check: CheckNetwork = CheckNetwork()
+//    private var isClick: Boolean = true
 
     private val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -61,13 +61,11 @@ class FirstFragment : Fragment() {
 
     private fun isAuth() = with(rootElement!!){
         if (fbAuth.mAuth.currentUser == null) {
-            isClick = false
             fbAuth.signInAnonimously(imBtnMap) {
-                isClick = true
                 if(it == true) {
                     navController?.navigate(R.id.mapsFragment)
                 }else{
-                    check.check(activity as MainActivity)
+                    CheckNetwork.check(activity as MainActivity)
                 }
             }
         } else {
@@ -79,13 +77,15 @@ class FirstFragment : Fragment() {
             R.drawable.sobaka_ulibaka_1,
             R.drawable.sobaka_podozrevaka_1,
             R.drawable.sobaka_ispugaka_1,
-            R.drawable.sobaka_plavaka_1
+            R.drawable.sobaka_plavaka_1,
+            R.drawable.sobaka_ulibaka_escho_1
         )
         val listTitle = arrayListOf(
             "Улыбыка",
             "Подозревака",
             "Испугака",
-            "Капитака"
+            "Капитака",
+            "Улыбыка есчо"
         )
         adapter = FirstFrAdapter()
         rootElement!!.rcFF.adapter = adapter
@@ -117,19 +117,20 @@ class FirstFragment : Fragment() {
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     v.isPressed = true
                     imBtnMap.elevation = 5f
-                }else if (event.action == MotionEvent.ACTION_UP){
+                } else if (event.action == MotionEvent.ACTION_UP) {
                     v.isPressed = false
                     imBtnMap.elevation = 26f
-                    if(isClick){
-                        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED) {
-                            requestPermissions.launch(permissions)
-                        } else {
-                            isAuth()
-                        }
+                    if (ContextCompat.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        )
+                        != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        requestPermissions.launch(permissions)
+                    } else {
+                        isAuth()
                     }
-
-                }else if (event.action == MotionEvent.ACTION_CANCEL){
+                } else if (event.action == MotionEvent.ACTION_CANCEL) {
                     v.isPressed = false
                     imBtnMap.elevation = 26f
                 }
@@ -183,7 +184,7 @@ class FirstFragment : Fragment() {
         if (currentUser == null) {
             fbAuth.signInAnonimously(null){
                 if(it == false)
-                    check.check(activity as MainActivity)
+                    CheckNetwork.check(activity as MainActivity)
                 else
                     Toast.makeText(context, context?.resources?.getString(R.string.hi), Toast.LENGTH_SHORT).show()
             }

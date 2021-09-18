@@ -32,12 +32,10 @@ object ProgressDialog {
                 }
                 MAIN_ACTIVITY -> {
                     progressBar2.visibility = View.GONE
-                    textView.text = act.resources.getString(R.string.no_network)
+                    textView.text = act.resources.getString(R.string.no_network_q)
                     dialog.setCancelable(true)
                 }
             }
         }
-
     }
-
 }

@@ -35,7 +35,7 @@ class LoginFragment : Fragment(), AuthInterface {
     var rootElement: FragmentLoginBinding? = null
     private val fbAuth = FBAuth(this)
     var navController: NavController? = null
-    private val check: CheckNetwork = CheckNetwork()
+//    private val check: CheckNetwork = CheckNetwork()
 
     private val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -76,7 +76,7 @@ class LoginFragment : Fragment(), AuthInterface {
 
     @SuppressLint("SetTextI18n")
     private fun currentUser(currentUser: FirebaseUser?) {
-        check.check(activity as MainActivity)
+        CheckNetwork.check(activity as MainActivity)
         rootElement?.apply {
             if (currentUser == null) {
                 fbAuth.signInAnonimously(null) {

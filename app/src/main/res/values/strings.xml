@@ -93,7 +93,7 @@
     <string name="first_photo">Капитан</string>
 
     <!-- Progress Dialog-->
-    <string name="no_network">Для приложения необходимо подключение к сети Internet</string>
+    <string name="no_network_q">Для приложения необходимо подключение к сети Internet</string>
     <string name="hi">Добро поаловать!</string>
     <string name="remove_user">Для смены пользователя \n нажмите \"Выход\"</string>
 

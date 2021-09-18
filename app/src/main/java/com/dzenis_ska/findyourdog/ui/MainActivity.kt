@@ -33,6 +33,7 @@ import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.ActivityMainBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.fragments.LoginFragment
+import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModelFactory
 import com.google.android.material.navigation.NavigationView
@@ -55,13 +56,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val fragmentLogin = LoginFragment()
     private val fbAuth = FBAuth(fragmentLogin)
     var rootElement: ActivityMainBinding? = null
-    var isClick: Boolean = true
+//    var isClick: Boolean = true
+//    private val check: CheckNetwork = CheckNetwork()
 
     @Inject
     lateinit var factory: BreedViewModelFactory
     private val viewModel: BreedViewModel by viewModels { factory }
     private val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            Log.d("!!!isClick", "is2")
             isAuth()
         }
 
@@ -220,16 +223,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Toast.makeText(applicationContext, "Любимчики", Toast.LENGTH_SHORT).show()
             }
             R.id.mapFr -> {
-                if(isClick){
-                    if (ContextCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        requestPermissions.launch(permissions)
-                    } else {
-                        isAuth()
-                    }
+                if (ContextCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    requestPermissions.launch(permissions)
+                } else {
+                    isAuth()
                 }
             }
             R.id.auth -> {
@@ -241,16 +242,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
     private fun isAuth(){
+        Log.d("!!!isClick", "is")
         if (fbAuth.mAuth.currentUser == null) {
-            isClick = false
             fbAuth.signInAnonimously(null) {
                 if (it == true) {
-                    isClick = true
                     navController!!.popBackStack()
                     navController!!.navigate(R.id.mapsFragment)
                     closeDrawer()
+                }else{
+                    CheckNetwork.check(this)
                 }
-
             }
         } else {
             navController!!.popBackStack()
@@ -261,23 +262,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun closeDrawer() {
         rootElement!!.drawerLayout.closeDrawer(GravityCompat.START)
-    }
-
-    fun checkNetwork(size: Int?) {
-        //проверка на доступ к сети
-
-        val cManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val info = cManager.getNetworkCapabilities(cManager.activeNetwork)
-        if (info == null) {
-            if(size == null) Toast.makeText(this, resources.getString(R.string.no_network), Toast.LENGTH_LONG).show()
-        } else if (info.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) || info.hasTransport(
-                NetworkCapabilities.TRANSPORT_WIFI
-            )
-        ) {
-            if(size == null) Toast.makeText(this, "Network available", Toast.LENGTH_LONG).show()
-        } else {
-            Toast.makeText(this, "NO Network!!!", Toast.LENGTH_LONG).show()
-        }
     }
 
     companion object {
