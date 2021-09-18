@@ -4,11 +4,12 @@
     <string name="add_dog_string">Добавить нового друга</string>
     <string name="add_shelter_string">Волонтёры</string>
     <string name="shelters">Передержка</string>
-    <string name="fav_breeds">Понравившиеся породы</string>
+    <string name="fav_breeds">Породы собакенов</string>
     <string name="dogs_list_string">Список пород собакенов</string>
     <string name="auth">Регистрация</string>
 
     <string name="treasure_map">Карта сокровищ!</string>
+    <string name="dog_map">Место встречи!</string>
 
     <string name="enter_please">Ну!.. Ты это… Заходи, если что</string>
     <string name="entrance">Вход</string>
@@ -93,6 +94,7 @@
 
     <!-- Progress Dialog-->
     <string name="no_network">Для приложения необходимо подключение к сети Internet</string>
-    <string name="no_network_anon">Возможно отсутствует подключение к сети Internet</string>
+    <string name="hi">Добро поаловать!</string>
+    <string name="remove_user">Для смены пользователя \n нажмите \"Выход\"</string>
 
 </resources>

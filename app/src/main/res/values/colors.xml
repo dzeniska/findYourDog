@@ -33,6 +33,7 @@
     <color name="white">#FFFFFF</color>
     <color name="white_38">#60FFFFFF</color>
     <color name="back_pressed_color">#612962FF</color>
+    <color name="text_color">#000000</color>
 
     <!-- Image Picker
     <color name="video_counter_color_pix">#E53935</color>

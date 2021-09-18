@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
@@ -22,6 +23,7 @@ import com.dzenis_ska.findyourdog.databinding.FragIntroBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.FirstFrAdapter
+import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
 import com.google.firebase.auth.FirebaseUser
 
 
@@ -30,10 +32,12 @@ class FirstFragment : Fragment() {
     var navController: NavController? = null
     private val fbAuth = FBAuth(this)
     var adapter: FirstFrAdapter? = null
+    private val check: CheckNetwork = CheckNetwork()
+    private var isClick: Boolean = true
 
     private val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-//            updatePermissionsState()
+            isAuth()
         }
 
     override fun onCreateView(
@@ -53,6 +57,22 @@ class FirstFragment : Fragment() {
 
         init()
         initClick()
+    }
+
+    private fun isAuth() = with(rootElement!!){
+        if (fbAuth.mAuth.currentUser == null) {
+            isClick = false
+            fbAuth.signInAnonimously(imBtnMap) {
+                isClick = true
+                if(it == true) {
+                    navController?.navigate(R.id.mapsFragment)
+                }else{
+                    check.check(activity as MainActivity)
+                }
+            }
+        } else {
+            navController?.navigate(R.id.mapsFragment)
+        }
     }
     private fun init(){
         val listPhoto = arrayListOf(
@@ -93,25 +113,22 @@ class FirstFragment : Fragment() {
                 false
             }
             imBtnMap.setOnTouchListener { v, event ->
+                Log.d("!!!click", "click")
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     v.isPressed = true
                     imBtnMap.elevation = 5f
                 }else if (event.action == MotionEvent.ACTION_UP){
                     v.isPressed = false
                     imBtnMap.elevation = 26f
-                    if (ContextCompat.checkSelfPermission(requireContext(),
-                            Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        requestPermissions.launch(permissions)
-                    } else {
-                        if (fbAuth.mAuth.currentUser == null) {
-                            fbAuth.signInAnonimously(context as MainActivity) {
-                                navController?.navigate(R.id.mapsFragment)
-                            }
+                    if(isClick){
+                        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                            != PackageManager.PERMISSION_GRANTED) {
+                            requestPermissions.launch(permissions)
                         } else {
-                            navController?.navigate(R.id.mapsFragment)
+                            isAuth()
                         }
                     }
+
                 }else if (event.action == MotionEvent.ACTION_CANCEL){
                     v.isPressed = false
                     imBtnMap.elevation = 26f
@@ -163,13 +180,17 @@ class FirstFragment : Fragment() {
     }
     private fun currentUser(currentUser: FirebaseUser?) {
         Log.d("!!!currentUser", "currentUser")
-        (activity as MainActivity).checkNetwork(null)
         if (currentUser == null) {
-            fbAuth.signInAnonimously(context as MainActivity){}
+            fbAuth.signInAnonimously(null){
+                if(it == false)
+                    check.check(activity as MainActivity)
+                else
+                    Toast.makeText(context, context?.resources?.getString(R.string.hi), Toast.LENGTH_SHORT).show()
+            }
         }
     }
     companion object {
-        val permissions = arrayOf(
+        private val permissions = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION
         )
     }

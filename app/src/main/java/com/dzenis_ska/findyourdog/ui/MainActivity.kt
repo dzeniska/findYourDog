@@ -14,7 +14,6 @@ import android.os.Bundle
 import android.util.Log
 
 import android.view.*
-import android.view.animation.AnimationUtils
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -29,12 +28,10 @@ import androidx.lifecycle.Observer
 
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
-import androidx.navigation.get
 import androidx.navigation.ui.setupWithNavController
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.ActivityMainBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
-import com.dzenis_ska.findyourdog.ui.fragments.FirstFragment
 import com.dzenis_ska.findyourdog.ui.fragments.LoginFragment
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModelFactory
@@ -51,19 +48,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private lateinit var tvHeaderAcc: TextView
     var navController: NavController? = null
-    lateinit var mSlideshowTextView: TextView
+    var menuBreedItem: TextView? = null
+    var menuMapItem: TextView? = null
 
     //    private var optionsList: Map<String, List<String>> = mapOf()
     private val fragmentLogin = LoginFragment()
     private val fbAuth = FBAuth(fragmentLogin)
     var rootElement: ActivityMainBinding? = null
+    var isClick: Boolean = true
 
     @Inject
     lateinit var factory: BreedViewModelFactory
     private val viewModel: BreedViewModel by viewModels { factory }
     private val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-//            updatePermissionsState()
+            isAuth()
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,14 +135,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         viewModel.breedFavLive.observe(this, Observer {
             //добавляем счётчик в item menu_drawer
-            mSlideshowTextView = MenuItemCompat.getActionView(
+            menuBreedItem = MenuItemCompat.getActionView(
                 rootElement!!.navView.menu.findItem(R.id.show_fav)
             ) as (TextView)
-            initializeCountDrawer(it.size)
+            breedCounter(it.size)
+        })
+        viewModel.liveAdsDataAllShelter.observe(this, {
+            //добавляем счётчик в item menu_drawer
+            menuMapItem = MenuItemCompat.getActionView(
+                rootElement!!.navView.menu.findItem(R.id.mapFr)
+            ) as (TextView)
+            mapCounter(it.size)
         })
         viewModel.countFavorites()
 
         viewModel.selectBreed()
+
+        viewModel.getAllAds()
 
         navController = findNavController(R.id.navHost)
 
@@ -162,12 +170,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     //рисуем счётчик
-    private fun initializeCountDrawer(count: Int) {
-        mSlideshowTextView.setGravity(Gravity.CENTER_VERTICAL)
-        mSlideshowTextView.setTypeface(null, Typeface.BOLD)
-        mSlideshowTextView.setTextColor(ContextCompat.getColor(this, R.color.counter))
-        mSlideshowTextView.text = "${count}"
+
+    private fun breedCounter(count: Int) {
+        menuBreedItem?.gravity = Gravity.CENTER_VERTICAL
+        menuBreedItem?.setTypeface(null, Typeface.BOLD)
+        menuBreedItem?.setTextColor(ContextCompat.getColor(this, R.color.white))
+        menuBreedItem?.text = "+$count"
     }
+
+    private fun mapCounter(count: Int) {
+        menuMapItem?.gravity = Gravity.CENTER_VERTICAL
+        menuMapItem?.setTypeface(null, Typeface.BOLD)
+        menuMapItem?.setTextColor(ContextCompat.getColor(this, R.color.back_menu_one_breed_color))
+        menuMapItem?.text = "+${count}"
+    }
+
 
     override fun onBackPressed() {
         Log.d("!!!bakPressed", "${viewModel.backPressed}")
@@ -203,23 +220,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 Toast.makeText(applicationContext, "Любимчики", Toast.LENGTH_SHORT).show()
             }
             R.id.mapFr -> {
-                if (ContextCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    requestPermissions.launch(permissions)
-                } else {
-                    if (fbAuth.mAuth.currentUser == null) {
-                        fbAuth.signInAnonimously(this) {
-                            navController!!.popBackStack()
-                            navController!!.navigate(R.id.mapsFragment)
-                            closeDrawer()
-                        }
+                if(isClick){
+                    if (ContextCompat.checkSelfPermission(
+                            this,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        requestPermissions.launch(permissions)
                     } else {
-                        navController!!.popBackStack()
-                        navController!!.navigate(R.id.mapsFragment)
-                        closeDrawer()
+                        isAuth()
                     }
                 }
             }
@@ -230,6 +239,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
         return true
+    }
+    private fun isAuth(){
+        if (fbAuth.mAuth.currentUser == null) {
+            isClick = false
+            fbAuth.signInAnonimously(null) {
+                if (it == true) {
+                    isClick = true
+                    navController!!.popBackStack()
+                    navController!!.navigate(R.id.mapsFragment)
+                    closeDrawer()
+                }
+
+            }
+        } else {
+            navController!!.popBackStack()
+            navController!!.navigate(R.id.mapsFragment)
+            closeDrawer()
+        }
     }
 
     private fun closeDrawer() {

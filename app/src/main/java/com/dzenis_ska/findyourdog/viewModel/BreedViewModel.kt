@@ -57,6 +57,9 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
 
     //Для backPressed
     var backPressed: Int = 0
+
+    //Для клтков
+    var isClick: Boolean = true
 //////////////////////////////////////////////////////////////////////
 
     fun listPhoto(listP: ArrayList<String>) {

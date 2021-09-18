@@ -3,6 +3,7 @@ package com.dzenis_ska.findyourdog.remoteModel.firebase
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.view.View
 
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -61,7 +62,7 @@ class FBAuth(private val fragment: Fragment) {
 //                        Log.d("!!!error", "${FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE}")
                     }
                 } else if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                    if(create) signInAnonimously(context){}
+                    if(create) signInAnonimously(null){}
                     val exception = task.exception as FirebaseAuthInvalidCredentialsException
                     if (exception.errorCode == FirebaseAuthConstants.ERROR_INVALID_EMAIL) {
                         Toast.makeText(
@@ -78,7 +79,7 @@ class FBAuth(private val fragment: Fragment) {
                     }
                 }
                 if (task.exception is FirebaseAuthWeakPasswordException) {
-                    if(create) signInAnonimously(context){}
+                    if(create) signInAnonimously(null){}
                     val exception = task.exception as FirebaseAuthWeakPasswordException
                     if (exception.errorCode == FirebaseAuthConstants.ERROR_WEAK_PASSWORD) {
                         Toast.makeText(
@@ -105,7 +106,7 @@ class FBAuth(private val fragment: Fragment) {
                         fragment.uiUpdateMain(task.result?.user!!)
                     }
                 } else {
-                    if(create) signInAnonimously(context){}
+                    if(create) signInAnonimously(null){}
 //                    Log.d("!!!er", task.exception.toString())
                     if (task.exception is FirebaseAuthInvalidCredentialsException) {
 //                        Log.d("!!!er", task.exception.toString())
@@ -160,22 +161,19 @@ class FBAuth(private val fragment: Fragment) {
         }
     }
 
-    fun signInAnonimously(context: Context, callback: (succ: String?)-> Unit) {
+    fun signInAnonimously(view: View?, callback: (isS: Boolean?)-> Unit) {
         mAuth.signInAnonymously().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                callback("succesful")
+                callback(true)
                 Log.d("!!!userFBAuth", "${task.result.user?.uid}")
                 if(fragment is LoginFragment){
                     fragment.showElements(true)
                 }
-                Toast.makeText(context, "Вы вошли как гость", Toast.LENGTH_LONG).show()
             } else {
-                Toast.makeText(context, context.resources.getString(R.string.no_network_anon), Toast.LENGTH_LONG).show()
+                callback(false)
             }
+
         }
-    }
-    interface Listener {
-        fun onComplete()
     }
 }
 

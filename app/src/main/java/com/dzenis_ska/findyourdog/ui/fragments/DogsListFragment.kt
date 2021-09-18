@@ -13,6 +13,7 @@ import com.dzenis_ska.findyourdog.databinding.FragmentDogsListBinding
 import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.AdapterBreeds
 import com.dzenis_ska.findyourdog.ui.MainActivity
+import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import kotlinx.coroutines.*
 import java.util.*
@@ -25,6 +26,7 @@ class DogsListFragment : Fragment() {
     private val breeds = mutableListOf<DogBreeds>()
     private var job: Job? = null
     private var job2: Job? = null
+    private val check: CheckNetwork = CheckNetwork()
     //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
 //        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
@@ -52,7 +54,7 @@ class DogsListFragment : Fragment() {
         initClick()
 
         viewModel.breedLive.observe(viewLifecycleOwner, {
-            if(it.size == 0) (activity as MainActivity).checkNetwork(0)
+            if(it.size == 0) check.check(activity as MainActivity)
             breeds.clear()
             breeds.addAll(it)
             adapter?.updateAdapterBreeds(it)

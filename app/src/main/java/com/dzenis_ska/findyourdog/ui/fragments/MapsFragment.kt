@@ -32,6 +32,7 @@ import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.MapPhotoAdapter
+import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
@@ -69,6 +70,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     val cs = ConstraintSet()
 
     var isEditing: Boolean = false
+    private val check: CheckNetwork = CheckNetwork()
 
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -99,7 +101,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         viewModel.liveAdsDataAllShelter.observe(viewLifecycleOwner,{list ->
             val list1 = list
-            if(list.size == 0) (activity as MainActivity).checkNetwork(0)
+            if(list.size == 0) check.check(activity as MainActivity)
             if (::mMap.isInitialized) {
                 getAllMarkers(list1, null)
                 listAdShelter.clear()

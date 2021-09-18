@@ -105,6 +105,7 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/forgot_back"
         android:padding="8dp"
+        android:elevation="4dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_in_white"
         app:layout_constraintStart_toStartOf="@+id/edPassword"
@@ -117,6 +118,7 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/forgot_back"
         android:padding="8dp"
+        android:elevation="4dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_out"
         app:layout_constraintEnd_toEndOf="@+id/edPassword"
@@ -142,5 +144,17 @@
         app:layout_constraintEnd_toEndOf="@+id/imgButtonExit"
         app:layout_constraintStart_toStartOf="@+id/imgButtonExit"
         app:layout_constraintTop_toBottomOf="@+id/imgButtonExit" />
+
+    <TextView
+        android:id="@+id/tvReplaseUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:text="@string/remove_user"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/edEmail"
+        app:layout_constraintEnd_toEndOf="@+id/edEmail"
+        app:layout_constraintStart_toStartOf="@+id/edEmail" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

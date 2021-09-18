@@ -1,6 +1,8 @@
 package com.dzenis_ska.findyourdog.ui.fragments
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,6 +14,9 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -20,6 +25,7 @@ import com.dzenis_ska.findyourdog.databinding.FragmentLoginBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AuthInterface
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
+import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.firebase.auth.FirebaseUser
 
@@ -29,6 +35,12 @@ class LoginFragment : Fragment(), AuthInterface {
     var rootElement: FragmentLoginBinding? = null
     private val fbAuth = FBAuth(this)
     var navController: NavController? = null
+    private val check: CheckNetwork = CheckNetwork()
+
+    private val requestPermissions =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
+            isAuth()
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -64,17 +76,20 @@ class LoginFragment : Fragment(), AuthInterface {
 
     @SuppressLint("SetTextI18n")
     private fun currentUser(currentUser: FirebaseUser?) {
-
+        check.check(activity as MainActivity)
         rootElement?.apply {
             if (currentUser == null) {
-                fbAuth.signInAnonimously(context as MainActivity) {
-                    tvRegIn.text = "Вы вошли как Гость"
+                fbAuth.signInAnonimously(null) {
+                    isEditEnable(false)
+                    if(it == true) tvRegIn.text = "Вы вошли как Гость"
                     Log.d("!!!userLFonComplete", "${currentUser?.uid}")
                 }
             } else if (currentUser.isAnonymous) {
+                isEditEnable(false)
                 Log.d("!!!userLFisAnonimous", currentUser.uid)
                 tvRegIn.text = "Привет, Незнакомец!)"
-            } else if (!currentUser.isAnonymous && currentUser.isEmailVerified){
+            } else if (!currentUser.isAnonymous && currentUser.isEmailVerified) {
+                isEditEnable(true)
                 tvForgotPas.visibility = View.GONE
                 imgButtonForgot.visibility = View.GONE
                 Log.d("!!!userLFisNoAnonimous", currentUser.uid)
@@ -83,6 +98,7 @@ class LoginFragment : Fragment(), AuthInterface {
                 """.trimMargin()
                 showElements(false)
             } else if (!currentUser.isAnonymous) {
+                isEditEnable(true)
                 tvForgotPas.visibility = View.GONE
                 imgButtonForgot.visibility = View.GONE
                 Log.d("!!!userLFisNoAnonimous", currentUser.uid)
@@ -139,6 +155,7 @@ class LoginFragment : Fragment(), AuthInterface {
             override fun afterTextChanged(editable: Editable?) {
                 afterTextChanged.invoke(editable.toString())
             }
+
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
@@ -186,18 +203,32 @@ class LoginFragment : Fragment(), AuthInterface {
             }
         }
     }
+    private fun isEditEnable(edit:Boolean) = with(rootElement!!){
+            tvReplaseUser.isVisible = edit
+            edEmail.isEnabled = !edit
+            edPassword.isEnabled = !edit
+    }
 
     private fun enterEmailAndPassword(fbAuth: FBAuth): View.OnClickListener {
         return View.OnClickListener {
             rootElement?.apply {
                 if (tvEnter.text == "Карта") {
-                    navController?.navigate(R.id.mapsFragment)
+                    if (ContextCompat.checkSelfPermission(
+                            requireContext(),
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        requestPermissions.launch(permissions)
+                    } else {
+                        navController?.navigate(R.id.mapsFragment)
+                    }
                 } else {
                     rootElement.apply {
                         imgInUp.animation = AnimationUtils.loadAnimation(context, R.anim.rotation)
                         tvRegIn.animation =
                             AnimationUtils.loadAnimation(context, R.anim.alpha_replace_user_down)
                         tvRegIn.visibility = View.GONE
+
 
                         if (edEmail.text.isNotEmpty() && edPassword.text.isNotEmpty()) {
                             if (!edEmail.text.contains('@') || !edEmail.text.contains('.')) {
@@ -224,8 +255,7 @@ class LoginFragment : Fragment(), AuthInterface {
                                 context,
                                 "Вы забыли ввести Email или Password",
                                 Toast.LENGTH_LONG
-                            )
-                                .show()
+                            ).show()
                         }
                     }
                 }
@@ -233,8 +263,18 @@ class LoginFragment : Fragment(), AuthInterface {
         }
     }
 
+    private fun isAuth() {
+         navController?.navigate(R.id.mapsFragment)
+    }
+
     override fun onDestroyView() {
         rootElement = null
         super.onDestroyView()
+    }
+
+    companion object {
+         private val permissions = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION
+        )
     }
 }
