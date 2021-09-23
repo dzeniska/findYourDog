@@ -26,7 +26,6 @@ import com.dzenis_ska.findyourdog.ui.fragments.adapters.FirstFrAdapter
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
 import com.google.firebase.auth.FirebaseUser
 
-
 class FirstFragment : Fragment() {
     var rootElement: FragIntroBinding? = null
     var navController: NavController? = null
@@ -61,7 +60,7 @@ class FirstFragment : Fragment() {
 
     private fun isAuth() = with(rootElement!!){
         if (fbAuth.mAuth.currentUser == null) {
-            fbAuth.signInAnonimously(imBtnMap) {
+            fbAuth.signInAnonimously(imBtnMap, context) {
                 if(it == true) {
                     navController?.navigate(R.id.mapsFragment)
                 }else{
@@ -182,7 +181,7 @@ class FirstFragment : Fragment() {
     private fun currentUser(currentUser: FirebaseUser?) {
         Log.d("!!!currentUser", "currentUser")
         if (currentUser == null) {
-            fbAuth.signInAnonimously(null){
+            fbAuth.signInAnonimously(null, context){
                 if(it == false)
                     CheckNetwork.check(activity as MainActivity)
                 else

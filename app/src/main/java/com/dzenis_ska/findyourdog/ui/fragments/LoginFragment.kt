@@ -53,11 +53,13 @@ class LoginFragment : Fragment(), AuthInterface {
 
     override fun onResume() {
         super.onResume()
+        Log.d("!!!onResumeLF", "onResumeLF")
         currentUser(fbAuth.mAuth.currentUser)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("!!!onViewCreatedLf", "onViewCreatedLf")
         init()
         onClick()
     }
@@ -76,12 +78,15 @@ class LoginFragment : Fragment(), AuthInterface {
 
     @SuppressLint("SetTextI18n")
     private fun currentUser(currentUser: FirebaseUser?) {
-        CheckNetwork.check(activity as MainActivity)
+        Log.d("!!!userLFonComplete", "${currentUser}")
         rootElement?.apply {
             if (currentUser == null) {
-                fbAuth.signInAnonimously(null) {
+                fbAuth.signInAnonimously(null, context) {
                     isEditEnable(false)
-                    if(it == true) tvRegIn.text = "Вы вошли как Гость"
+                    if(it == true)
+                        tvRegIn.text = "Вы вошли как Гость"
+                    else
+                        CheckNetwork.check(activity as MainActivity)
                     Log.d("!!!userLFonComplete", "${currentUser?.uid}")
                 }
             } else if (currentUser.isAnonymous) {
@@ -114,6 +119,7 @@ class LoginFragment : Fragment(), AuthInterface {
         rootElement?.apply {
             imgButtonEnter.setOnClickListener(enterEmailAndPassword(fbAuth))
             imgButtonExit.setOnClickListener {
+                Log.d("!!!onClickLF", "onResumeLF")
                 if (fbAuth.mAuth.currentUser?.email != null) {
                     fbAuth.mAuth.signOut()
                     tvForgotPas.visibility = View.GONE
@@ -204,9 +210,9 @@ class LoginFragment : Fragment(), AuthInterface {
         }
     }
     private fun isEditEnable(edit:Boolean) = with(rootElement!!){
-            tvReplaseUser.isVisible = edit
-            edEmail.isEnabled = !edit
-            edPassword.isEnabled = !edit
+        tvReplaseUser.isVisible = edit
+        edEmail.isEnabled = !edit
+        edPassword.isEnabled = !edit
     }
 
     private fun enterEmailAndPassword(fbAuth: FBAuth): View.OnClickListener {
@@ -264,16 +270,17 @@ class LoginFragment : Fragment(), AuthInterface {
     }
 
     private fun isAuth() {
-         navController?.navigate(R.id.mapsFragment)
+        navController?.navigate(R.id.mapsFragment)
     }
 
     override fun onDestroyView() {
+        Log.d("!!!onDestroyViewLf", "onDestroyViewLf")
         rootElement = null
         super.onDestroyView()
     }
 
     companion object {
-         private val permissions = arrayOf(
+        private val permissions = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION
         )
     }

@@ -114,8 +114,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val slideX = drawerView.width * slideOffset
                 rootElement!!.appBar.apptool.alpha = (1 - slideOffset)
 //                constraintLayout.visibility = View.VISIBLE
-                    rootElement!!.appBar.introMain.constraintLayout.setTranslationX(slideX)
-                    rootElement!!.appBar.introMain.constraintLayout.setScaleX(1 - slideOffset)
+                rootElement!!.appBar.introMain.constraintLayout.setTranslationX(slideX)
+                rootElement!!.appBar.introMain.constraintLayout.setScaleX(1 - slideOffset)
 
                 // constraintLayout.setScaleY(1 - slideOffset)
             }
@@ -244,7 +244,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun isAuth(){
         Log.d("!!!isClick", "is")
         if (fbAuth.mAuth.currentUser == null) {
-            fbAuth.signInAnonimously(null) {
+            fbAuth.signInAnonimously(null, this) {
                 if (it == true) {
                     navController!!.popBackStack()
                     navController!!.navigate(R.id.mapsFragment)

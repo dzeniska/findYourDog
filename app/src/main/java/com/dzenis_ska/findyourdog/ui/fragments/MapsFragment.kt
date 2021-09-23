@@ -207,7 +207,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 .addOnSuccessListener { location : Location? ->
                     if(location != null) {
                         Log.d("!!!loc", "${location.longitude} ${location.latitude}")
-                        Toast.makeText(context, "Find your last location!", Toast.LENGTH_LONG).show()
+//                        Toast.makeText(context, "Find your last location!", Toast.LENGTH_LONG).show()
                         setMarker(location.latitude, location.longitude, 6f)
                         lastLat = location.latitude
                         lastLng = location.longitude
