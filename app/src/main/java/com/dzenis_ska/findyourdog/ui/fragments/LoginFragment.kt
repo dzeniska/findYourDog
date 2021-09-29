@@ -35,11 +35,22 @@ class LoginFragment : Fragment(), AuthInterface {
     var rootElement: FragmentLoginBinding? = null
     private val fbAuth = FBAuth(this)
     var navController: NavController? = null
-//    private val check: CheckNetwork = CheckNetwork()
 
     private val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-            isAuth()
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ){
+                Toast.makeText(
+                    context,
+                    "Необходимо разрешение на геолокацию",
+                    Toast.LENGTH_LONG
+                ).show()
+            }else{
+                isAuth()
+            }
         }
 
     override fun onCreateView(
@@ -270,7 +281,7 @@ class LoginFragment : Fragment(), AuthInterface {
     }
 
     private fun isAuth() {
-        navController?.navigate(R.id.mapsFragment)
+            navController?.navigate(R.id.mapsFragment)
     }
 
     override fun onDestroyView() {

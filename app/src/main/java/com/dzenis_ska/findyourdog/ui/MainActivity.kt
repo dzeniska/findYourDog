@@ -65,7 +65,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             Log.d("!!!isClick", "is2")
-            isAuth()
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ){
+                Toast.makeText(
+                    this,
+                    "Необходимо разрешение на геолокацию",
+                    Toast.LENGTH_LONG
+                ).show()
+            }else{
+                isAuth()
+            }
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -242,6 +254,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
     private fun isAuth(){
+
         Log.d("!!!isClick", "is")
         if (fbAuth.mAuth.currentUser == null) {
             fbAuth.signInAnonimously(null, this) {

@@ -64,6 +64,7 @@
 
     <!-- Add Shelter fragment-->
     <string name="name_shelter">Название</string>
+    <string name="tel_num_shelter_enter">+375()</string>
     <string name="tel_num_shelter">Номер телефона</string>
     <string name="dog_name">Кличка</string>
     <string name="description">Описание</string>

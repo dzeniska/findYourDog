@@ -47,7 +47,7 @@ object ImagePicker {
                         AddShelterFragment.REPLACE_IMAGE -> addSF.vpAdapter.replaceItemAdapter(result.data)
                     }
 
-                    addSF.hideAddShelterButton(true, 1)
+                    addSF.hideAddShelterButton(true)
                     closePixFragment(mAct)
                 }
                 PixEventCallback.Status.BACK_PRESSED -> {

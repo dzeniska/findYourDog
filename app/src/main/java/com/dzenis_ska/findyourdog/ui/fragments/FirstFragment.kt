@@ -36,7 +36,19 @@ class FirstFragment : Fragment() {
 
     private val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-            isAuth()
+            if (ContextCompat.checkSelfPermission(
+                    requireContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ){
+                Toast.makeText(
+                    context,
+                    "Необходимо разрешение на геолокацию",
+                    Toast.LENGTH_LONG
+                ).show()
+            }else{
+                isAuth()
+            }
         }
 
     override fun onCreateView(
@@ -59,6 +71,7 @@ class FirstFragment : Fragment() {
     }
 
     private fun isAuth() = with(rootElement!!){
+
         if (fbAuth.mAuth.currentUser == null) {
             fbAuth.signInAnonimously(imBtnMap, context) {
                 if(it == true) {

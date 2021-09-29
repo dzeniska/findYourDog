@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
@@ -11,6 +12,7 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -22,6 +24,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -44,9 +47,12 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.tabs.TabLayoutMediator
-import kotlinx.android.synthetic.main.fragment_add_shelter.*
 import kotlinx.coroutines.*
 import kotlin.random.Random
+import android.R.string
+
+
+
 
 class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMyLocationButtonClickListener,
@@ -78,11 +84,11 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var shLng: Double? = null
     var adShelterToEdit: AdShelter? = null
     var boolEditOrNew: Boolean? = false
-    var boolEditAd: Boolean? = false
     var imageIndex = 0
     val photoArrayList = mutableListOf<String>()
     var adapterArraySize = 0
     var sizeDog: Int = 1
+    var telNum = "+"
 
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
@@ -118,7 +124,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         onClick(this, dialog)
     }
 
-    fun hideAddShelterButton(bool: Boolean, btnDelState: Int) {
+    fun hideAddShelterButton(bool: Boolean) {
         rootElement!!.apply{
             fabAddShelter.visibility = if (!bool) View.GONE else View.VISIBLE
             if(viewModel.btnDelState == false) {
@@ -128,12 +134,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
         }
     }
-    fun hidePhotoButtons(b: Boolean){
+    private fun hidePhotoButtons(b: Boolean){
         if(!b){
-        rootElement.apply {
-                fab_replace_image.visibility = View.GONE
-                fab_add_image.visibility = View.GONE
-                fab_delete_image.visibility = View.GONE
+        rootElement!!.apply {
+                fabReplaceImage.visibility = View.GONE
+                fabAddImage.visibility = View.GONE
+                fabDeleteImage.visibility = View.GONE
             }
         }
     }
@@ -142,7 +148,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun initViewModel() {
         //Открываем AddShelterFragment и передаём данные
         viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner, { adShelter ->
-            rootElement.apply {
+            rootElement!!.apply {
                 if (adShelter != null) {
                     if (adShelter.uid == viewModel.dbManager.auth.uid) {
                         fillFrag(adShelter, true)
@@ -161,7 +167,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun fillFrag(adShelter: AdShelter, isEnabled: Boolean) {
         val listPhoto = adShelter.photoes
 
-        rootElement.apply {
+        rootElement!!.apply {
             if(listPhoto == null){
                 imgAddPhoto.setImageDrawable(
                     ContextCompat.getDrawable(
@@ -185,6 +191,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             edTelNum.setText(adShelter.tel)
             edTelNum.isEnabled = isEnabled
+
             edName.setText(adShelter.name)
             edName.isEnabled = isEnabled
             tvGender.text = adShelter.gender
@@ -214,7 +221,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     private fun fillAdShelter(photoUrlList: ArrayList<String>): AdShelter {
         var adShelter: AdShelter
-        rootElement.apply {
+        rootElement!!.apply {
             adShelter = AdShelter(
                 edName.text.toString(),
                 edTelNum.text.toString(),
@@ -291,7 +298,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             imgAddPhoto.setOnClickListener() {
                 fullScreen(250, 0.50f)
                 imgAddPhoto.alpha = 0.8f
-                hideAddShelterButton(false, 0)
+                hideAddShelterButton(false)
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
@@ -301,7 +308,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             fabAddImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
-                hideAddShelterButton(false, 0)
+                hideAddShelterButton(false)
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
@@ -318,7 +325,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             fabReplaceImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
-                hideAddShelterButton(false, 0)
+                hideAddShelterButton(false)
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
@@ -369,6 +376,23 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         sizeDog = 0}
                 }
             }
+            ivTel.setOnClickListener {
+                call()
+            }
+//            edTelNum.requestFocus()
+//                        edTelNum.setText(resources.getText(R.string.tel_num_shelter_enter))
+//            edTelNum.post { edTelNum.setSelection(5) }
+
+//            edTelNum.addTextChangedListener { editable ->
+//                when (edTelNum.text.length) {
+//                    8 -> {
+//                        val text = edTelNum.text.toString()
+//                        edTelNum.text.clear()
+//                        edTelNum.setText("${text} ")
+//                        edTelNum.post { edTelNum.setSelection(edTelNum.text.length) }
+//                    }
+//                }
+//            }
         }
     }
 
@@ -452,7 +476,13 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun publishAdShelter(adTemp: AdShelter, dialog: AlertDialog) {
         if (boolEditOrNew == true) {
 //            Log.d("!!!uid", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
-            viewModel.publishAdShelter(adTemp.copy(key = adShelterToEdit?.key, markerColor = adShelterToEdit?.markerColor), dialog){
+            viewModel.publishAdShelter(
+                adTemp
+                    .copy(key = adShelterToEdit?.key,
+                        markerColor = adShelterToEdit?.markerColor,
+                        lat = shLat.toString(),
+                        lng = shLng.toString()
+                    ), dialog){
 //                Log.d("!!!uidIt", "${it}}")
                 navController.popBackStack(R.id.addShelterFragment, true)
                 navController.popBackStack(R.id.mapsFragment, true)
@@ -486,10 +516,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun initRecyclerView() {
         vpAdapter = VpAdapter(this)
         rootElement!!.apply {
-            edTelNum.requestFocus()
-
             vp2.adapter = vpAdapter
-            tlm = TabLayoutMediator(tabLayout, vp2) { tab, position -> }
+            tlm = TabLayoutMediator(tabLayout, vp2) { _, _ -> }
             tlm?.attach()
 
             vp2.registerOnPageChangeCallback(
@@ -513,15 +541,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         }
     }
-
-    //    counter++
-//    saveData(counter)
-    fun saveData(i: Long) {
-        val edit = pref?.edit()
-        edit?.putLong("counter", i)
-        edit?.apply()
-    }
-
 
     override fun onResume() {
         super.onResume()
@@ -613,10 +632,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     companion object {
         private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
-        private const val LOCATION_PERMISSION_REQUEST_CODE_1 = 2
         const val ADD_PHOTO = 10
         const val ADD_IMAGE = 20
-        const val DELETE_IMAGE = 30
         const val REPLACE_IMAGE = 40
     }
 
@@ -630,6 +647,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             viewModel.locationManagerBool = false
             rootElement!!.ibGetLocation.visibility = View.VISIBLE
         }
+    }
+    private fun call() = with(rootElement!!){
+        val callUri = "tel:${edTelNum.text}"
+        val iCall = Intent(Intent.ACTION_DIAL)
+        iCall.data = callUri.toUri()
+        startActivity(iCall)
     }
 
     override fun onMyLocationButtonClick(): Boolean {

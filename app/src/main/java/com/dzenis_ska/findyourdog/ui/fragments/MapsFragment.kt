@@ -37,7 +37,6 @@ import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
-import kotlinx.android.synthetic.main.fragment_maps.*
 import kotlinx.coroutines.*
 
 
@@ -170,7 +169,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    private fun initClick() {
+    private fun initClick() = with(rootElement!!){
         floatBtnGPS.setOnClickListener() {
             getLocation()
             floatBtnGPS.visibility = View.GONE
@@ -259,12 +258,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         private fun render(marker: Marker, view: View) {
 //            val badge = R.drawable.add_photo
             val badge = R.drawable.ic_waling_man_dog
-            var uri = ""
-            listAdShelter.forEach {
-                if (it.key == marker.tag) {
-                    uri = it.photoes?.get(0) ?: ""
-                }
-            }
+//            var uri = ""
+//            listAdShelter.forEach {
+//                if (it.key == marker.tag) {
+//                    uri = it.photoes?.get(0) ?: ""
+//                }
+//            }
 
             view.findViewById<ImageView>(R.id.badge).setImageResource(badge)
 
