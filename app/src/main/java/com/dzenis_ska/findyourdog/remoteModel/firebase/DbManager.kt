@@ -62,7 +62,7 @@ class DbManager() {
     }
 
     fun getAllAds(readDataCallback: ReadDataCallback?) {
-        val query = db.orderByChild(auth.uid + "/adShelter/tel")
+        val query = db.orderByChild(auth.uid + "/adShelter/time")
         readDataFromDB(query, readDataCallback)
     }
 

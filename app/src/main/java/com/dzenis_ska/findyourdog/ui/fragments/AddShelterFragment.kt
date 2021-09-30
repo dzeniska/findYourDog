@@ -234,7 +234,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 "empty",
                 viewModel.dbManager.db.push().key,
                 viewModel.dbManager.auth.uid,
-                (Random.nextInt(0, 360)).toFloat()
+                (Random.nextInt(0, 360)).toFloat(),
+                System.currentTimeMillis().toString()
             )
         }
         return adShelter
@@ -481,7 +482,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     .copy(key = adShelterToEdit?.key,
                         markerColor = adShelterToEdit?.markerColor,
                         lat = shLat.toString(),
-                        lng = shLng.toString()
+                        lng = shLng.toString(),
+                        time = adShelterToEdit?.time.toString()
                     ), dialog){
 //                Log.d("!!!uidIt", "${it}}")
                 navController.popBackStack(R.id.addShelterFragment, true)
