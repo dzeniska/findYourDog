@@ -40,12 +40,12 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.LoginFragment"
-        android:label="fragment_login"
+        android:label="@string/login"
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/mapsFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.MapsFragment"
-        android:label="fragment_maps"
+        android:label="@string/map"
         tools:layout="@layout/fragment_maps" />
 
 

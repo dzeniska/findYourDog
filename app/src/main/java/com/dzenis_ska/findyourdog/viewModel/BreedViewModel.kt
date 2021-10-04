@@ -47,6 +47,9 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     val onePhoto: MutableLiveData<ByteArray> by lazy {
         MutableLiveData<ByteArray>()
     }
+    val onePhotoUri: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
     var userUpdate = MutableLiveData<FirebaseUser?>()
     val dbManager = DbManager()
     var listShelter = ArrayList<AdShelter>()
@@ -143,10 +146,12 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     //одного фото запрос
     fun getOnePhoto(url: String) {
         scope.launch {
+//            onePhotoUri.postValue(url)
             onePhoto.postValue(repository.getOnePhoto(url))
         }
     }
 
+    
     //первый список с описанием пород
     fun showAllBreeds() {
         scope.launch {

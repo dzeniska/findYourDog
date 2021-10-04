@@ -54,7 +54,7 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
                 scope.launch {
                     binding.imgItemVpSub.visibility = View.VISIBLE
                     binding.imgItemVp.visibility = View.GONE
-//                    binding.imgItemVpSub.orientation = ImageManager.imageRotationPreview(uri, addSF.activity as MainActivity)
+                    binding.imgItemVpSub.orientation = ImageManager.imageRotationPreview(uri, addSF.activity as MainActivity)
                     binding.imgItemVpSub.setImage(ImageSource.uri(uri))
                 }
             }else{

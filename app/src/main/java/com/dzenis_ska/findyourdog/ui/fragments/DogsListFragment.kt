@@ -1,5 +1,6 @@
 package com.dzenis_ska.findyourdog.ui.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.Fragment
@@ -44,6 +45,7 @@ class DogsListFragment : Fragment() {
         return rootElement!!.root
     }
 
+    @SuppressLint("StringFormatInvalid")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initAdapter()
@@ -52,6 +54,7 @@ class DogsListFragment : Fragment() {
         initSearchView()
         initSwipeRefresh()
         initClick()
+//        rootElement!!.tvDogList.text = getString(R.string.hi, "${getCounterValue()}")
 
         viewModel.breedLive.observe(viewLifecycleOwner, {
             if(it.size == 0) CheckNetwork.check(activity as MainActivity)
@@ -124,4 +127,15 @@ class DogsListFragment : Fragment() {
         super.onDestroyView()
         rootElement = null
     }
+//    private fun getCounterValue(): Int = requireArguments().getInt("key", 9)
+//    companion object{
+//        fun newInstance(counter: Int): DogsListFragment{
+//            val args = Bundle().apply {
+//                putInt("key", counter)
+//            }
+//            val fragment = DogsListFragment()
+//            fragment.arguments = args
+//            return fragment
+//        }
+//    }
 }

@@ -26,6 +26,7 @@
     <string name="favorites">Самые прикольные</string>
     <string name="note_edit">Редактор заметки</string>
     <string name="one_breed">Вот такой пёсель</string>
+    <string name="login">Регистрация</string>
     <string name="go_to_dogs_list">Перейти к списку \n
     пород</string>
     <string name="go_to_add_dog">Добавить нового</string>
@@ -89,7 +90,7 @@
     <string name="title_3">Если Вы хотите, чтобы к Вашему питомцу пришли в гости \n То необходимо зарегиться \n и подтвердить Email</string>
     <string name="title_4">*** \n Собакены приветствуют вкусняшки </string>
     <string name="more_photo">Больше фото</string>
-    <string name="map">КАрта</string>
+    <string name="map">Карта</string>
     <string name="authFirst">Регистрация</string>
     <string name="first_photo">Капитан</string>
 

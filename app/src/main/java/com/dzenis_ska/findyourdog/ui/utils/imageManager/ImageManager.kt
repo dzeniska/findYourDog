@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Log
 import androidx.exifinterface.media.ExifInterface
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.squareup.picasso.Picasso
@@ -127,6 +128,19 @@ object ImageManager {
             0
         }
     }
+    fun imageRotationNew(uri: Uri, act: Activity): Int{
+        val inStream = act.contentResolver.openInputStream(uri)
+        val exif = inStream?.let { ExifInterface(it) }
+        val orientation = exif?.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+
+
+        return when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> 90
+            ExifInterface.ORIENTATION_ROTATE_270 -> 270
+            ExifInterface.ORIENTATION_ROTATE_180 -> 180
+            else -> 0
+        }
+    }
 
     fun chooseScaleType(im: SubsamplingScaleImageView, bitMap: Bitmap){
         if(bitMap.width > bitMap.height) {
@@ -143,22 +157,34 @@ object ImageManager {
         val bitmapList = ArrayList<Bitmap>()
         for (n in uris.indices) {
             val size = getImageSize(uris[n], act)
+            val rotationDegres = imageRotationNew(uris[n], act)
             //проверка на каличное фото
+            Log.d("!!!or", "${size}, ${rotationDegres}")
             if(size != null){
                 val imageRatio = size[WIDTH].toDouble() / size[HEIGHT].toDouble()
-                if (imageRatio > 1) {
-                    if (size[WIDTH] > MAX_IMAGE_SIZE) {
-                        tempList.add(listOf(MAX_IMAGE_SIZE, (MAX_IMAGE_SIZE / imageRatio).toInt()))
+
+                    if (imageRatio > 1) {
+//                        if(rotationDegres == 0 || rotationDegres == 180) {
+                            if (size[WIDTH] > MAX_IMAGE_SIZE) {
+                                tempList.add(
+                                    listOf(
+                                        MAX_IMAGE_SIZE,
+                                        (MAX_IMAGE_SIZE / imageRatio).toInt()
+                                    )
+                                )
+                            } else {
+                                tempList.add(listOf(size[WIDTH], size[HEIGHT]))
+                            }
+//                        }
                     } else {
-                        tempList.add(listOf(size[WIDTH], size[HEIGHT]))
+                        if (size[HEIGHT] > MAX_IMAGE_SIZE) {
+                            tempList.add(listOf((MAX_IMAGE_SIZE * imageRatio).toInt(), MAX_IMAGE_SIZE))
+                        } else {
+                            tempList.add(listOf(size[WIDTH], size[HEIGHT]))
+                        }
                     }
-                } else {
-                    if (size[HEIGHT] > MAX_IMAGE_SIZE) {
-                        tempList.add(listOf((MAX_IMAGE_SIZE * imageRatio).toInt(), MAX_IMAGE_SIZE))
-                    } else {
-                        tempList.add(listOf(size[WIDTH], size[HEIGHT]))
-                    }
-                }
+
+
             }else{
                 return@withContext  arrayListOf<ByteArray>()
             }
@@ -167,9 +193,12 @@ object ImageManager {
 
         for (i in uris.indices) {
 //            val e = kotlin.runCatching {
+
+            val rotationDegres = imageRotationNew(uris[i], act)
             bitmapList.add(Picasso.get()
                 .load(uris[i])
                 .resize(tempList[i][WIDTH], tempList[i][HEIGHT])
+                .rotate(rotationDegres.toFloat())
                 .get()
             )
 //            }
