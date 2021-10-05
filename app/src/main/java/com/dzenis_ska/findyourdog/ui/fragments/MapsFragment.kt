@@ -176,6 +176,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
         floatBtnAddShelter.setOnClickListener() {
             viewModel.btnDelState = true
+//            viewModel.openFragShelter(null)
             navController.navigate(R.id.addShelterFragment)
         }
     }

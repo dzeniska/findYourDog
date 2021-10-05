@@ -50,8 +50,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.*
 import kotlin.random.Random
 import android.R.string
-
-
+import androidx.core.os.bundleOf
 
 
 class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
@@ -89,6 +88,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var adapterArraySize = 0
     var sizeDog: Int = 1
     var telNum = "+"
+    var ltlng: Boolean = true
 
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
@@ -101,12 +101,14 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d("!!!onCreateView", "AddShelterFragment")
         rootElement = FragmentAddShelterBinding.inflate(inflater)
         return rootElement!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("!!!onViewCreated", "AddShelterFragment")
         navController = findNavController()
 
         val mapViewBundle = savedInstanceState?.getBundle(MAPVIEW_BUNDLE_KEY)
@@ -148,8 +150,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun initViewModel() {
         //Открываем AddShelterFragment и передаём данные
         viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner, { adShelter ->
+            Log.d("!!!onviewModel.liveAdsDataAddShelter.observe", "AddShelterFragment ${adShelter?.description}")
             rootElement!!.apply {
                 if (adShelter != null) {
+                    viewModel.adShelteAfterPhotoViewed = adShelter
                     if (adShelter.uid == viewModel.dbManager.auth.uid) {
                         fillFrag(adShelter, true)
                         boolEditOrNew = true
@@ -359,6 +363,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 else fullScreen(250, 0.50f)
             }
             ibGetLocation.setOnClickListener {
+                ltlng = false
                 getLocation()
                 ibGetLocation.visibility = View.GONE
             }
@@ -477,12 +482,19 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun publishAdShelter(adTemp: AdShelter, dialog: AlertDialog) {
         if (boolEditOrNew == true) {
 //            Log.d("!!!uid", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
+
+                var lt = shLat.toString()
+                var lg = shLng.toString()
+            if(!ltlng) {
+                lt = adTemp.lat.toString()
+                lg = adTemp.lng.toString()
+            }
             viewModel.publishAdShelter(
                 adTemp
                     .copy(key = adShelterToEdit?.key,
                         markerColor = adShelterToEdit?.markerColor,
-                        lat = shLat.toString(),
-                        lng = shLng.toString(),
+                        lat = lt,
+                        lng = lg,
                         time = adShelterToEdit?.time.toString()
                     ), dialog){
 //                Log.d("!!!uidIt", "${it}}")
@@ -546,28 +558,32 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     override fun onResume() {
         super.onResume()
-        Log.d("!!!", "onResume")
+        Log.d("!!!onResume", "AddShelterFragment")
         pref = this.activity?.getSharedPreferences("FUCK", 0)
         counter = pref?.getLong("counter", 5000)!!
         mapView.onResume()
     }
 
     override fun onDestroy() {
+        Log.d("!!!onDestroy", "AddShelterFragment")
         mapView.onDestroy()
         super.onDestroy()
     }
 
     override fun onDestroyView() {
+        Log.d("!!!onDestroyView", "AddShelterFragment")
         super.onDestroyView()
         rootElement = null
     }
 
     override fun onStart() {
+        Log.d("!!!onStart", "AddShelterFragment")
         super.onStart()
         mapView.onStart()
     }
 
     override fun onStop() {
+        Log.d("!!!onStop", "AddShelterFragment")
         mapView.onStop()
         if (viewModel.locationManagerBool) {
             locationManager.removeUpdates(this)
@@ -619,6 +635,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onPause() {
+        Log.d("!!!onPause", "AddShelterFragment")
         mapView.onPause()
         if (viewModel.locationManagerBool) {
             locationManager.removeUpdates(this)
@@ -628,6 +645,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onLowMemory() {
+        Log.d("!!!onLowMemory", "AddShelterFragment")
         super.onLowMemory()
         mapView.onLowMemory()
     }
@@ -671,6 +689,13 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     override fun onProviderEnabled(provider: String) {
         // nop
+    }
+
+    fun toFragOnePhoto(uri: Uri) {
+
+        navController.navigate(R.id.onePhotoFragment)
+        viewModel.getOnePhoto(uri.toString())
+        viewModel.isAddSF = true
     }
 }
 

@@ -1,10 +1,10 @@
 package com.dzenis_ska.findyourdog.viewModel
 
-
 import android.app.AlertDialog
 import android.net.Uri
 import android.util.Log
 import androidx.constraintlayout.helper.widget.Carousel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
@@ -16,9 +16,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-
 class BreedViewModel(val repository: Repository) : ViewModel() {
-
 
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -44,12 +42,13 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
         MutableLiveData<MutableList<String>>()
     }
 
-    val onePhoto: MutableLiveData<ByteArray> by lazy {
-        MutableLiveData<ByteArray>()
-    }
-    val onePhotoUri: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
-    }
+    private val _onePhoto = MutableLiveData<ByteArray>()
+    val onePhoto: LiveData<ByteArray> = _onePhoto
+//    val onePhoto: MutableLiveData<ByteArray> by lazy {
+//        MutableLiveData<ByteArray>()
+//    }
+
+
     var userUpdate = MutableLiveData<FirebaseUser?>()
     val dbManager = DbManager()
     var listShelter = ArrayList<AdShelter>()
@@ -57,12 +56,13 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     val liveAdsDataAddShelter = MutableLiveData<AdShelter?>()
     val listPhoto = arrayListOf<String>()
     val dialog = MutableLiveData<AlertDialog>()
+    var adShelteAfterPhotoViewed: AdShelter? = null
 
     //Для backPressed
     var backPressed: Int = 0
 
-    //Для клтков
-    var isClick: Boolean = true
+    //Для выхода из OnePfotoFragment
+    var isAddSF: Boolean = true
 //////////////////////////////////////////////////////////////////////
 
     fun listPhoto(listP: ArrayList<String>) {
@@ -77,6 +77,9 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     fun openFragShelter(adShelter: AdShelter?){
         liveAdsDataAddShelter.value = adShelter
         adShelter?.let { adViewed(it) }
+    }
+    fun openFragShelterWithoutAdViewed(){
+        liveAdsDataAddShelter.value = adShelteAfterPhotoViewed
     }
 
     fun deleteAdShelter(adShelter: AdShelter?, writedDataCallback: WritedDataCallback){
@@ -147,7 +150,8 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     fun getOnePhoto(url: String) {
         scope.launch {
 //            onePhotoUri.postValue(url)
-            onePhoto.postValue(repository.getOnePhoto(url))
+            _onePhoto.postValue(repository.getOnePhoto(url))
+
         }
     }
 

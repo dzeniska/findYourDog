@@ -9,9 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.navigateUp
 import com.bumptech.glide.Glide
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
@@ -29,69 +33,117 @@ class OnePhotoFragment : Fragment() {
     val viewModel: BreedViewModel by activityViewModels()
     var rootElement: FragmentOnePhotoBinding? = null
     private var job: Job? = null
+
+//        override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//            Log.d("!!!onCreate", "OnePhotoFragment")
+//        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
+//            override fun handleOnBackPressed() {
+//                //in here you can do logic when backPress is clicked
+//                findNavController().navigateUp()
+//
+//            }
+//        })
+//    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        Log.d("!!!onCreateView", "OnePhotoFragment")
         rootElement = FragmentOnePhotoBinding.inflate(inflater)
         return rootElement!!.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        Log.d("!!!onViewCreated", "OnePhotoFragment")
 
-        viewModel.onePhoto.observe(viewLifecycleOwner, Observer {
-//
-//            job = CoroutineScope(Dispatchers.IO).launch {
-////                getBitmapFromPicasso(it)
-//                Log.d("!!!px1", it.toString())
-//                val bt: Bitmap = Picasso.get().load(Uri.parse(it)).get()
-//                Log.d("!!!px2", "$bt")
-//                rootElement!!.imgOnePhoto.setImage(ImageSource.bitmap(bt))
-//                Log.d("!!!px3", it.toString())
-////                rootElement!!.imgOnePhoto.setImageBitmap(bt)
-//                rootElement!!.progressBarLine.visibility = View.GONE
-//            }
-            val stream = String(it)
-            if (stream.isNotEmpty()) {
-                val dirName =
-                    context?.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath
-                val pathName = "$dirName/${viewModel.fileName}"
-                val f = File(pathName)
-                Log.d("!!!p", pathName)
-                val inputStream: InputStream
-                inputStream = it.inputStream()
-                inputStream.saveToFile(f)
-                val uri = Uri.fromFile(f)
+        initViewModel()
+
+    }
+
+    private fun initViewModel(){
+        viewModel.onePhoto.observe(viewLifecycleOwner, Observer {byteArray ->
+            Log.d("!!!onviewModel.onePhoto.observe", "OnePhotoFragment ${byteArray}")
+            if(byteArray != null) {
+                val stream = String(byteArray)
+                if (stream.isNotEmpty()) {
+                    val dirName =
+                        context?.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)?.absolutePath
+//                    val name = if(viewModel.fileName.isNotEmpty())
+//                        viewModel.fileName
+//                    else
+//                        "jopa.jpg"
+                    val pathName = "$dirName/jopa.jpg"
+                    val f = File(pathName)
+                    Log.d("!!!p", pathName)
+                    val inputStream: InputStream
+                    inputStream = byteArray.inputStream()
+                    inputStream.saveToFile(f)
+                    val uri = Uri.fromFile(f)
 //                Glide.with(this).load(uri)
-                rootElement!!.apply {
-                    imgOnePhoto.visibility = View.VISIBLE
-                    imgOnePhoto as SubsamplingScaleImageView
-                    imgOnePhoto.setImage(ImageSource.uri(uri))
+                    rootElement!!.apply {
+                        imgOnePhoto.visibility = View.VISIBLE
+                        imgOnePhoto as SubsamplingScaleImageView
+                        imgOnePhoto.setImage(ImageSource.uri(uri))
 //                    imgOnePhoto.setImage(ImageSource.bitmap(bitmap))
-                    progressBarLine.visibility = View.GONE
+                        progressBarLine.visibility = View.GONE
+                    }
+                } else {
+                    Toast.makeText(
+                        activity as MainActivity,
+                        "Плохое соединение с интернетом!",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-            } else {
-                Toast.makeText(
-                    activity as MainActivity,
-                    "Плохое соединение с интернетом!",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
         })
     }
 
     override fun onResume() {
         super.onResume()
+        Log.d("!!!onResume", "OnePhotoFragment")
         rootElement!!.apply {
             imgOnePhoto.visibility = View.GONE
             progressBarLine.visibility = View.VISIBLE
         }
     }
+    override fun onPause() {
+        super.onPause()
+        Log.d("!!!onPause", "OnePhotoFragment")
+    }
+
+    override fun onStop() {
+        if(viewModel.isAddSF) viewModel.openFragShelterWithoutAdViewed()
+        super.onStop()
+        Log.d("!!!onStop", "OnePhotoFragment")
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("!!!onDestroy", "OnePhotoFragment")
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        Log.d("!!!onDetach", "OnePhotoFragment")
+    }
+
     fun InputStream.saveToFile(f: File) = use { input ->
         f.outputStream().use { output ->
             input.copyTo(output)
         }
+    }
+
+    override fun onDestroyView() {
+
+        Log.d("!!!onDestroyView", "OnePhotoFragment")
+        super.onDestroyView()
+        rootElement = null
+    }
+    companion object {
+        const val PHOTO_URI = "photoUri"
     }
 }
 

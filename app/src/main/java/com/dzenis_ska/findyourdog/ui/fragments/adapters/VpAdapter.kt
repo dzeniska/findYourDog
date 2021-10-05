@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.dzenis_ska.findyourdog.R
@@ -38,6 +39,7 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
 
             binding.imgItemVp.setOnClickListener{
                 addSF.fullScreen(250, 0.50f)
+                addSF.toFragOnePhoto(uri)
             }
            /* binding.imgItemVp.orientation = ImageManager.imageRotationPreview(bitmap)
 //            binding.imgItemVp.setImageBitmap(bitmap)
@@ -80,7 +82,6 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
                         }
                     })
             }
-
         }
     }
 

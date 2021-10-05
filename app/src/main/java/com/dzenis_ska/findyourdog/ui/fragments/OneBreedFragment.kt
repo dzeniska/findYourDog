@@ -55,7 +55,6 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = findNavController()
-        val context = context
 
         //Spinner
         val adapterSpinner = ArrayAdapter(
@@ -178,6 +177,7 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
 //        val breed = resp.substringBeforeLast("/").substringAfterLast("/")
         Log.d("!!!pq", photo)
         navController.navigate(R.id.onePhotoFragment)
+        viewModel.isAddSF = false
 
 //        onePhotoFrag = OnePhotoFragment()
 //        val fm = activity?.supportFragmentManager?.beginTransaction()

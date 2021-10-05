@@ -98,5 +98,6 @@
     <string name="no_network_q">Для приложения необходимо подключение к сети Internet</string>
     <string name="hi">Добро поаловать!</string>
     <string name="remove_user">Для смены пользователя \n нажмите \"Выход\"</string>
+    <string name="fragment_one_photo">Просмотр</string>
 
 </resources>
