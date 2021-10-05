@@ -31,7 +31,14 @@ object ImageManager {
                 inJustDecodeBounds = true
             }
             BitmapFactory.decodeStream(inStream, null, options)
-            listOf(options.outWidth, options.outHeight)
+            val imgRotation = imageRotationNew(uri, act)
+            Log.d("!!!imgRotation", "${imgRotation}")
+            return if(imgRotation == 90 || imgRotation == 270){
+
+                listOf(options.outHeight, options.outWidth)
+            }else {
+                listOf(options.outWidth, options.outHeight)
+            }
         }else{
             null
         }
@@ -133,7 +140,6 @@ object ImageManager {
         val exif = inStream?.let { ExifInterface(it) }
         val orientation = exif?.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
 
-
         return when (orientation) {
             ExifInterface.ORIENTATION_ROTATE_90 -> 90
             ExifInterface.ORIENTATION_ROTATE_270 -> 270
@@ -157,9 +163,8 @@ object ImageManager {
         val bitmapList = ArrayList<Bitmap>()
         for (n in uris.indices) {
             val size = getImageSize(uris[n], act)
-            val rotationDegres = imageRotationNew(uris[n], act)
             //проверка на каличное фото
-            Log.d("!!!or", "${size}, ${rotationDegres}")
+
             if(size != null){
                 val imageRatio = size[WIDTH].toDouble() / size[HEIGHT].toDouble()
 
