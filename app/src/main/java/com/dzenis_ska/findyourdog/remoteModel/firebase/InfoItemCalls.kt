@@ -1,6 +1,5 @@
 package com.dzenis_ska.findyourdog.remoteModel.firebase
 
-data class InfoItem(
-    var viewsCounter: String = "0",
+data class InfoItemCalls(
     var callsCounter: String = "0"
 )

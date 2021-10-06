@@ -115,7 +115,7 @@ class OnePhotoFragment : Fragment() {
     }
 
     override fun onStop() {
-        if(viewModel.isAddSF) viewModel.openFragShelterWithoutAdViewed()
+//        if(viewModel.isAddSF) viewModel.openFragShelterWithoutAdViewed()
         super.onStop()
         Log.d("!!!onStop", "OnePhotoFragment")
     }

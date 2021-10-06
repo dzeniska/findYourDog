@@ -15,7 +15,7 @@ data class AdShelter(
     val key: String? = null,
     val uid: String? = null,
     val markerColor: Float? = null,
-
+    val time: String = "0",
     var viewsCounter: String = "0",
-    val time: String = "0"
+    var callsCounter: String = "0"
 )

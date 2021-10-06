@@ -3,7 +3,6 @@ package com.dzenis_ska.findyourdog.viewModel
 import android.app.AlertDialog
 import android.net.Uri
 import android.util.Log
-import androidx.constraintlayout.helper.widget.Carousel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -76,7 +75,7 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
 
     fun openFragShelter(adShelter: AdShelter?){
         liveAdsDataAddShelter.value = adShelter
-        adShelter?.let { adViewed(it) }
+        adShelter?.let { adViewed(it, VIEWS_COUNTER) }
     }
     fun openFragShelterWithoutAdViewed(){
         liveAdsDataAddShelter.value = adShelteAfterPhotoViewed
@@ -93,21 +92,36 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
         })
     }
 
-    private fun adViewed(adShelter: AdShelter){
-        dbManager.adViewed(adShelter, object : DbManager.FinishWorkListener{
+    private fun adViewed(adShelter: AdShelter, anyCounter: Int){
+        dbManager.adViewed(adShelter, anyCounter,  object : DbManager.FinishWorkListener{
             override fun onFinish() {
                 val updatedList = liveAdsDataAllShelter.value
                 val pos = updatedList?.indexOf(adShelter)
                 Log.d("!!!views", "$pos")
+                val viewCounter = adShelter.viewsCounter.toInt() + 1
                 if(pos != -1) {
                     pos?.let{
-                        val viewCounter = adShelter.viewsCounter.toInt() + 1
-                        updatedList[pos] = updatedList[pos].copy(viewsCounter = viewCounter.toString())
+
+                        when(anyCounter){
+                            VIEWS_COUNTER -> {
+                                updatedList[pos] =
+                                    updatedList[pos].copy(viewsCounter = viewCounter.toString())
+                            }
+                            CALLS_COUNTER -> {
+                                val callCounter = adShelter.callsCounter.toInt() + 1
+                                updatedList[pos] =
+                                    updatedList[pos].copy(viewsCounter = viewCounter.toString(),
+                                        callsCounter = callCounter.toString())
+                            }
+                        }
                     }
                 }
                 liveAdsDataAllShelter.value = updatedList!!
             }
         })
+    }
+    fun adCalled(){
+        adShelteAfterPhotoViewed?.let { adViewed(it, CALLS_COUNTER) }
     }
     fun deletePhoto(uri: String, callback:()-> Unit ){
         dbManager.deletePhoto(uri){
@@ -245,5 +259,9 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
 
     interface WritedDataCallback {
         fun writedData()
+    }
+    companion object{
+        const val VIEWS_COUNTER = 0
+        const val CALLS_COUNTER = 1
     }
 }

@@ -218,7 +218,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 Log.d("!!!!", "${adShelter}")
                 adShelterToEdit = adShelter
             }
-            viewModel.openFragShelter(null)
+//            viewModel.openFragShelter(null)
         }
     }
 
@@ -383,6 +383,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 }
             }
             ivTel.setOnClickListener {
+                viewModel.adCalled()
                 call()
             }
 //            edTelNum.requestFocus()

@@ -3,9 +3,9 @@ package com.dzenis_ska.findyourdog.remoteModel.firebase
 
 import android.net.Uri
 import android.util.Log
+import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnSuccessListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -14,8 +14,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class DbManager() {
     val db = Firebase.database.getReference(MAIN_NODE)
@@ -72,20 +70,33 @@ class DbManager() {
             if (task.isSuccessful) listener.onFinish()
         }
         db.child(adShelter.key).child(INFO_NODE).removeValue()
+        db.child(adShelter.key).child(CALLS_NODE).removeValue()
 //        придумать логику загрузки
     }
 
-    fun adViewed(adShelter: AdShelter, listener: FinishWorkListener) {
-        var counter = adShelter.viewsCounter.toInt()
-        counter++
-        Log.d("!!!views", "${auth.uid}")
-//        сделать не нулл
-        if (auth.uid != null)
-            db.child(adShelter.key ?: "empty").child(INFO_NODE)
-                .setValue(InfoItem(counter.toString()))
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) listener.onFinish()
-                }
+    fun adViewed(adShelter: AdShelter, anyCounter: Int, listener: FinishWorkListener) {
+        val counterV = adShelter.viewsCounter.toInt()
+        val counterC = adShelter.callsCounter.toInt()
+        when (anyCounter) {
+            BreedViewModel.VIEWS_COUNTER -> {
+                if (auth.uid != null)
+                    Log.d("!!!counterVC", "${counterV} ${counterC}")
+                    db.child(adShelter.key ?: "empty").child(INFO_NODE)
+                        .setValue(InfoItem(counterV.plus(1).toString(), counterC.toString()))
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) listener.onFinish()
+                        }
+            }
+            BreedViewModel.CALLS_COUNTER -> {
+                if (auth.uid != null)
+                    Log.d("!!!counterCV", "${counterV} ${counterC}")
+                    db.child(adShelter.key ?: "empty").child(INFO_NODE)
+                        .setValue(InfoItem(counterV.plus(1).toString(), counterC.plus(1).toString()))
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) listener.onFinish()
+                        }
+            }
+        }
     }
 
     private fun readDataFromDB(query: Query, readDataCallback: ReadDataCallback?) {
@@ -99,18 +110,16 @@ class DbManager() {
                             data.child(AD_SHELTER_NODE).getValue(AdShelter::class.java)
                     }
                     val infoItem = item.child(INFO_NODE).getValue(InfoItem::class.java)
-//                    adShelter = item.children.iterator().next().child("adShelter").getValue(AdShelter::class.java)
                     adShelter?.viewsCounter = infoItem?.viewsCounter ?: "0"
+                    adShelter?.callsCounter = infoItem?.callsCounter ?: "0"
+
                     if (adShelter != null) adShelterArray.add(adShelter!!)
                 }
 
                 readDataCallback?.readData(adShelterArray)
             }
-
             override fun onCancelled(error: DatabaseError) {
-
             }
-
         })
     }
 
@@ -126,6 +135,7 @@ class DbManager() {
     companion object {
         const val AD_SHELTER_NODE = "adShelter"
         const val INFO_NODE = "info"
+        const val CALLS_NODE = "calls"
         const val MAIN_NODE = "main"
         const val STORAGE_NODE = "storage"
     }
