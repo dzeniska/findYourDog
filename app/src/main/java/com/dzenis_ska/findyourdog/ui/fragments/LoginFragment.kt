@@ -81,7 +81,7 @@ class LoginFragment : Fragment(), AuthInterface {
                 imgButtonEnter.setImageResource(R.drawable.ic_in_white)
                 tvEnter.text = "Вход"
             } else {
-                imgButtonEnter.setImageResource(R.drawable.world_map)
+                imgButtonEnter.setImageResource(R.drawable.world_map_mini)
                 tvEnter.text = "Карта"
             }
         }

@@ -125,7 +125,7 @@
             android:background="@drawable/intro_but_back"
             android:elevation="16dp"
             android:padding="8dp"
-            android:src="@drawable/world_map"
+            android:src="@drawable/world_map_mini"
             app:tint="@color/white"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="@+id/title_1"
