@@ -3,6 +3,7 @@ package com.dzenis_ska.findyourdog.remoteModel.firebase
 
 import android.net.Uri
 import android.util.Log
+import com.dzenis_ska.findyourdog.remoteModel.AdShelterFilter
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -21,13 +22,25 @@ class DbManager() {
     val ref = Firebase.storage.getReference(STORAGE_NODE)
 
 
-    fun publishAdShelter(adTemp: AdShelter, callback: (text: String)-> Unit) {
+    fun publishAdShelter(adTemp: AdShelter, callback: (text: String) -> Unit) {
         if (auth.uid != null) {
-            db.child(adTemp.key ?: "empty").child(auth.uid!!).child("adShelter").setValue(adTemp)
+            db.child(adTemp.key ?: "empty").child(auth.uid!!).child(AD_SHELTER_NODE)
+                .setValue(adTemp)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Log.d("!!!publishAdShelterDBtask", "${adTemp}")
-                        callback("task")
+                        val adFilter = AdShelterFilter(
+                            adTemp.time,
+                            adTemp.lat,
+                            adTemp.lng,
+                            "${adTemp.gender}_${adTemp.time}",
+                            "${adTemp.size}_${adTemp.time}"
+                        )
+                        db.child(adTemp.key ?: "empty").child(FILTER_NODE).setValue(adFilter)
+                            .addOnCompleteListener {
+                                Log.d("!!!publishAdShelterDBtask", "${adTemp}")
+                                callback("task")
+                            }
+
                     }
                 }
         }
@@ -60,7 +73,7 @@ class DbManager() {
     }
 
     fun getAllAds(readDataCallback: ReadDataCallback?) {
-        val query = db.orderByChild(auth.uid + "/adShelter/time")
+        val query = db.orderByChild("/adFilter/lng")
         readDataFromDB(query, readDataCallback)
     }
 
@@ -134,6 +147,7 @@ class DbManager() {
 
     companion object {
         const val AD_SHELTER_NODE = "adShelter"
+        const val FILTER_NODE = "adFilter"
         const val INFO_NODE = "info"
         const val CALLS_NODE = "calls"
         const val MAIN_NODE = "main"

@@ -77,9 +77,7 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
         liveAdsDataAddShelter.value = adShelter
         adShelter?.let { adViewed(it, VIEWS_COUNTER) }
     }
-    fun openFragShelterWithoutAdViewed(){
-        liveAdsDataAddShelter.value = adShelteAfterPhotoViewed
-    }
+
 
     fun deleteAdShelter(adShelter: AdShelter?, writedDataCallback: WritedDataCallback){
         dbManager.deleteAdShelter(adShelter, object : DbManager.FinishWorkListener{
