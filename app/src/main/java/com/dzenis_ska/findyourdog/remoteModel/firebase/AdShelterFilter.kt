@@ -1,4 +1,4 @@
-package com.dzenis_ska.findyourdog.remoteModel
+package com.dzenis_ska.findyourdog.remoteModel.firebase
 
 data class AdShelterFilter(
     val time: String? = null,

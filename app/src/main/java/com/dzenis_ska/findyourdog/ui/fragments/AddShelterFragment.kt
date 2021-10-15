@@ -12,19 +12,14 @@ import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
-import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
@@ -49,14 +44,15 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.*
 import kotlin.random.Random
-import android.R.string
-import androidx.core.os.bundleOf
+import android.view.*
+import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 
 
 class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMyLocationButtonClickListener,
     GoogleMap.OnMyLocationClickListener {
     val viewModel: BreedViewModel by activityViewModels()
+    private val fbAuth = FBAuth(this)
     lateinit var breed: DogBreeds
     lateinit var vpAdapter: VpAdapter
 
@@ -87,8 +83,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     val photoArrayList = mutableListOf<String>()
     var adapterArraySize = 0
     var sizeDog: Int = 1
-    var telNum = "+"
     var ltlng: Boolean = true
+
 
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
@@ -110,6 +106,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!onViewCreated", "AddShelterFragment")
         navController = findNavController()
+        setHasOptionsMenu(true)
 
         val mapViewBundle = savedInstanceState?.getBundle(MAPVIEW_BUNDLE_KEY)
         mapView = rootElement!!.mapView
@@ -124,6 +121,51 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         initViewModel()
         initRecyclerView()
         onClick(this, dialog)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        Log.d("!!!onCreateOptionsMenu", "onCreateOptionsMenu")
+        inflater.inflate(R.menu.menu_shelter_frag, menu)
+        val item = menu.findItem(R.id.isFav)
+        if(viewModel.adShelteAfterPhotoViewed?.isFav!!) item.icon = resources.getDrawable(R.drawable.paw_red_2)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val dog = viewModel.adShelteAfterPhotoViewed
+        return when(item.itemId){
+            R.id.isFav -> {
+                if(fbAuth.mAuth.currentUser?.isAnonymous == false) dog?.let {
+                    onFavClicked(it){isFavorite ->
+                        if(isFavorite){
+                            val adShelter = viewModel.adShelteAfterPhotoViewed?.copy(isFav = isFavorite)
+                            viewModel.adShelteAfterPhotoViewed = adShelter
+                            item.icon = resources.getDrawable(R.drawable.paw_red_2)
+                        }else{
+                            val adShelter = viewModel.adShelteAfterPhotoViewed?.copy(isFav = isFavorite)
+                            viewModel.adShelteAfterPhotoViewed = adShelter
+                            item.icon = resources.getDrawable(R.drawable.paw_blue)
+                        }
+                    }
+                }
+                true
+            }
+            R.id.dialogInfo -> {
+                val dogS = viewModel.adShelteAfterPhotoViewed
+                val info = """
+                    |имя: ${dogS?.name}
+                    |количество звонков: ${dogS?.callsCounter}
+                    |количество просмотров: ${dogS?.viewsCounter}
+                    |избранное: ${dogS?.favCounter}
+                """.trimIndent()
+                Toast.makeText(context, "${info}", Toast.LENGTH_LONG).show()
+                true
+            }else -> super.onOptionsItemSelected(item)
+        }
+    }
+    private fun onFavClicked(dog: AdShelter, callback: (isFav: Boolean) -> Unit){
+        viewModel.onFavClick(dog){
+            callback(it)
+        }
     }
 
     fun hideAddShelterButton(bool: Boolean) {

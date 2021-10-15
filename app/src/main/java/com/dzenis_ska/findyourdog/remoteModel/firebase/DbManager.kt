@@ -3,7 +3,6 @@ package com.dzenis_ska.findyourdog.remoteModel.firebase
 
 import android.net.Uri
 import android.util.Log
-import com.dzenis_ska.findyourdog.remoteModel.AdShelterFilter
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -123,8 +122,12 @@ class DbManager() {
                             data.child(AD_SHELTER_NODE).getValue(AdShelter::class.java)
                     }
                     val infoItem = item.child(INFO_NODE).getValue(InfoItem::class.java)
+                    val isFav = auth.uid?.let { item.child(FAVS_NODE).child(it).getValue(String::class.java) }
+                    adShelter?.isFav = isFav != null
+                    val favCounter = item.child(FAVS_NODE).childrenCount
                     adShelter?.viewsCounter = infoItem?.viewsCounter ?: "0"
                     adShelter?.callsCounter = infoItem?.callsCounter ?: "0"
+                    adShelter?.favCounter = favCounter.toString()
 
                     if (adShelter != null) adShelterArray.add(adShelter!!)
                 }
@@ -135,6 +138,39 @@ class DbManager() {
             }
         })
     }
+
+    fun onFavClicked(dog: AdShelter, callback: (isFav: Boolean) -> Unit) {
+        if(dog.isFav){
+            removeFromFavs(dog){
+                callback(it)
+            }
+        } else {
+            addToFavs(dog){
+                callback(it)
+            }
+        }
+    }
+    private fun removeFromFavs(dog: AdShelter, callback: (isFav: Boolean) -> Unit){
+        dog.key?.let {key ->
+            auth.uid?.let { uid ->
+                db.child(key).child(FAVS_NODE).child(uid).removeValue()
+                    .addOnCompleteListener { task->
+                        if(task.isSuccessful) callback(false)
+                    }
+            }
+        }
+    }
+    private fun addToFavs(dog: AdShelter, callback: (isFav: Boolean) -> Unit){
+        dog.key?.let {key ->
+            auth.uid?.let { uid ->
+                db.child(key).child(FAVS_NODE).child(uid).setValue(uid)
+                    .addOnCompleteListener { task->
+                        if(task.isSuccessful) callback(true)
+                    }
+            }
+        }
+    }
+
 
     interface ReadDataCallback {
         fun readData(list: ArrayList<AdShelter>)
@@ -149,6 +185,7 @@ class DbManager() {
         const val AD_SHELTER_NODE = "adShelter"
         const val FILTER_NODE = "adFilter"
         const val INFO_NODE = "info"
+        const val FAVS_NODE = "favs"
         const val CALLS_NODE = "calls"
         const val MAIN_NODE = "main"
         const val STORAGE_NODE = "storage"

@@ -255,6 +255,12 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
         }
     }
 
+    fun onFavClick(dog: AdShelter, callback: (isFav: Boolean) -> Unit) {
+        dbManager.onFavClicked(dog){
+            callback(it)
+        }
+    }
+
     interface WritedDataCallback {
         fun writedData()
     }

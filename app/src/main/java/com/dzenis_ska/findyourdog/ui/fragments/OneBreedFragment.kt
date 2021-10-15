@@ -86,11 +86,11 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
         rootElement!!.apply {
             floatingActionButton.setOnClickListener() {
                 if (breed.isFavorite == 0) {
-                    viewModel!!.saveFavoriteData(breed.id, 1)
+                    viewModel.saveFavoriteData(breed.id, 1)
                     breed.isFavorite = 1
                     floatingActionButton.setImageResource(R.drawable.paw_red_2)
                 } else {
-                    viewModel!!.saveFavoriteData(breed.id, 0)
+                    viewModel.saveFavoriteData(breed.id, 0)
                     breed.isFavorite = 0
                     floatingActionButton.setImageResource(R.drawable.paw_blue)
                 }

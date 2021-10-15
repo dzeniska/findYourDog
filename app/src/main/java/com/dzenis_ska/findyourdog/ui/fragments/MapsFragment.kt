@@ -46,7 +46,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMarkerClickListener {
 
     val viewModel: BreedViewModel by activityViewModels()
-    var rootElement: FragmentMapsBinding? = null
+    private var rootElement: FragmentMapsBinding? = null
     lateinit var navController: NavController
     private var permissionDenied = false
     private lateinit var locationManager: LocationManager
