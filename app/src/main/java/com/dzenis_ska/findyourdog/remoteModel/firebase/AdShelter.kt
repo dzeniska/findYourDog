@@ -8,6 +8,8 @@ data class AdShelter(
     val lat: String? = null,
     val lng: String? = null,
     val description: String? = null,
+    val breed: String? = null,
+    val etc: String? = null,
 
     val photoes: ArrayList<String>? = null,
 

@@ -184,6 +184,21 @@
                     app:layout_constraintStart_toStartOf="@id/edTelNum"
                     app:layout_constraintTop_toBottomOf="@id/edTelNum" />
 
+                <EditText
+                    android:id="@+id/edBreed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@android:drawable/editbox_background"
+                    android:ems="10"
+                    android:hint="@string/dog_breed"
+                    android:inputType="textPersonName"
+                    android:padding="10dp"
+                    android:textColor="@color/back_menu_add_color"
+                    android:textColorHint="@color/text_hint_add"
+                    app:layout_constraintEnd_toEndOf="@id/edName"
+                    app:layout_constraintStart_toStartOf="@id/edName"
+                    app:layout_constraintTop_toBottomOf="@id/edName" />
+
                 <TextView
                     android:id="@+id/tvGender"
                     android:layout_width="0dp"
@@ -193,9 +208,9 @@
                     android:gravity="center"
                     android:padding="10dp"
                     android:textColor="@color/back_menu_add_color"
-                    app:layout_constraintStart_toStartOf="@id/edName"
+                    app:layout_constraintStart_toStartOf="@id/edBreed"
                     app:layout_constraintEnd_toStartOf="@id/tvSize"
-                    app:layout_constraintTop_toBottomOf="@id/edName" />
+                    app:layout_constraintTop_toBottomOf="@id/edBreed" />
 
                 <TextView
                     android:id="@+id/tvSize"
@@ -206,7 +221,7 @@
                     android:gravity="center"
                     android:padding="10dp"
                     android:textColor="@color/back_menu_add_color"
-                    app:layout_constraintEnd_toEndOf="@id/edName"
+                    app:layout_constraintEnd_toEndOf="@id/edBreed"
                     app:layout_constraintStart_toEndOf="@id/tvGender"
                     app:layout_constraintTop_toTopOf="@+id/tvGender" />
 

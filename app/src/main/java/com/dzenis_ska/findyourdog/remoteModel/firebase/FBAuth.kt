@@ -63,11 +63,8 @@ class FBAuth(private val fragment: Fragment) {
                         fragment.uiUpdateMain(task.result?.user!!)
                     }
                 } else {
-//                    Toast.makeText(context, context.resources.getString(R.string.error_reg), Toast.LENGTH_SHORT).show()
-//                Log.d("!!!er", task.exception.toString())
                     if (task.exception is FirebaseAuthUserCollisionException) {
                         val exception = task.exception as FirebaseAuthUserCollisionException
-//                    Log.d("!!!erPas", exception.errorCode)
                         if (exception.errorCode == FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE) {
                             signInWithEmail(email, password, context, create)
                             Toast.makeText(
@@ -75,7 +72,6 @@ class FBAuth(private val fragment: Fragment) {
                                 FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE,
                                 Toast.LENGTH_SHORT
                             ).show()
-//                        Log.d("!!!error", "${FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE}")
                         }
                     } else if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         if (create) signInAnonimously(null, context) {}
@@ -137,9 +133,7 @@ class FBAuth(private val fragment: Fragment) {
                         }
                     } else {
                         if (create) signInAnonimously(null, context) {}
-//                    Log.d("!!!er", task.exception.toString())
                         if (task.exception is FirebaseAuthInvalidCredentialsException) {
-//                        Log.d("!!!er", task.exception.toString())
                             val exception =
                                 task.exception as FirebaseAuthInvalidCredentialsException
                             if (exception.errorCode == FirebaseAuthConstants.ERROR_INVALID_EMAIL) {
@@ -168,7 +162,6 @@ class FBAuth(private val fragment: Fragment) {
                                 ).show()
                             }
                         }
-//                    Toast.makeText(context, context.resources.getString(R.string.error_enter), Toast.LENGTH_SHORT).show()
                     }
                 }.addOnFailureListener {
                     Toast.makeText(

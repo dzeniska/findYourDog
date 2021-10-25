@@ -45,7 +45,9 @@ import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.*
 import kotlin.random.Random
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
+import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 
 
 class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
@@ -85,10 +87,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var sizeDog: Int = 1
     var ltlng: Boolean = true
 
-
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
 
+//    var menuF: Menu? = null
 
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
@@ -121,43 +123,53 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         initViewModel()
         initRecyclerView()
         onClick(this, dialog)
+        initBackStack()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         Log.d("!!!onCreateOptionsMenu", "onCreateOptionsMenu")
         inflater.inflate(R.menu.menu_shelter_frag, menu)
         val item = menu.findItem(R.id.isFav)
-        if(viewModel.adShelteAfterPhotoViewed?.isFav!!) item.icon = resources.getDrawable(R.drawable.paw_red_2)
+        if(viewModel.adShelteAfterPhotoViewed != null) {
+            if(viewModel.adShelteAfterPhotoViewed?.isFav!!) item.icon = resources.getDrawable(R.drawable.paw_red_2)
+        } else {
+            menu.clear()
+        }
+//        menuF = menu
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val dog = viewModel.adShelteAfterPhotoViewed
         return when(item.itemId){
             R.id.isFav -> {
-                if(fbAuth.mAuth.currentUser?.isAnonymous == false) dog?.let {
-                    onFavClicked(it){isFavorite ->
-                        if(isFavorite){
-                            val adShelter = viewModel.adShelteAfterPhotoViewed?.copy(isFav = isFavorite)
-                            viewModel.adShelteAfterPhotoViewed = adShelter
-                            item.icon = resources.getDrawable(R.drawable.paw_red_2)
-                        }else{
-                            val adShelter = viewModel.adShelteAfterPhotoViewed?.copy(isFav = isFavorite)
-                            viewModel.adShelteAfterPhotoViewed = adShelter
-                            item.icon = resources.getDrawable(R.drawable.paw_blue)
+                if(fbAuth.mAuth.currentUser?.isAnonymous == false) {
+                    dog?.let {
+                        onFavClicked(it){isFavorite ->
+                            if(isFavorite){
+                                val adShelter = viewModel.adShelteAfterPhotoViewed?.copy(isFav = isFavorite)
+                                viewModel.adShelteAfterPhotoViewed = adShelter
+                                item.icon = resources.getDrawable(R.drawable.paw_red_2)
+                            }else{
+                                val adShelter = viewModel.adShelteAfterPhotoViewed?.copy(isFav = isFavorite)
+                                viewModel.adShelteAfterPhotoViewed = adShelter
+                                item.icon = resources.getDrawable(R.drawable.paw_blue)
+                            }
                         }
                     }
+                } else {
+                    Toast.makeText(context, "Для добавления в \"избранное\" необходимо пройти регистрацию", Toast.LENGTH_LONG).show()
                 }
                 true
             }
             R.id.dialogInfo -> {
                 val dogS = viewModel.adShelteAfterPhotoViewed
                 val info = """
-                    |имя: ${dogS?.name}
-                    |количество звонков: ${dogS?.callsCounter}
-                    |количество просмотров: ${dogS?.viewsCounter}
-                    |избранное: ${dogS?.favCounter}
+                    имя: ${dogS?.name} 
+                    количество звонков: ${dogS?.callsCounter}
+                    количество просмотров: ${dogS?.viewsCounter}
+                    избранное: ${dogS?.favCounter}
                 """.trimIndent()
-                Toast.makeText(context, "${info}", Toast.LENGTH_LONG).show()
+                Toast.makeText(context, info, Toast.LENGTH_LONG).show()
                 true
             }else -> super.onOptionsItemSelected(item)
         }
@@ -192,7 +204,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun initViewModel() {
         //Открываем AddShelterFragment и передаём данные
         viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner, { adShelter ->
-            Log.d("!!!onviewModel.liveAdsDataAddShelter.observe", "AddShelterFragment ${adShelter?.description}")
+            Log.d("!!!onviewModelASF", "AddShelterFragment ${adShelter?.description}")
             rootElement!!.apply {
                 if (adShelter != null) {
                     viewModel.adShelteAfterPhotoViewed = adShelter
@@ -205,6 +217,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         fillFrag(adShelter, false)
                     }
 //                setMarker((adShelter.lat)!!.toDouble(), (adShelter.lng)!!.toDouble(), 11f)
+                }
+                else {
+                    viewModel.adShelteAfterPhotoViewed = null
                 }
             }
         })
@@ -235,11 +250,18 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     vpAdapter.updateAdapter(listUri, true)
                 }
             }
-            edTelNum.setText(adShelter.tel)
+            (activity as AppCompatActivity).supportActionBar?.title = adShelter.name
+
+                edTelNum.setText(adShelter.tel)
             edTelNum.isEnabled = isEnabled
 
             edName.setText(adShelter.name)
             edName.isEnabled = isEnabled
+
+            Log.d("!!!breed", "${adShelter.breed}")
+            edBreed.setText(adShelter.breed)
+            edBreed.isEnabled = isEnabled
+
             tvGender.text = adShelter.gender
             tvGender.isClickable = isEnabled
             tvSize.text = adShelter.size
@@ -276,6 +298,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 targetLat.toString(),
                 targetLng.toString(),
                 edDescription.text.toString(),
+                edBreed.text.toString(),
+                "empty",
                 photoUrlList,
                 "empty",
                 viewModel.dbManager.db.push().key,
@@ -428,20 +452,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 viewModel.adCalled()
                 call()
             }
-//            edTelNum.requestFocus()
-//                        edTelNum.setText(resources.getText(R.string.tel_num_shelter_enter))
-//            edTelNum.post { edTelNum.setSelection(5) }
-
-//            edTelNum.addTextChangedListener { editable ->
-//                when (edTelNum.text.length) {
-//                    8 -> {
-//                        val text = edTelNum.text.toString()
-//                        edTelNum.text.clear()
-//                        edTelNum.setText("${text} ")
-//                        edTelNum.post { edTelNum.setSelection(edTelNum.text.length) }
-//                    }
-//                }
-//            }
         }
     }
 
@@ -616,6 +626,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onDestroyView() {
         Log.d("!!!onDestroyView", "AddShelterFragment")
         super.onDestroyView()
+        viewModel.adShelteAfterPhotoViewed == null
         rootElement = null
     }
 
@@ -739,6 +750,14 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         navController.navigate(R.id.onePhotoFragment)
         viewModel.getOnePhoto(uri.toString())
         viewModel.isAddSF = true
+    }
+    @SuppressLint("RestrictedApi")
+    private fun initBackStack() {
+        InitBackStack.initBackStack(navController)
+//        val fList = navController.backStack
+//        fList.forEach {
+//            Log.d("!!!frASF", "${it.destination.label}")
+//        }
     }
 }
 

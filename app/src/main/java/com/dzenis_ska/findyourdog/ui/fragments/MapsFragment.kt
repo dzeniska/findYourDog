@@ -17,7 +17,6 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -33,17 +32,21 @@ import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.MapPhotoAdapter
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
+import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import kotlinx.coroutines.*
+import kotlin.collections.ArrayList
 
 
 class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMyLocationButtonClickListener,
     GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener,
-    GoogleMap.OnMarkerClickListener {
+    GoogleMap.OnMarkerClickListener,
+    GoogleMap.OnCameraIdleListener
+{
 
     val viewModel: BreedViewModel by activityViewModels()
     private var rootElement: FragmentMapsBinding? = null
@@ -64,9 +67,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     val listAdShelter = arrayListOf<AdShelter>()
     val listAdShelterForAllSh = arrayListOf<AdShelter>()
     val listAdShelterMainPhoto = mutableListOf<String>()
+    var job1: Job? = null
     var job2: Job? = null
     var job3: Job? = null
     val cs = ConstraintSet()
+
+    var markerOne: Marker? = null
+
 
     var isEditing: Boolean = false
 //    private val check: CheckNetwork = CheckNetwork()
@@ -99,6 +106,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
 
         viewModel.liveAdsDataAllShelter.observe(viewLifecycleOwner,{list ->
+            Log.d("!!!on", "viewModel.liveAdsDataAllShelterMF")
             val list1 = list
             if(list.size == 0) CheckNetwork.check(activity as MainActivity)
             if (::mMap.isInitialized) {
@@ -110,13 +118,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         init()
         initClick()
+        initBackStack()
 
     }
-//    private fun updatePermissionsState() {
-//        val permissionsStates: Map<String, Boolean> = permissions.associateWith { permission ->
-//            ActivityCompat.checkSelfPermission(context!!, permission) == PackageManager.PERMISSION_GRANTED
-//        }
-//    }
+
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.sample_menu, menu)
         val item = menu.findItem(R.id.action_done)
@@ -377,11 +382,18 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 marker.alpha = 0.6f
             }
         }
-
-        adapter?.updateAdapter(listMainPhoto)
+//TODO
+        updateAdapter(list as ArrayList<AdShelter>)
         setHasOptionsMenu(true)
 
     }
+
+    private fun updateAdapter(listMainPhoto: ArrayList<AdShelter>) {
+        adapter?.updateAdapter(listMainPhoto)
+    }
+
+
+
     override fun onInfoWindowClick(markerInfo: Marker) {
         isEditing = false
         for(info in viewModel.listShelter){
@@ -394,12 +406,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    fun animateCamera(pos: Int){
+    fun animateCamera(adShelter: AdShelter){
         if(job2 == null) {
             job2 = CoroutineScope(Dispatchers.Main).launch {
-                getAllMarkers(listAdShelter, listAdShelter[pos].key)
+                getAllMarkers(listAdShelter, adShelter.key)
                 val target =
-                    LatLng(listAdShelter[pos].lat!!.toDouble(), listAdShelter[pos].lng!!.toDouble())
+                    LatLng(adShelter.lat!!.toDouble(), adShelter.lng!!.toDouble())
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 10f))
                 delay(1500)
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 16f))
@@ -426,20 +438,46 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 //                false
 //            )
 //        )
-        mMap.setOnCameraMoveListener {
-//            marker?.position = mMap.getCameraPosition().target //to center in map
-//            target = marker!!.position
-            //здесь сохраняем данные местоположения
-//            Log.d("!!!target", "target $target")
-        }
+
+        //TODO
+       /* mMap.setOnCameraMoveListener {
+
+        }*/
+//TODO
+
+       /* mMap.setOnCameraIdleListener {
+            if(job1 == null) {
+                job1 = CoroutineScope(Dispatchers.Main).launch {
+                    val positionAfterOneSec = mMap.getCameraPosition().target
+                    Log.d("!!!targetIdleAfterOneSec", "targetIdle $positionAfterOneSec")
+                    delay(2200)
+                    val positionAfter = mMap.getCameraPosition().target //to center in map
+                    Log.d("!!!targetIdleAfter", "targetIdle $positionAfter")
+
+                    if(positionAfter == positionAfterOneSec){
+                        viewModel.getAllAdsForAdapter(positionAfter.longitude) {listSh->
+                            Log.d("!!!targetIdleUpdateAdapter", "targetIdle UpdateAdapter")
+                            updateAdapter(listSh)
+                            markerOne?.let { m -> clickMarker(m, listSh) }
+                            job1 = null
+                        }
+                    } else {
+                        job1 = null
+                    }
+                }
+            }
+        }*/
+    }
+    override fun onCameraIdle() {
+        Log.d("!!!onCameraIdle", "targetIdleMF")
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-        Log.d("!!!", "onStatusChanged $provider")
+        Log.d("!!!onStatusChanged", "MF $provider")
     }
 
     override fun onProviderEnabled(provider: String) {
-        Log.d("!!!", "provider enabled")
+        Log.d("!!!onProviderEnabled", "provider enabled")
     }
 
     override fun onProviderDisabled(provider: String) {
@@ -505,14 +543,17 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     override fun onMarkerClick(m: Marker): Boolean {
         Log.d("!!!marker", "${m.tag}")
+//        markerOne = m
         clickMarker(m)
         return false
     }
 
-    private fun clickMarker(m: Marker) {
+    private fun clickMarker(m: Marker/*, listShForAdapter: ArrayList<AdShelter>*/) {
+//        listShForAdapter.forEach {
         listAdShelter.forEach {
             if (it.key == m.tag) {
                 val index = listAdShelter.indexOf(it)
+
                 if(job3 == null) {
                     job3 = CoroutineScope(Dispatchers.Main).launch {
                         var height = rootElement!!.rcViewMapPhoto.height
@@ -541,4 +582,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1
     }
+    @SuppressLint("RestrictedApi")
+    private fun initBackStack() {
+        InitBackStack.initBackStack(navController)
+//        val fList = navController.backStack
+//        fList.forEach {
+//            Log.d("!!!frMF", "${it.destination.label}")
+//        }
+    }
+
 }

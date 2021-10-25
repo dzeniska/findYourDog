@@ -90,31 +90,26 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
         })
     }
 
-    private fun adViewed(adShelter: AdShelter, anyCounter: Int){
-        dbManager.adViewed(adShelter, anyCounter,  object : DbManager.FinishWorkListener{
-            override fun onFinish() {
-                val updatedList = liveAdsDataAllShelter.value
-                val pos = updatedList?.indexOf(adShelter)
-                Log.d("!!!views", "$pos")
-                val viewCounter = adShelter.viewsCounter.toInt() + 1
-                if(pos != -1) {
-                    pos?.let{
+    private fun adViewed(adShelter: AdShelter, anyCounter: Int) {
 
-                        when(anyCounter){
-                            VIEWS_COUNTER -> {
-                                updatedList[pos] =
-                                    updatedList[pos].copy(viewsCounter = viewCounter.toString())
-                            }
-                            CALLS_COUNTER -> {
-                                val callCounter = adShelter.callsCounter.toInt() + 1
-                                updatedList[pos] =
-                                    updatedList[pos].copy(viewsCounter = viewCounter.toString(),
-                                        callsCounter = callCounter.toString())
-                            }
+        dbManager.adViewed(adShelter, anyCounter, object : DbManager.FinishWorkListener {
+            override fun onFinish() {
+                if (adShelteAfterPhotoViewed != null) {
+                    when (anyCounter) {
+                        VIEWS_COUNTER -> {
+                            val viewCounter = adShelter.viewsCounter.toInt() + 1
+                            adShelteAfterPhotoViewed =
+                                adShelteAfterPhotoViewed?.copy(viewsCounter = viewCounter.toString())
+                        }
+                        CALLS_COUNTER -> {
+                            val callCounter = adShelter.callsCounter.toInt() + 1
+                            adShelteAfterPhotoViewed =
+                                adShelteAfterPhotoViewed?.copy(
+                                    callsCounter = callCounter.toString()
+                                )
                         }
                     }
                 }
-                liveAdsDataAllShelter.value = updatedList!!
             }
         })
     }
@@ -154,6 +149,14 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
                 liveAdsDataAllShelter.value = list
                 listShelter.clear()
                 listShelter.addAll(list)
+            }
+        })
+    }
+
+    fun getAllAdsForAdapter(lng: Double, callback: (list: ArrayList<AdShelter>) -> Unit){
+        dbManager.getAllAdsForAdapter(lng, object : DbManager.ReadDataCallback {
+            override fun readData(list: ArrayList<AdShelter>) {
+                callback(list)
             }
         })
     }

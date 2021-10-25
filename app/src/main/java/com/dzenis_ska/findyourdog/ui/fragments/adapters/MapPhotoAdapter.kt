@@ -7,20 +7,21 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.ItemLayoutForMapFrBinding
+import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
 import com.dzenis_ska.findyourdog.ui.fragments.MapsFragment
 import com.dzenis_ska.findyourdog.ui.utils.CropSquareTransformation
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
 
 class MapPhotoAdapter(val mapFr: MapsFragment): RecyclerView.Adapter<MapPhotoAdapter.MPHolder>() {
-    val listPhoto = arrayListOf<String>()
+    val listShelter = arrayListOf<AdShelter>()
     class MPHolder(val rootElement: ItemLayoutForMapFrBinding): RecyclerView.ViewHolder(rootElement.root) {
         @SuppressLint("ResourceAsColor")
-        fun setData(uri: String, mapFr: MapsFragment) {
+        fun setData(adShelter: AdShelter, mapFr: MapsFragment) {
             val imageView = rootElement.ivMapFrAdapter as ImageView
 
             Picasso.get()
-                .load(uri)
+                .load(adShelter.photoes?.get(0))
                 .placeholder(R.drawable.ic_wait_a_litle)
                 .error(R.drawable.drawer_back_6)
 //                .resize(w, h)
@@ -29,7 +30,7 @@ class MapPhotoAdapter(val mapFr: MapsFragment): RecyclerView.Adapter<MapPhotoAda
                 .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
                 .into(imageView)
             imageView.setOnClickListener {
-                mapFr.animateCamera(adapterPosition)
+                mapFr.animateCamera(adShelter)
             }
         }
     }
@@ -40,19 +41,20 @@ class MapPhotoAdapter(val mapFr: MapsFragment): RecyclerView.Adapter<MapPhotoAda
     }
 
     override fun onBindViewHolder(holder: MPHolder, position: Int) {
-        holder.setData(listPhoto[position], mapFr)
+        holder.setData(listShelter[position], mapFr)
+//        listShelter[position].photoes?.get(0)?.let { holder.setData(it, mapFr) }
     }
 
     override fun getItemCount(): Int {
-        return listPhoto.size
+        return listShelter.size
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateAdapter(newList: ArrayList<String>){
+    fun updateAdapter(newList: ArrayList<AdShelter>){
 //        val diffResult = DiffUtil.calculateDiff(DiffUtilHelper(listPhoto, newList))
 //        diffResult.dispatchUpdatesTo(this)
-        listPhoto.clear()
-        listPhoto.addAll(newList)
+        listShelter.clear()
+        listShelter.addAll(newList)
         notifyDataSetChanged()
     }
 }

@@ -77,7 +77,7 @@
             android:layout_marginTop="32dp"
             android:elevation="24dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/bryce_canyon"
+            android:src="@drawable/dogs_walk"
             app:layout_constraintEnd_toEndOf="@+id/imageButton1"
             app:layout_constraintStart_toStartOf="@+id/imageButton1"
             app:layout_constraintTop_toBottomOf="@id/imageButton1"

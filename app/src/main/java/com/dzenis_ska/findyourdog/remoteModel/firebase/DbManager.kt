@@ -3,6 +3,7 @@ package com.dzenis_ska.findyourdog.remoteModel.firebase
 
 import android.net.Uri
 import android.util.Log
+import com.dzenis_ska.findyourdog.ui.utils.FilterManager
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnSuccessListener
@@ -27,14 +28,9 @@ class DbManager() {
                 .setValue(adTemp)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        val adFilter = AdShelterFilter(
-                            adTemp.time,
-                            adTemp.lat,
-                            adTemp.lng,
-                            "${adTemp.gender}_${adTemp.time}",
-                            "${adTemp.size}_${adTemp.time}"
-                        )
-                        db.child(adTemp.key ?: "empty").child(FILTER_NODE).setValue(adFilter)
+                        db.child(adTemp.key ?: "empty")
+                            .child(FILTER_NODE)
+                            .setValue(FilterManager.createFilter(adTemp))
                             .addOnCompleteListener {
                                 Log.d("!!!publishAdShelterDBtask", "${adTemp}")
                                 callback("task")
@@ -76,6 +72,14 @@ class DbManager() {
         readDataFromDB(query, readDataCallback)
     }
 
+    fun getAllAdsForAdapter(lng: Double, readDataCallback: ReadDataCallback?) {
+        Log.d("!!!lat_lng", "${lng.minus(0.5)}_${lng.plus(0.5)}")
+        val query = db.orderByChild("/adFilter/lng")
+            .startAt("${lng.minus(1.0)}").endBefore("${lng.plus(1.0)}")
+//            .limitToFirst(2)
+        readDataFromDB(query, readDataCallback)
+    }
+
     fun deleteAdShelter(adShelter: AdShelter?, listener: FinishWorkListener) {
         if (adShelter?.key == null || adShelter.uid == null) return
         db.child(adShelter.key).child(adShelter.uid).removeValue().addOnCompleteListener { task ->
@@ -93,20 +97,20 @@ class DbManager() {
             BreedViewModel.VIEWS_COUNTER -> {
                 if (auth.uid != null)
                     Log.d("!!!counterVC", "${counterV} ${counterC}")
-                    db.child(adShelter.key ?: "empty").child(INFO_NODE)
-                        .setValue(InfoItem(counterV.plus(1).toString(), counterC.toString()))
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) listener.onFinish()
-                        }
+                db.child(adShelter.key ?: "empty").child(INFO_NODE)
+                    .setValue(InfoItem(counterV.plus(1).toString(), counterC.toString()))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) listener.onFinish()
+                    }
             }
             BreedViewModel.CALLS_COUNTER -> {
                 if (auth.uid != null)
                     Log.d("!!!counterCV", "${counterV} ${counterC}")
-                    db.child(adShelter.key ?: "empty").child(INFO_NODE)
-                        .setValue(InfoItem(counterV.plus(1).toString(), counterC.plus(1).toString()))
-                        .addOnCompleteListener { task ->
-                            if (task.isSuccessful) listener.onFinish()
-                        }
+                db.child(adShelter.key ?: "empty").child(INFO_NODE)
+                    .setValue(InfoItem(counterV.toString(), counterC.plus(1).toString()))
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) listener.onFinish()
+                    }
             }
         }
     }
@@ -189,5 +193,7 @@ class DbManager() {
         const val CALLS_NODE = "calls"
         const val MAIN_NODE = "main"
         const val STORAGE_NODE = "storage"
+        const val ADS_LIMIT = 2
+
     }
 }

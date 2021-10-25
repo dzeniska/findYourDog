@@ -3,6 +3,10 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/DogTherapy/FindYourDog/app/src/main/res/layout/activity_main.xml" value="0.2" />
+        <entry key="..\:/DogTherapy/FindYourDog/app/src/main/res/layout/frag_intro.xml" value="0.2" />
+        <entry key="..\:/DogTherapy/FindYourDog/app/src/main/res/layout/fragment_add_shelter.xml" value="0.2" />
+        <entry key="..\:/DogTherapy/FindYourDog/app/src/main/res/layout/fragment_maps.xml" value="0.2" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable-anydpi/add_photo.xml" value="0.21614583333333334" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable-anydpi/ic_my.xml" value="0.12604166666666666" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable-hdpi/background_img_item.xml" value="0.2203125" />
@@ -52,7 +56,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

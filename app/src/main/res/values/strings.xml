@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Find Your Dog</string>
+    <string name="app_name">Дог терапия</string>
     <!--Drawer menu-->
     <string name="add_dog_string">Добавить нового друга</string>
     <string name="add_shelter_string">Волонтёры</string>
@@ -9,7 +9,7 @@
     <string name="auth">Регистрация</string>
 
     <string name="treasure_map">Карта сокровищ!</string>
-    <string name="dog_map">Место встречи!</string>
+    <string name="dog_map">Карта</string>
 
     <string name="enter_please">Ну!.. Ты это… Заходи, если что</string>
     <string name="entrance">Вход</string>
@@ -21,7 +21,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="dogs_list">Список пород</string>
-    <string name="add_dog">Добавить в список</string>
+    <string name="add_dog">Добавить пёселя</string>
     <string name="first">Привет всем!</string>
     <string name="favorites">Самые прикольные</string>
     <string name="note_edit">Редактор заметки</string>
@@ -68,6 +68,7 @@
     <string name="tel_num_shelter_enter">+375()</string>
     <string name="tel_num_shelter">Номер телефона</string>
     <string name="dog_name">Кличка</string>
+    <string name="dog_breed">Порода</string>
     <string name="description">Описание</string>
     <string name="gendMan">Мальчик</string>
     <string name="gendWoMan">Девочка</string>
@@ -92,11 +93,11 @@
     <string name="more_photo">Больше фото</string>
     <string name="map">Карта</string>
     <string name="authFirst">Регистрация</string>
-    <string name="first_photo">Капитан</string>
+    <string name="first_photo">Собак много не бывает</string>
 
     <!-- Progress Dialog-->
     <string name="no_network_q">Для приложения необходимо подключение к сети Internet</string>
-    <string name="hi">Добро поаловать!</string>
+    <string name="hi">Добро пожаловать!</string>
     <string name="remove_user">Для смены пользователя \n нажмите \"Выход\"</string>
     <string name="fragment_one_photo">Просмотр</string>
 

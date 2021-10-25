@@ -26,6 +26,7 @@ import com.dzenis_ska.findyourdog.remoteModel.firebase.AuthInterface
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
+import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.firebase.auth.FirebaseUser
 
@@ -73,6 +74,7 @@ class LoginFragment : Fragment(), AuthInterface {
         Log.d("!!!onViewCreatedLf", "onViewCreatedLf")
         init()
         onClick()
+        initBackStack()
     }
 
     fun showElements(bool: Boolean) {
@@ -237,6 +239,7 @@ class LoginFragment : Fragment(), AuthInterface {
                     ) {
                         requestPermissions.launch(permissions)
                     } else {
+                        navController?.popBackStack()
                         navController?.navigate(R.id.mapsFragment)
                     }
                 } else {
@@ -294,5 +297,13 @@ class LoginFragment : Fragment(), AuthInterface {
         private val permissions = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION
         )
+    }
+    @SuppressLint("RestrictedApi")
+    private fun initBackStack() {
+        navController?.let { InitBackStack.initBackStack(it) }
+//        val fList = navController?.backStack
+//        fList?.forEach {
+//            Log.d("!!!frLF", "${it.destination.label}")
+//        }
     }
 }

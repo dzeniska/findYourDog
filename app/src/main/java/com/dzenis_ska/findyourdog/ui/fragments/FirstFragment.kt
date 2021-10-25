@@ -25,6 +25,7 @@ import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.FirstFrAdapter
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.*
 
 class FirstFragment : Fragment() {
     var rootElement: FragIntroBinding? = null
@@ -61,6 +62,14 @@ class FirstFragment : Fragment() {
         return rootElement.root
     }
 
+    @SuppressLint("RestrictedApi")
+    private fun initBackStack() {
+        val fList = navController?.backStack
+        fList?.forEach {
+            Log.d("!!!frFF", "${it.destination.label}")
+        }
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!on", "onViewCreated")
@@ -68,6 +77,7 @@ class FirstFragment : Fragment() {
 
         init()
         initClick()
+        initBackStack()
     }
 
     private fun isAuth() = with(rootElement!!){
@@ -103,6 +113,7 @@ class FirstFragment : Fragment() {
         rootElement!!.rcFF.adapter = adapter
         rootElement!!.rcFF.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         adapter!!.updateAdapter(listPhoto, listTitle)
+
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(rootElement!!.rcFF)
     }
