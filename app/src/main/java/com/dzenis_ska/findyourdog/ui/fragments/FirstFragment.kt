@@ -62,13 +62,13 @@ class FirstFragment : Fragment() {
         return rootElement.root
     }
 
-    @SuppressLint("RestrictedApi")
-    private fun initBackStack() {
-        val fList = navController?.backStack
-        fList?.forEach {
-            Log.d("!!!frFF", "${it.destination.label}")
-        }
-    }
+//    @SuppressLint("RestrictedApi")
+//    private fun initBackStack() {
+//        val fList = navController?.backStack
+//        fList?.forEach {
+//            Log.d("!!!frFF", "${it.destination.label}")
+//        }
+//    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -77,13 +77,13 @@ class FirstFragment : Fragment() {
 
         init()
         initClick()
-        initBackStack()
+//        initBackStack()
     }
 
     private fun isAuth() = with(rootElement!!){
 
         if (fbAuth.mAuth.currentUser == null) {
-            fbAuth.signInAnonimously(imBtnMap, context) {
+            fbAuth.signInAnonimously(context) {
                 if(it == true) {
                     navController?.navigate(R.id.mapsFragment)
                 }else{
@@ -205,7 +205,7 @@ class FirstFragment : Fragment() {
     private fun currentUser(currentUser: FirebaseUser?) {
         Log.d("!!!currentUser", "currentUser")
         if (currentUser == null) {
-            fbAuth.signInAnonimously(null, context){
+            fbAuth.signInAnonimously(context){
                 if(it == false)
                     CheckNetwork.check(activity as MainActivity)
                 else

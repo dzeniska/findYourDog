@@ -74,7 +74,7 @@ class FBAuth(private val fragment: Fragment) {
                             ).show()
                         }
                     } else if (task.exception is FirebaseAuthInvalidCredentialsException) {
-                        if (create) signInAnonimously(null, context) {}
+                        if (create) signInAnonimously(context) {}
                         val exception = task.exception as FirebaseAuthInvalidCredentialsException
                         if (exception.errorCode == FirebaseAuthConstants.ERROR_INVALID_EMAIL) {
                             Toast.makeText(
@@ -91,7 +91,7 @@ class FBAuth(private val fragment: Fragment) {
                         }
                     }
                     if (task.exception is FirebaseAuthWeakPasswordException) {
-                        if (create) signInAnonimously(null, context) {}
+                        if (create) signInAnonimously(context) {}
                         val exception = task.exception as FirebaseAuthWeakPasswordException
                         if (exception.errorCode == FirebaseAuthConstants.ERROR_WEAK_PASSWORD) {
                             Toast.makeText(
@@ -132,7 +132,7 @@ class FBAuth(private val fragment: Fragment) {
                             fragment.uiUpdateMain(task.result?.user!!)
                         }
                     } else {
-                        if (create) signInAnonimously(null, context) {}
+                        if (create) signInAnonimously(context) {}
                         if (task.exception is FirebaseAuthInvalidCredentialsException) {
                             val exception =
                                 task.exception as FirebaseAuthInvalidCredentialsException
@@ -212,7 +212,7 @@ class FBAuth(private val fragment: Fragment) {
         }
     }
 
-    fun signInAnonimously(view: View?,context: Context?, callback: (isS: Boolean?)-> Unit) {
+    fun signInAnonimously(context: Context?, callback: (isS: Boolean?)-> Unit) {
         try {
             mAuth.signInAnonymously().addOnCompleteListener { task ->
                 if (task.isSuccessful) {

@@ -15,6 +15,7 @@ import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.AdapterBreeds
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
+import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import kotlinx.coroutines.*
 import java.util.*
@@ -26,8 +27,8 @@ class DogsListFragment : Fragment() {
     var adapter: AdapterBreeds? = null
     private val breeds = mutableListOf<DogBreeds>()
     private var job: Job? = null
-    private var job2: Job? = null
-//    private val check: CheckNetwork = CheckNetwork()
+
+    //    private val check: CheckNetwork = CheckNetwork()
     //    override fun onCreate(savedInstanceState: Bundle?) {
 //        super.onCreate(savedInstanceState)
 //        activity?.onBackPressedDispatcher?.addCallback(this, object : OnBackPressedCallback(true) {
@@ -54,28 +55,31 @@ class DogsListFragment : Fragment() {
         initSearchView()
         initSwipeRefresh()
         initClick()
+        initBackStack()
 //        rootElement!!.tvDogList.text = getString(R.string.hi, "${getCounterValue()}")
 
         viewModel.breedLive.observe(viewLifecycleOwner, {
-            if(it.size == 0) CheckNetwork.check(activity as MainActivity)
+            if (it.size == 0) CheckNetwork.check(activity as MainActivity)
             breeds.clear()
             breeds.addAll(it)
             adapter?.updateAdapterBreeds(it)
             rootElement!!.tvDogList.alpha = 0.3f
         })
     }
-    private fun initAdapter(){
+
+    private fun initAdapter() {
         adapter = AdapterBreeds(context, this)
         rootElement!!.apply {
             recyclerView.adapter = adapter
             recyclerView.layoutManager = LinearLayoutManager(activity)
         }
     }
-    private fun isFavRecycler(boolean: Boolean) = with(rootElement!!){
-        if(boolean){
+
+    private fun isFavRecycler(boolean: Boolean) = with(rootElement!!) {
+        if (boolean) {
             viewModel.selectFavorites()
             fabLike.setImageResource(R.drawable.paw_red_2)
-        }else{
+        } else {
             viewModel.showAllBreeds()
             fabLike.setImageResource(R.drawable.paw_blue)
         }
@@ -97,26 +101,30 @@ class DogsListFragment : Fragment() {
         )
     }
 
-    private fun initSearchView(){
-        rootElement!!.searchView.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
+    private fun initSearchView() {
+        rootElement!!.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return true
             }
+
             override fun onQueryTextChange(newText: String): Boolean {
-                        viewModel.searchView(arrayOf("%$newText%"), newText)
+                viewModel.searchView(arrayOf("%$newText%"), newText)
                 return true
             }
         })
     }
-    private fun initClick() = with(rootElement!!){
+
+    private fun initClick() = with(rootElement!!) {
         fabLike.setOnClickListener() {
             viewModel.isFav = !viewModel.isFav
             isFavRecycler(viewModel.isFav)
         }
     }
+
     private suspend fun sleepScope() = withContext(Dispatchers.IO) {
         delay(3000)
     }
+
     fun onBreedSelect(position: Int) {
         viewModel.selectedBreed = breeds[position]
         viewModel.getItemImg(breeds[position].name?.lowercase(Locale.ROOT).toString())
@@ -127,15 +135,9 @@ class DogsListFragment : Fragment() {
         super.onDestroyView()
         rootElement = null
     }
-//    private fun getCounterValue(): Int = requireArguments().getInt("key", 9)
-//    companion object{
-//        fun newInstance(counter: Int): DogsListFragment{
-//            val args = Bundle().apply {
-//                putInt("key", counter)
-//            }
-//            val fragment = DogsListFragment()
-//            fragment.arguments = args
-//            return fragment
-//        }
-//    }
+
+    @SuppressLint("RestrictedApi")
+    private fun initBackStack() {
+        navController?.let { InitBackStack.initBackStack(it) }
+    }
 }

@@ -11,7 +11,9 @@ object InitBackStack {
         val fList = navController.backStack
         var count = 0
         var countReg = 0
+        var countBreed = 0
         fList.forEach {
+            Log.d("!!!frFF", "${it.destination.label}_countBreed${countBreed}")
             if(it.destination.label == "Карта"){
                 count++
                 if(count == 2){
@@ -24,8 +26,12 @@ object InitBackStack {
                     navController.popBackStack(R.id.loginFragment, true)
                 }
             }
-            Log.d("!!!frMF", "${it.destination.label}, count: $count")
-            Log.d("!!!frMF", "${it.destination.label}, count: $countReg")
+            if(it.destination.label == "Список пород"){
+                countBreed++
+                if(countBreed == 2){
+                    navController.popBackStack(R.id.dogsListFragment, true)
+                }
+            }
         }
     }
 }

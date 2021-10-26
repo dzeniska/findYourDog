@@ -94,7 +94,7 @@ class LoginFragment : Fragment(), AuthInterface {
         Log.d("!!!userLFonComplete", "${currentUser}")
         rootElement?.apply {
             if (currentUser == null) {
-                fbAuth.signInAnonimously(null, context) {
+                fbAuth.signInAnonimously(context) {
                     isEditEnable(false)
                     if(it == true)
                         tvRegIn.text = "Вы вошли как Гость"

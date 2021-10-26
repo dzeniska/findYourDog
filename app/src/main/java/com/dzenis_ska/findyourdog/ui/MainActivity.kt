@@ -257,7 +257,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         Log.d("!!!isClick", "is")
         if (fbAuth.mAuth.currentUser == null) {
-            fbAuth.signInAnonimously(null, this) {
+            fbAuth.signInAnonimously(this) {
                 if (it == true) {
                     navController!!.popBackStack()
                     navController!!.navigate(R.id.mapsFragment)
