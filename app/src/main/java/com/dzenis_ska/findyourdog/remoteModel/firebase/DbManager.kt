@@ -26,17 +26,25 @@ class DbManager() {
         if (auth.uid != null) {
             db.child(adTemp.key ?: "empty").child(auth.uid!!).child(AD_SHELTER_NODE)
                 .setValue(adTemp)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
+                .addOnCompleteListener { task1 ->
+                    if (task1.isSuccessful) {
                         db.child(adTemp.key ?: "empty")
-                            .child(FILTER_NODE)
-                            .setValue(FilterManager.createFilter(adTemp))
-                            .addOnCompleteListener {
-                                Log.d("!!!publishAdShelterDBtask", "${adTemp}")
-                                callback("task")
-                            }
+                            .child(VACCINA_NODE)
+                            .setValue(FilterManager.createFilterVaccina(adTemp))
+                            .addOnCompleteListener { task2 ->
+                                if (task2.isSuccessful) {
+                                    db.child(adTemp.key ?: "empty")
+                                        .child(FILTER_NODE)
+                                        .setValue(FilterManager.createFilter(adTemp))
+                                        .addOnCompleteListener {
+                                            Log.d("!!!publishAdShelterDBtask", "${adTemp}")
 
+                                            callback("task")
+                                        }
+                                }
+                            }
                     }
+
                 }
         }
     }
@@ -72,6 +80,7 @@ class DbManager() {
         readDataFromDB(query, readDataCallback)
     }
 
+    //на будущее pagination
     fun getAllAdsForAdapter(lng: Double, readDataCallback: ReadDataCallback?) {
         Log.d("!!!lat_lng", "${lng.minus(0.5)}_${lng.plus(0.5)}")
         val query = db.orderByChild("/adFilter/lng")
@@ -188,6 +197,7 @@ class DbManager() {
     companion object {
         const val AD_SHELTER_NODE = "adShelter"
         const val FILTER_NODE = "adFilter"
+        const val VACCINA_NODE = "adFilterVaccina"
         const val INFO_NODE = "info"
         const val FAVS_NODE = "favs"
         const val CALLS_NODE = "calls"

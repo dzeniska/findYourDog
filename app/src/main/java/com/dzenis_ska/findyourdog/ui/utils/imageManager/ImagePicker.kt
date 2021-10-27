@@ -16,7 +16,6 @@ import io.ak1.pix.models.Ratio
 
 object ImagePicker {
 
-
     private fun getOptions(imageCount: Int): Options {
         return Options().apply() {
             ratio = Ratio.RATIO_AUTO

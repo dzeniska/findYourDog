@@ -123,20 +123,7 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
         }
         notifyDataSetChanged()
     }
-    /*fun updateAdapterFromStorage(photoes: ArrayList<String>, b: Boolean) {
-        arrayPhotoFromStorage.clear()
-        arrayPhotoFromStorage.addAll(photoes)
-        addSF.rootElement!!.apply {
-            imgAddPhoto.visibility = View.GONE
-            clEditPhoto.visibility = View.VISIBLE
-            if (arrayPhotoFromStorage.size == 5) fabAddImage.visibility = View.GONE
-        }
-        Log.d("!!!addPhotoo",  "${photoes}")
-        if(arrayPhotoFromStorage.size > 1) {
-            addSF.tabLayoutMediator(true)
-        }
-        notifyDataSetChanged()
-    }*/
+
     fun updateAdapterForSinglePhoto(arrayListPhoto: List<Uri>) {
         var size = arrayPhoto.size
         arrayPhoto.addAll(arrayListPhoto)

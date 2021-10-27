@@ -46,6 +46,7 @@ import kotlinx.coroutines.*
 import kotlin.random.Random
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.collection.arrayMapOf
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 
@@ -307,6 +308,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     private fun fillAdShelter(photoUrlList: ArrayList<String>): AdShelter {
         var adShelter: AdShelter
+        val breed = if(rootElement!!.edBreed.text.isNotEmpty()) rootElement!!.edBreed.text.toString() else "без породы"
         rootElement!!.apply {
             adShelter = AdShelter(
                 edName.text.toString(),
@@ -316,8 +318,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 targetLat.toString(),
                 targetLng.toString(),
                 edDescription.text.toString(),
-                edBreed.text.toString(),
+                breed,
                 "empty",
+                mapOf("plague" to true, "rabiess" to false),
                 photoUrlList,
                 "empty",
                 viewModel.dbManager.db.push().key,
