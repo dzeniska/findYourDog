@@ -1,7 +1,10 @@
 package com.dzenis_ska.findyourdog.ui.utils.imageManager
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.util.Log
+import android.view.View
+import androidx.navigation.NavController
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.AddShelterFragment
@@ -24,40 +27,36 @@ object ImagePicker {
         }
     }
 
+    @SuppressLint("RestrictedApi")
     fun choosePhotoes(
         mAct: MainActivity,
         addSF: AddShelterFragment,
         imageCount: Int,
         const: Int
     ) {
+        addSF.hideAddShelterButton(false)
         addSF.viewModel.backPressed = 2
         mAct.addPixToActivity(R.id.clMain, getOptions(imageCount)) { result ->
             when (result.status) {
                 PixEventCallback.Status.SUCCESS -> {
                     addSF.viewModel.backPressed = 0
-                    val listMap = mutableMapOf<Boolean, Uri>()
-                    result.data.forEach {
-                        Log.d("!!!result", "showCameraFragment: ${it.path}")
-                        listMap.set(false, it)
-                    }
 
                     when (const) {
-                        AddShelterFragment.ADD_PHOTO -> addSF.vpAdapter.updateAdapter(result.data, false)
+                        AddShelterFragment.ADD_PHOTO -> {
+                            if(result.data.isNotEmpty())
+                            addSF.vpAdapter.updateAdapter(result.data, false)
+                            else
+                                addSF.hideAddPhoto(true)
+                        }
                         AddShelterFragment.ADD_IMAGE -> addSF.vpAdapter.updateAdapterForSinglePhoto(result.data)
                         AddShelterFragment.REPLACE_IMAGE -> addSF.vpAdapter.replaceItemAdapter(result.data)
                     }
-
                     addSF.hideAddShelterButton(true)
                     closePixFragment(mAct)
                 }
                 PixEventCallback.Status.BACK_PRESSED -> {
-
                     Log.d("!!!PixBackPressed", "Pix")
                     //Не работает
-//                    mAct.onBackPressed()
-
-//                    addSF.hideAddShelterButton(true, 1)
-//                    closePixFragment(mAct)
                 }
             }
         }

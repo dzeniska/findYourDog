@@ -1,6 +1,7 @@
 package com.dzenis_ska.findyourdog.ui.fragments.adapters
 
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
@@ -36,7 +37,6 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
             uri: Uri,
             b: Boolean
         ) {
-
             binding.imgItemVp.setOnClickListener{
                 addSF.fullScreen(250, 0.50f)
                 addSF.toFragOnePhoto(uri)
@@ -99,7 +99,12 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
         return arrayPhoto.size
     }
 
+    @SuppressLint("RestrictedApi")
     fun updateAdapter(arrayListPhoto: List<Uri>, b: Boolean) {
+        val fList = addSF.navController.backStack
+        fList.forEach {
+            Log.d("!!!frPASF", "${it.destination.label}_after")
+        }
         arrayPhoto.clear()
         arrayPhoto.addAll(arrayListPhoto)
         arrayPhotoBool.clear()
@@ -109,8 +114,7 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
         }
         Log.d("!!!parseUri", "${arrayPhotoBool}")
         addSF.rootElement!!.apply {
-            imgAddPhoto.visibility = View.GONE
-            clEditPhoto.visibility = View.VISIBLE
+            addSF.hideAddPhoto(false)
             if (arrayPhoto.size == 5) fabAddImage.visibility = View.GONE
         }
         Log.d("!!!addPhotoo",  "${arrayPhoto.size}")
@@ -159,7 +163,6 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
             if(n in numPage..3) {
                 if(n<4) arrayPhotoBool[n+1]?.let { arrayPhotoBool.put(n, it) }
             }
-
         }
 
         Log.d("!!!parseUri", "${arrayPhotoBool}")
@@ -170,8 +173,7 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
             addSF.rootElement!!.tabLayout.visibility = View.GONE
         }
         if(arrayPhoto.size == 0) with(addSF.rootElement!!) {
-            imgAddPhoto.visibility = View.VISIBLE
-            clEditPhoto.visibility = View.GONE
+            addSF.hideAddPhoto(true)
         }
         notifyItemRemoved(numPage)
     }

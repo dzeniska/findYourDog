@@ -180,16 +180,34 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
+    fun hideAddPhoto(b: Boolean) = with(rootElement!!){
+        imgAddPhoto.visibility = if(!b) View.GONE else View.VISIBLE
+        clEditPhoto.visibility = if(!b) View.VISIBLE else View.GONE
+    }
+
     fun hideAddShelterButton(bool: Boolean) {
-        rootElement!!.apply{
+
+        rootElement!!.apply {
+            when (bool) {
+                false -> {
+                    constraintLayout2.visibility = View.GONE
+                    scrollView.visibility = View.GONE
+                }
+                else -> {
+                    constraintLayout2.visibility = View.VISIBLE
+                    scrollView.visibility = View.VISIBLE
+                }
+            }
+
             fabAddShelter.visibility = if (!bool) View.GONE else View.VISIBLE
-            if(viewModel.btnDelState == false) {
+            if (viewModel.btnDelState == false) {
                 fabDeleteShelter.visibility = if (!bool) View.GONE else View.VISIBLE
-            }else{
+            } else {
                 fabDeleteShelter.visibility = View.GONE
             }
         }
     }
+
     private fun hidePhotoButtons(b: Boolean){
         if(!b){
         rootElement!!.apply {
@@ -364,12 +382,20 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
+    @SuppressLint("RestrictedApi")
     private fun onClick(addShelterFragment: AddShelterFragment, dialog: AlertDialog) {
         rootElement!!.apply {
             imgAddPhoto.setOnClickListener() {
                 fullScreen(250, 0.50f)
-                imgAddPhoto.alpha = 0.8f
-                hideAddShelterButton(false)
+//                imgAddPhoto.alpha = 0.8f
+//                hideAddShelterButton(false)
+//                val fList = navController.backStack
+//                fList.forEach {
+//                    Log.d("!!!frPASF", "${it.destination.label}_")
+//                    if(it.destination.label == "Добавить пёселя") it.
+//
+//                }
+
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
@@ -379,7 +405,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             fabAddImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
-                hideAddShelterButton(false)
+//                hideAddShelterButton(false)
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
@@ -396,7 +422,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             fabReplaceImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
-                hideAddShelterButton(false)
+//                hideAddShelterButton(false)
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
                     addShelterFragment,
