@@ -29,8 +29,8 @@ class DbManager() {
                 .addOnCompleteListener { task1 ->
                     if (task1.isSuccessful) {
                         db.child(adTemp.key ?: "empty")
-                            .child(VACCINA_NODE)
-                            .setValue(FilterManager.createFilterVaccina(adTemp))
+                            .child(VACCINE_NODE)
+                            .setValue(FilterManager.createFilterVaccine(adTemp))
                             .addOnCompleteListener { task2 ->
                                 if (task2.isSuccessful) {
                                     db.child(adTemp.key ?: "empty")
@@ -76,7 +76,8 @@ class DbManager() {
     }
 
     fun getAllAds(readDataCallback: ReadDataCallback?) {
-        val query = db.orderByChild("/adFilter/lng")
+        val query = db.orderByChild("/adFilterVaccine/plague")
+//            .startAt("1635430194000")
         readDataFromDB(query, readDataCallback)
     }
 
@@ -134,6 +135,8 @@ class DbManager() {
                         if (adShelter == null) adShelter =
                             data.child(AD_SHELTER_NODE).getValue(AdShelter::class.java)
                     }
+
+
                     val infoItem = item.child(INFO_NODE).getValue(InfoItem::class.java)
                     val isFav = auth.uid?.let { item.child(FAVS_NODE).child(it).getValue(String::class.java) }
                     adShelter?.isFav = isFav != null
@@ -197,7 +200,7 @@ class DbManager() {
     companion object {
         const val AD_SHELTER_NODE = "adShelter"
         const val FILTER_NODE = "adFilter"
-        const val VACCINA_NODE = "adFilterVaccina"
+        const val VACCINE_NODE = "adFilterVaccine"
         const val INFO_NODE = "info"
         const val FAVS_NODE = "favs"
         const val CALLS_NODE = "calls"

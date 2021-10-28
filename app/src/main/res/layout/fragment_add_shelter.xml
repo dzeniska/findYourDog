@@ -240,23 +240,6 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tvGender" />
 
-                <EditText
-                    android:id="@+id/edDescription"
-                    android:layout_width="0dp"
-                    android:layout_height="300dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:background="@android:drawable/editbox_background"
-                    android:ems="10"
-                    android:gravity="top|left"
-                    android:hint="@string/description"
-                    android:padding="10dp"
-                    android:textColor="@color/back_menu_add_color"
-                    android:textColorHint="@color/text_hint_add"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/mapView" />
-
                 <ImageButton
                     android:id="@+id/ibFullScreen"
                     android:layout_width="wrap_content"
@@ -287,6 +270,99 @@
                     app:srcCompat="@drawable/ic_baseline_gps_fixed_24" />
 
 
+                <EditText
+                    android:id="@+id/edDescription"
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:background="@android:drawable/editbox_background"
+                    android:ems="10"
+                    android:gravity="top|left"
+                    android:hint="@string/description"
+                    android:padding="10dp"
+                    android:textColor="@color/back_menu_add_color"
+                    android:textColorHint="@color/text_hint_add"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/mapView" />
+
+                <TextView
+                    android:id="@+id/tvVaccine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/vaccine"
+                    android:background="@android:drawable/editbox_background"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginStart="32dp"
+                    android:padding="10dp"
+                    android:textColor="@color/black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/edDescription" />
+
+
+                <ImageButton
+                    android:id="@+id/ibPlague"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginEnd="32dp"
+                    android:background="@drawable/intro_back_normal"
+                    android:padding="4dp"
+                    android:scaleType="fitEnd"
+                    android:src="@drawable/ic_calendar"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tvVaccine"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <TextView
+                    android:id="@+id/tvPlague"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/plague"
+                    android:textSize="18dp"
+                    android:textColor="@color/back_menu_add_color"
+                    app:layout_constraintBottom_toBottomOf="@+id/ibPlague"
+                    app:layout_constraintStart_toStartOf="@+id/ibPlague"
+                    app:layout_constraintTop_toTopOf="@+id/ibPlague" />
+
+                <ImageButton
+                    android:id="@+id/ibRabies"
+                    android:layout_width="0dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/intro_back_normal"
+                    android:padding="4dp"
+                    android:scaleType="fitEnd"
+                    android:layout_marginTop="4dp"
+                    android:src="@drawable/ic_calendar"
+                    app:layout_constraintEnd_toEndOf="@+id/ibPlague"
+                    app:layout_constraintStart_toStartOf="@+id/ibPlague"
+                    app:layout_constraintTop_toBottomOf="@+id/ibPlague"
+                    app:layout_constraintBottom_toTopOf="@id/space"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
+                <TextView
+                    android:id="@+id/tvRabies"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/rabies"
+                    android:textSize="18dp"
+                    android:textColor="@color/back_menu_add_color"
+                    app:layout_constraintBottom_toBottomOf="@+id/ibRabies"
+                    app:layout_constraintStart_toStartOf="@+id/ibRabies"
+                    app:layout_constraintTop_toTopOf="@+id/ibRabies" />
+
+                <Space
+                    android:id="@+id/space"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>

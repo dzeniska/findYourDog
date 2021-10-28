@@ -71,6 +71,9 @@
     <string name="dog_breed">Порода</string>
     <string name="description">Описание</string>
     <string name="gendMan">Мальчик</string>
+    <string name="vaccine"> Прививки: </string>
+    <string name="plague">От чумы</string>
+    <string name="rabies">От бешенства</string>
     <string name="gendWoMan">Девочка</string>
     <string name="sizeS">Маленький(ая)</string>
     <string name="sizeM">Средний(ая)</string>
@@ -100,5 +103,6 @@
     <string name="hi">Добро пожаловать!</string>
     <string name="remove_user">Для смены пользователя \n нажмите \"Выход\"</string>
     <string name="fragment_one_photo">Просмотр</string>
+    <string name="save">Сохранить</string>
 
 </resources>

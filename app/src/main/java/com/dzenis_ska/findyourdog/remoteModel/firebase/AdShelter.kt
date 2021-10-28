@@ -13,7 +13,7 @@ data class AdShelter(
     val breed: String? = null,
     val etc: String? = null,
 
-    val vaccination: Map<String, Boolean>? = null,
+    val vaccination: Map<String, String>? = null,
     val photoes: ArrayList<String>? = null,
 
     val price: String? = null,

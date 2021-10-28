@@ -46,8 +46,8 @@ import kotlinx.coroutines.*
 import kotlin.random.Random
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.collection.arrayMapOf
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
+import com.dzenis_ska.findyourdog.ui.utils.DialogCalendar
 import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 
 
@@ -88,6 +88,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var sizeDog: Int = 1
     var ltlng: Boolean = true
 
+    var plague: Long? = null
+    var rabies: Long? = null
+    var isSave: Boolean? = null
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
 
@@ -169,6 +172,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     количество звонков: ${dogS?.callsCounter}
                     количество просмотров: ${dogS?.viewsCounter}
                     избранное: ${dogS?.favCounter}
+                    прививки: ${dogS?.vaccination}
                 """.trimIndent()
                 Toast.makeText(context, info, Toast.LENGTH_LONG).show()
                 true
@@ -271,7 +275,13 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             (activity as AppCompatActivity).supportActionBar?.title = adShelter.name
 
-                edTelNum.setText(adShelter.tel)
+//            tvPlague.text = adShelter.vaccination?.get("plague")
+//            ibPlague.isEnabled = isEnabled
+//
+//            tvRabies.text = adShelter.vaccination?.get("rabies")
+//            ibRabies.isEnabled = isEnabled
+
+            edTelNum.setText(adShelter.tel)
             edTelNum.isEnabled = isEnabled
 
             edName.setText(adShelter.name)
@@ -292,6 +302,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             hidePhotoButtons(isEnabled)
             if (!isEnabled) {
 
+                isSave = isEnabled
+
                 fabAddShelter.visibility = View.GONE
                 ivTel.visibility = View.VISIBLE
 
@@ -309,6 +321,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun fillAdShelter(photoUrlList: ArrayList<String>): AdShelter {
         var adShelter: AdShelter
         val breed = if(rootElement!!.edBreed.text.isNotEmpty()) rootElement!!.edBreed.text.toString() else "без породы"
+        val time = System.currentTimeMillis().toString()
         rootElement!!.apply {
             adShelter = AdShelter(
                 edName.text.toString(),
@@ -320,13 +333,13 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 edDescription.text.toString(),
                 breed,
                 "empty",
-                mapOf("plague" to true, "rabiess" to false),
+                mapOf("plague" to plague.toString(), "rabies" to rabies.toString()),
                 photoUrlList,
                 "empty",
                 viewModel.dbManager.db.push().key,
                 viewModel.dbManager.auth.uid,
                 (Random.nextInt(0, 360)).toFloat(),
-                System.currentTimeMillis().toString()
+                time
             )
         }
         return adShelter
@@ -480,6 +493,19 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             ivTel.setOnClickListener {
                 viewModel.adCalled()
                 call()
+            }
+            ibPlague.setOnClickListener {
+                DialogCalendar.createDialogCalendar(activity as MainActivity,
+                    this@AddShelterFragment,
+                    DialogCalendar.PLAGUE,
+                    viewModel.adShelteAfterPhotoViewed?.vaccination?.get(DialogCalendar.PLAGUE), isSave)
+            }
+            ibRabies.setOnClickListener {
+                DialogCalendar.createDialogCalendar(
+                    activity as MainActivity,
+                    this@AddShelterFragment,
+                    DialogCalendar.RABIES,
+                    viewModel.adShelteAfterPhotoViewed?.vaccination?.get(DialogCalendar.RABIES), isSave)
             }
         }
     }
@@ -772,6 +798,27 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     override fun onProviderEnabled(provider: String) {
         // nop
+    }
+
+    fun vaccineDataEdit(
+        vaccine: String,
+        timeInMillis: Long,
+        _year: Int,
+        _month: Int,
+        _dayOfMonth: Int
+    )  = with(rootElement!!){
+        when(vaccine){
+            DialogCalendar.PLAGUE-> {
+                plague = timeInMillis
+                val text = tvPlague.text.toString()
+                tvPlague.text = "$text привита $_year.${_month+1}.$_dayOfMonth"
+            }
+            DialogCalendar.RABIES-> {
+                rabies = timeInMillis
+                val text = tvRabies.text.toString()
+                tvRabies.text = "$text привита $_year.${_month+1}.$_dayOfMonth"
+            }
+        }
     }
 
     fun toFragOnePhoto(uri: Uri) {

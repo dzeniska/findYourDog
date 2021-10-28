@@ -5,7 +5,7 @@ import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelterFilter
 
 object FilterManager {
 
-    fun createFilterVaccina(adShelter: AdShelter): Map<String, Boolean>? {
+    fun createFilterVaccine(adShelter: AdShelter): Map<String, String>? {
         return adShelter.vaccination
     }
     fun createFilter(adShelter: AdShelter): AdShelterFilter {
