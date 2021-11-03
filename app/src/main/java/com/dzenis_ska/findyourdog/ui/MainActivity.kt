@@ -28,12 +28,14 @@ import androidx.lifecycle.Observer
 
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
+import androidx.navigation.navOptions
 import androidx.navigation.ui.setupWithNavController
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.ActivityMainBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.fragments.LoginFragment
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
+import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModelFactory
 import com.google.android.material.navigation.NavigationView
@@ -69,13 +71,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     this,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
-            ){
+            ) {
                 Toast.makeText(
                     this,
                     "Необходимо разрешение на геолокацию",
                     Toast.LENGTH_LONG
                 ).show()
-            }else{
+            } else {
                 isAuth()
             }
         }
@@ -100,11 +102,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun uiUpdateMain(user: FirebaseUser?) {
-        if(user?.email != null) {
+        if (user?.email != null) {
             tvHeaderAcc.text = """Рады видеть Вас
                 |${user?.email}
             """.trimMargin()
-        }else{
+        } else {
             tvHeaderAcc.text = "Рады видеть Вас"
         }
 
@@ -119,7 +121,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //работа при откр-закр drawer
 
         val toggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(
-            this, rootElement!!.drawerLayout, rootElement!!.appBar.toolbar, android.R.string.yes, android.R.string.no
+            this,
+            rootElement!!.drawerLayout,
+            rootElement!!.appBar.toolbar,
+            android.R.string.yes,
+            android.R.string.no
         ) {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 super.onDrawerSlide(drawerView, slideOffset)
@@ -225,12 +231,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     @SuppressLint("RestrictedApi")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-//            navController.popBackStack()
 
         when (item.itemId) {
             R.id.show_fav -> {
-                navController!!.popBackStack()
-                navController!!.navigate(R.id.dogsListFragment)
+                navigateTo(R.id.dogsListFragment)
                 closeDrawer()
                 Toast.makeText(applicationContext, "Любимчики", Toast.LENGTH_SHORT).show()
             }
@@ -246,35 +250,41 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
             R.id.auth -> {
-                navController!!.popBackStack()
-                navController!!.navigate(R.id.loginFragment)
+                navigateTo(R.id.loginFragment)
                 closeDrawer()
             }
         }
         return true
     }
-    private fun isAuth(){
+
+    private fun isAuth() {
 
         Log.d("!!!isClick", "is")
         if (fbAuth.mAuth.currentUser == null) {
             fbAuth.signInAnonimously(this) {
                 if (it == true) {
-                    navController!!.popBackStack()
-                    navController!!.navigate(R.id.mapsFragment)
+                    navigateTo(R.id.mapsFragment)
                     closeDrawer()
-                }else{
+                } else {
                     CheckNetwork.check(this)
                 }
             }
         } else {
-            navController!!.popBackStack()
-            navController!!.navigate(R.id.mapsFragment)
+            navigateTo(R.id.mapsFragment)
             closeDrawer()
         }
     }
 
     private fun closeDrawer() {
         rootElement!!.drawerLayout.closeDrawer(GravityCompat.START)
+    }
+
+    private fun navigateTo(id: Int) {
+        navController!!.navigate(id, null, navOptions {
+            popUpTo(id) {
+                inclusive = true
+            }
+        })
     }
 
     companion object {

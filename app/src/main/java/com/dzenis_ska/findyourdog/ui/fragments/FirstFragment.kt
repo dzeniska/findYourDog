@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -129,6 +130,8 @@ class FirstFragment : Fragment() {
                     v.isPressed = false
                     imageButton1.elevation = 26f
                     navController?.navigate(R.id.dogsListFragment)
+
+
                 }else if (event.action == MotionEvent.ACTION_CANCEL){
                     v.isPressed = false
                     imageButton1.elevation = 26f

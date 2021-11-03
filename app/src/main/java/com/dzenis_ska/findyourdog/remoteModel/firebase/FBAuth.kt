@@ -51,6 +51,8 @@ class FBAuth(private val fragment: Fragment) {
 
     private fun createUserWithEmailAndPassword(email: String, password: String, context: Context, create: Boolean) {
         try {
+
+
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(

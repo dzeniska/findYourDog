@@ -15,11 +15,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "874879451711-bgc2sei0mvdi5lkpd23550bj9njp8t9a.apps.googleusercontent.com",
+          "client_id": "874879451711-216bfcms1s6162tr4vvjcmq4lj6kmlkh.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.dzenis_ska.findyourdog",
-            "certificate_hash": "c75fc54a22a45821a5bb77438a027e0dd0e8320b"
+            "certificate_hash": "771c5f8105353b4368a78a3ec4e48dfcb58e0d0b"
+          }
+        },
+        {
+          "client_id": "874879451711-p08dhlbu8ceh2ddoh6dtv0vs2isgbmrl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dzenis_ska.findyourdog",
+            "certificate_hash": "b1b00e745926a13f3e3d86e256ae35091c115a58"
           }
         },
         {

@@ -17,6 +17,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -81,6 +82,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+//    private val requestPermissions =
+//        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
+//            updatePermissionsState(it)
+//        }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -118,7 +124,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         init()
         initClick()
-        initBackStack()
+            initBackStack()
 
     }
 
@@ -180,6 +186,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             floatBtnGPS.visibility = View.GONE
         }
         floatBtnAddShelter.setOnClickListener() {
+
+//            requestPermissions.launch(permissions)
             viewModel.btnDelState = true
             viewModel.openFragShelter(null)
             navController.navigate(R.id.addShelterFragment)
@@ -382,7 +390,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 marker.alpha = 0.6f
             }
         }
-//TODO
         updateAdapter(list as ArrayList<AdShelter>)
         setHasOptionsMenu(true)
 
@@ -439,11 +446,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 //            )
 //        )
 
-        //TODO
        /* mMap.setOnCameraMoveListener {
 
         }*/
-//TODO
 
        /* mMap.setOnCameraIdleListener {
             if(job1 == null) {
@@ -579,9 +584,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             Log.d("!!!markInd", "${i}")
             cs.applyTo(rootElement!!.clFM)
     }
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
-    }
+
     @SuppressLint("RestrictedApi")
     private fun initBackStack() {
         InitBackStack.initBackStack(navController)
@@ -589,6 +592,32 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 //        fList.forEach {
 //            Log.d("!!!frMF", "${it.destination.label}")
 //        }
+    }
+
+    private fun updatePermissionsState(permMap: MutableMap<String, Boolean>) {
+//        val permissionsStates: Map<String, Boolean> = permissions.associateWith { permission ->
+//            ActivityCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED
+//        }
+        permMap.forEach{map->
+            Log.d("!!!perm", "${map.key} _ ${map.value}")
+            if(map.value != true) {
+                Toast.makeText(context as MainActivity, "Необходимы разрешения!", Toast.LENGTH_LONG).show()
+                return@updatePermissionsState
+            }
+        }
+
+            viewModel.btnDelState = true
+            viewModel.openFragShelter(null)
+            navController.navigate(R.id.addShelterFragment)
+    }
+
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
+//        private val permissions = arrayOf(
+//            Manifest.permission.CAMERA,
+//            Manifest.permission.RECORD_AUDIO,
+//            Manifest.permission.READ_PHONE_STATE
+//        )
     }
 
 }

@@ -58,6 +58,7 @@ class DogsListFragment : Fragment() {
         initBackStack()
 //        rootElement!!.tvDogList.text = getString(R.string.hi, "${getCounterValue()}")
 
+
         viewModel.breedLive.observe(viewLifecycleOwner, {
             if (it.size == 0) CheckNetwork.check(activity as MainActivity)
             breeds.clear()

@@ -4,19 +4,31 @@ plugins{
     id('kotlin-android')
     id('kotlin-kapt')
     id('com.google.gms.google-services')
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
+
 }
 
 
 android {
-    compileSdkVersion 30
+
+    signingConfigs {
+        release {
+            storeFile file ('D:\\android\\DogTherapy\\KEYS\\key_find_your_dog.jks')
+            storePassword 'dzeniska30'
+            keyAlias 'keyfyd'
+            keyPassword 'dzeniska30'
+        }
+    }
+
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.dzenis_ska.findyourdog"
         minSdkVersion 24
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
+        targetSdkVersion 31
+        versionCode 105
+        versionName "1.0.5"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -25,6 +37,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.debug
         }
     }
     buildFeatures{
@@ -40,8 +56,9 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
     implementation 'com.google.android.material:material:1.4.0'
 
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
+    implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'

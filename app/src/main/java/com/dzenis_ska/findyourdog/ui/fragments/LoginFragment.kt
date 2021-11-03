@@ -20,6 +20,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.FragmentLoginBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AuthInterface
@@ -239,8 +240,13 @@ class LoginFragment : Fragment(), AuthInterface {
                     ) {
                         requestPermissions.launch(permissions)
                     } else {
-                        navController?.popBackStack()
-                        navController?.navigate(R.id.mapsFragment)
+//                        navController?.popBackStack()
+//                        navController?.navigate(R.id.mapsFragment)
+                        navController!!.navigate(R.id.mapsFragment, null, navOptions {
+                            popUpTo(R.id.mapsFragment){
+                                inclusive = true
+                            }
+                        })
                     }
                 } else {
                     rootElement.apply {
@@ -284,7 +290,12 @@ class LoginFragment : Fragment(), AuthInterface {
     }
 
     private fun isAuth() {
-            navController?.navigate(R.id.mapsFragment)
+        navController!!.navigate(R.id.mapsFragment, null, navOptions {
+            popUpTo(R.id.mapsFragment){
+                inclusive = true
+            }
+        })
+//            navController?.navigate(R.id.mapsFragment)
     }
 
     override fun onDestroyView() {

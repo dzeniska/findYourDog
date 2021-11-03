@@ -12,41 +12,45 @@
         android:name="com.dzenis_ska.findyourdog.ui.fragments.FirstFragment"
         android:label="@string/first"
         tools:layout="@layout/frag_intro" />
+
     <fragment
         android:id="@+id/dogsListFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.DogsListFragment"
         android:label="@string/dogs_list"
         tools:layout="@layout/fragment_dogs_list" />
     <fragment
-        android:id="@+id/addShelterFragment"
-        android:name="com.dzenis_ska.findyourdog.ui.fragments.AddShelterFragment"
-        android:label="@string/add_dog"
-        tools:layout="@layout/fragment_add_shelter" />
-    <fragment
         android:id="@+id/oneBreedFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.OneBreedFragment"
         android:label="@string/one_breed"
         tools:layout="@layout/fragment_one_breed" />
     <fragment
-        android:id="@+id/editNoteFragment"
-        android:name="com.dzenis_ska.findyourdog.ui.fragments.EditNoteFragment"
-        android:label="@string/note_edit"
-        tools:layout="@layout/fragment_edit_note" />
-   <fragment
         android:id="@+id/onePhotoFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.OnePhotoFragment"
         android:label="@string/fragment_one_photo"
         tools:layout="@layout/fragment_one_photo" />
     <fragment
+        android:id="@+id/editNoteFragment"
+        android:name="com.dzenis_ska.findyourdog.ui.fragments.EditNoteFragment"
+        android:label="@string/note_edit"
+        tools:layout="@layout/fragment_edit_note" />
+
+    <fragment
         android:id="@+id/loginFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.LoginFragment"
-        android:label="@string/login"
-        tools:layout="@layout/fragment_login" />
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login"/>
+
     <fragment
         android:id="@+id/mapsFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.MapsFragment"
-        android:label="@string/map"
-        tools:layout="@layout/fragment_maps" />
+        android:label="MapsFragment"
+        tools:layout="@layout/fragment_maps">
 
+    </fragment>
+    <fragment
+        android:id="@+id/addShelterFragment"
+        android:name="com.dzenis_ska.findyourdog.ui.fragments.AddShelterFragment"
+        android:label="AddShelterFragment"
+        tools:layout="@layout/fragment_add_shelter"/>
 
 </navigation>

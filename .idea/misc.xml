@@ -14,6 +14,8 @@
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/calendar_dialog.xml" value="0.2296875" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/frag_intro.xml" value="0.25416666666666665" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/fragment_add_shelter.xml" value="0.2" />
+        <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/fragment_dogs_list.xml" value="0.13020833333333334" />
+        <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/fragment_one_breed.xml" value="0.18125" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/intro_main.xml" value="0.25416666666666665" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/progress_dialog_layout.xml" value="0.2296875" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable-anydpi/add_photo.xml" value="0.21614583333333334" />
@@ -65,7 +67,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
