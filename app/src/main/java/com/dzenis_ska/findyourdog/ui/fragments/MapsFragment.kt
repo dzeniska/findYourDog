@@ -80,7 +80,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 //    private val check: CheckNetwork = CheckNetwork()
 
     //для определения последней локации
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var fusedLocationClient: FusedLocationProviderClient? = null
 
 //    private val requestPermissions =
 //        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
@@ -216,8 +216,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         Log.d("!!!", "getLoc")
         dialogF?.dismiss()
         // получаем последнюю локацию
-        fusedLocationClient.lastLocation
-                .addOnSuccessListener { location : Location? ->
+        fusedLocationClient?.lastLocation
+                ?.addOnSuccessListener { location : Location? ->
                     if(location != null) {
                         Log.d("!!!loc", "${location.longitude} ${location.latitude}")
 //                        Toast.makeText(context, "Find your last location!", Toast.LENGTH_LONG).show()
