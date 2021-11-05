@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.dzenis_ska.findyourdog.R
@@ -101,10 +100,6 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
 
     @SuppressLint("RestrictedApi")
     fun updateAdapter(arrayListPhoto: List<Uri>, b: Boolean) {
-        val fList = addSF.navController.backStack
-        fList.forEach {
-            Log.d("!!!frPASF", "${it.destination.label}_after")
-        }
         arrayPhoto.clear()
         arrayPhoto.addAll(arrayListPhoto)
         arrayPhotoBool.clear()

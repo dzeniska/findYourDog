@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class BreedViewModel(val repository: Repository) : ViewModel() {
+class BreedViewModel(private val repository: Repository) : ViewModel() {
 
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -30,9 +30,6 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     var isFav: Boolean = false
 
 
-    //    val breedLive: MutableLiveData<MutableList<DogBreeds>> by lazy {
-//        MutableLiveData<MutableList<DogBreeds>>()
-//    }
     val breedLive = MutableLiveData<MutableList<DogBreeds>>()
 
     val breedFavLive = MutableLiveData<MutableList<DogBreeds>>()
@@ -43,9 +40,8 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
 
     private val _onePhoto = MutableLiveData<ByteArray>()
     val onePhoto: LiveData<ByteArray> = _onePhoto
-//    val onePhoto: MutableLiveData<ByteArray> by lazy {
-//        MutableLiveData<ByteArray>()
-//    }
+
+
 
 
     var userUpdate = MutableLiveData<FirebaseUser?>()
@@ -164,13 +160,11 @@ class BreedViewModel(val repository: Repository) : ViewModel() {
     //одного фото запрос
     fun getOnePhoto(url: String) {
         scope.launch {
-//            onePhotoUri.postValue(url)
             _onePhoto.postValue(repository.getOnePhoto(url))
 
         }
     }
 
-    
     //первый список с описанием пород
     fun showAllBreeds() {
         scope.launch {

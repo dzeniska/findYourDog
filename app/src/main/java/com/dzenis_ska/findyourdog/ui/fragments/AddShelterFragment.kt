@@ -13,28 +13,33 @@ import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
+import android.view.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.widget.ViewPager2
 import com.dzenis_ska.findyourdog.R
-import com.dzenis_ska.findyourdog.remoteModel.*
-import com.dzenis_ska.findyourdog.ui.MainActivity
-import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.dzenis_ska.findyourdog.databinding.FragmentAddShelterBinding
+import com.dzenis_ska.findyourdog.remoteModel.*
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
+import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
+import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.VpAdapter
+import com.dzenis_ska.findyourdog.ui.utils.DialogCalendar
+import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 import com.dzenis_ska.findyourdog.ui.utils.ProgressDialog
 import com.dzenis_ska.findyourdog.ui.utils.SortListPhoto
 import com.dzenis_ska.findyourdog.ui.utils.imageManager.ImageManager
 import com.dzenis_ska.findyourdog.ui.utils.imageManager.ImagePicker
+import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
@@ -44,11 +49,6 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.*
 import kotlin.random.Random
-import android.view.*
-import androidx.appcompat.app.AppCompatActivity
-import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
-import com.dzenis_ska.findyourdog.ui.utils.DialogCalendar
-import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 
 
 class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
@@ -58,6 +58,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private val fbAuth = FBAuth(this)
     lateinit var breed: DogBreeds
     lateinit var vpAdapter: VpAdapter
+
 
     var rootElement: FragmentAddShelterBinding? = null
 
@@ -99,6 +100,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -108,13 +112,26 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         return rootElement!!.root
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+    }
+
+
+//    54546
+//    kl bundlemap
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!onViewCreated", "AddShelterFragment")
         navController = findNavController()
         setHasOptionsMenu(true)
 
+
+
+
         val mapViewBundle = savedInstanceState?.getBundle(MAPVIEW_BUNDLE_KEY)
+        Log.d("!!!SupportMapFragment", "SupportMapFragmentASF")
         mapView = rootElement!!.mapView
         mapView.onCreate(mapViewBundle)
         mapView.getMapAsync(this)
@@ -172,7 +189,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     количество звонков: ${dogS?.callsCounter}
                     количество просмотров: ${dogS?.viewsCounter}
                     избранное: ${dogS?.favCounter}
-                    прививки: ${dogS?.vaccination}
                 """.trimIndent()
                 Toast.makeText(context, info, Toast.LENGTH_LONG).show()
                 true
@@ -824,16 +840,14 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     fun toFragOnePhoto(uri: Uri) {
 
         navController.navigate(R.id.onePhotoFragment)
+
         viewModel.getOnePhoto(uri.toString())
         viewModel.isAddSF = true
     }
     @SuppressLint("RestrictedApi")
     private fun initBackStack() {
         InitBackStack.initBackStack(navController)
-//        val fList = navController.backStack
-//        fList.forEach {
-//            Log.d("!!!frASF", "${it.destination.label}")
-//        }
+
     }
 }
 

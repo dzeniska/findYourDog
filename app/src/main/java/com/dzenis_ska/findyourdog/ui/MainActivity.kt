@@ -2,13 +2,10 @@ package com.dzenis_ska.findyourdog.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -35,7 +32,6 @@ import com.dzenis_ska.findyourdog.databinding.ActivityMainBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.fragments.LoginFragment
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
-import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModelFactory
 import com.google.android.material.navigation.NavigationView
@@ -54,12 +50,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var menuBreedItem: TextView? = null
     var menuMapItem: TextView? = null
 
-    //    private var optionsList: Map<String, List<String>> = mapOf()
     private val fragmentLogin = LoginFragment()
     private val fbAuth = FBAuth(fragmentLogin)
     var rootElement: ActivityMainBinding? = null
-//    var isClick: Boolean = true
-//    private val check: CheckNetwork = CheckNetwork()
 
     @Inject
     lateinit var factory: BreedViewModelFactory
@@ -88,16 +81,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         rootElement = ActivityMainBinding.inflate(layoutInflater)
         setContentView(rootElement!!.root)
 
-//        android:theme="@style/AppTheme"
-//        android:theme="@style/AppTheme.NoActionBar">
-
         init()
-//        getPermission()
         rootElement!!.navView.setNavigationItemSelectedListener(this)
         openCloseDrawer()
-        viewModel.userUpdate.observe(this, Observer {
+        viewModel.userUpdate.observe(this, {
             uiUpdateMain(it)
-//            Log.d("!!!", "$it")
         })
     }
 
@@ -131,10 +119,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 super.onDrawerSlide(drawerView, slideOffset)
                 val slideX = drawerView.width * slideOffset
                 rootElement!!.appBar.apptool.alpha = (1 - slideOffset)
-//                constraintLayout.visibility = View.VISIBLE
                 rootElement!!.appBar.introMain.constraintLayout.setTranslationX(slideX)
                 rootElement!!.appBar.introMain.constraintLayout.setScaleX(1 - slideOffset)
-
                 // constraintLayout.setScaleY(1 - slideOffset)
             }
         }
@@ -178,20 +164,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         rootElement!!.apply {
             appBar.toolbar.setupWithNavController(navController!!, drawerLayout)
-            //nav_view.setupWithNavController(navController)
             setSupportActionBar(appBar.toolbar)
 
             //убираем затемнение
             drawerLayout.setScrimColor(Color.TRANSPARENT)
 
-            //открываем drawer
-//        drawerLayout.openDrawer(GravityCompat.START)
             tvHeaderAcc = navView.getHeaderView(0).findViewById(R.id.tvHeaderAcc)
         }
     }
 
     //рисуем счётчик
-
     private fun breedCounter(count: Int) {
         menuBreedItem?.gravity = Gravity.CENTER_VERTICAL
         menuBreedItem?.setTypeface(null, Typeface.BOLD)
@@ -205,7 +187,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         menuMapItem?.setTextColor(ContextCompat.getColor(this, R.color.back_menu_one_breed_color))
         menuMapItem?.text = "+${count}"
     }
-
 
     override fun onBackPressed() {
         Log.d("!!!bakPressed", "${viewModel.backPressed}")

@@ -66,7 +66,6 @@ object ImagePicker {
         fList.forEach { frag ->
             if (frag.toString().startsWith("PixFragment")) {
                 mAct.supportFragmentManager.beginTransaction().remove(frag).commit()
-//                mAct.navController.navigate(R.id.addShelterFragment)
             }
         }
     }

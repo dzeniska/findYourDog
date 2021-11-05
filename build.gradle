@@ -2,7 +2,7 @@
 
 buildscript {
     ext.kotlin_version = "1.5.21"
-    ext.nav_version = "2.3.5"
+    ext.nav_version = "2.4.0-beta01"
     repositories {
         google()
         mavenCentral()
@@ -17,6 +17,9 @@ buildscript {
         // in the individual module build.gradle files
 
         classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.0"
+
+        // todo: include dependency for safe-args plugin here: androidx.navigation:navigation-safe-args-gradle-plugin
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"
 
 
     }

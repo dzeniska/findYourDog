@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:layout_marginTop="5dp"
     android:id="@+id/onePhotoFragment"
+
     android:background="@drawable/background_img_one"
     tools:context=".ui.fragments.DogsListFragment">
 

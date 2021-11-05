@@ -101,7 +101,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         navController = findNavController()
 
         mapFragment = childFragmentManager.findFragmentById(R.id.mapFr) as SupportMapFragment?
+        Log.d("!!!SupportMapFragment", "SupportMapFragmentMF")
         mapFragment?.getMapAsync(this)
+
 
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
@@ -236,7 +238,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        Log.d("!!!on", "onMapReady")
+        Log.d("!!!on", "onMapReadyMF")
         mMap = googleMap
         mMap.setOnMyLocationButtonClickListener(this)
         mMap.setOnMyLocationClickListener(this)
