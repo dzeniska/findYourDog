@@ -813,12 +813,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             DialogCalendar.PLAGUE-> {
                 plague = timeInMillis
                 val text = tvPlague.text.toString()
-                tvPlague.text = "$text привита $_year.${_month+1}.$_dayOfMonth"
+                tvPlague.text = "$text $_year.${_month+1}.$_dayOfMonth"
             }
             DialogCalendar.RABIES-> {
                 rabies = timeInMillis
                 val text = tvRabies.text.toString()
-                tvRabies.text = "$text привита $_year.${_month+1}.$_dayOfMonth"
+                tvRabies.text = "$text $_year.${_month+1}.$_dayOfMonth"
             }
         }
     }
