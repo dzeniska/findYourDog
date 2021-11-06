@@ -177,7 +177,7 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
 //        val breed = resp.substringBeforeLast("/").substringAfterLast("/")
         Log.d("!!!pq", photo)
         navController.navigate(R.id.onePhotoFragment)
-        viewModel.isAddSF = false
+//        viewModel.isAddSF = false
 
 //        onePhotoFrag = OnePhotoFragment()
 //        val fm = activity?.supportFragmentManager?.beginTransaction()

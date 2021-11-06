@@ -59,7 +59,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     lateinit var breed: DogBreeds
     lateinit var vpAdapter: VpAdapter
 
-
     var rootElement: FragmentAddShelterBinding? = null
 
     var tlm: TabLayoutMediator? = null
@@ -95,12 +94,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private lateinit var locationManager: LocationManager
     private val locationPermissionCode = 200
 
-//    var menuF: Menu? = null
 
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
-
 
 
     override fun onCreateView(
@@ -114,12 +110,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        Log.d("!!!onSaveInstanceState", "AddShelterFragment")
     }
-
-
-//    54546
-//    kl bundlemap
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -128,8 +120,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         setHasOptionsMenu(true)
 
 
-
-
+//todo
         val mapViewBundle = savedInstanceState?.getBundle(MAPVIEW_BUNDLE_KEY)
         Log.d("!!!SupportMapFragment", "SupportMapFragmentASF")
         mapView = rootElement!!.mapView
@@ -156,7 +147,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         } else {
             menu.clear()
         }
-//        menuF = menu
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -245,7 +235,16 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner, { adShelter ->
             Log.d("!!!onviewModelASF", "AddShelterFragment ${adShelter?.description}")
             rootElement!!.apply {
-                if (adShelter != null) {
+                if(viewModel.adShelteAfterPhotoViewed != null){
+                    if (viewModel.adShelteAfterPhotoViewed!!.uid == viewModel.dbManager.auth.uid) {
+                        fillFrag(viewModel.adShelteAfterPhotoViewed!!, true)
+                        boolEditOrNew = true
+                        fabDeleteShelter.isVisible = true
+                        ibGetLocation.isVisible = true
+                    } else {
+                        fillFrag(viewModel.adShelteAfterPhotoViewed!!, false)
+                    }
+                } else if (adShelter != null) {
                     viewModel.adShelteAfterPhotoViewed = adShelter
                     if (adShelter.uid == viewModel.dbManager.auth.uid) {
                         fillFrag(adShelter, true)
@@ -255,10 +254,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     } else {
                         fillFrag(adShelter, false)
                     }
-//                setMarker((adShelter.lat)!!.toDouble(), (adShelter.lng)!!.toDouble(), 11f)
-                }
-                else {
-                    viewModel.adShelteAfterPhotoViewed = null
                 }
             }
         })
@@ -291,11 +286,17 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             (activity as AppCompatActivity).supportActionBar?.title = adShelter.name
 
-//            tvPlague.text = adShelter.vaccination?.get("plague")
-//            ibPlague.isEnabled = isEnabled
-//
-//            tvRabies.text = adShelter.vaccination?.get("rabies")
-//            ibRabies.isEnabled = isEnabled
+            val pl = adShelter.vaccination?.get(DialogCalendar.PLAGUE)
+            val rab = adShelter.vaccination?.get(DialogCalendar.RABIES)
+
+            if(pl != "null") {
+                plague = pl?.toLong()
+                tvPlague.text = "От чумы привита"
+            }
+            if(rab != "null") {
+                rabies = rab?.toLong()
+                tvRabies.text = "От бешенства привита"
+            }
 
             edTelNum.setText(adShelter.tel)
             edTelNum.isEnabled = isEnabled
@@ -409,7 +410,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 //здесь сохраняем данные местоположения
                 targetLat = target.latitude
                 targetLng = target.longitude
-//            Log.d("!!!target", "target $target")
             }
         }
     }
@@ -421,12 +421,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 fullScreen(250, 0.50f)
 //                imgAddPhoto.alpha = 0.8f
 //                hideAddShelterButton(false)
-//                val fList = navController.backStack
-//                fList.forEach {
-//                    Log.d("!!!frPASF", "${it.destination.label}_")
-//                    if(it.destination.label == "Добавить пёселя") it.
-//
-//                }
 
                 ImagePicker.choosePhotoes(
                     activity as MainActivity,
@@ -662,7 +656,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 object : ViewPager2.OnPageChangeCallback() {
                     override fun onPageSelected(position: Int) {
                         viewModel.numPage = position
-//                        Log.d("!!!", "${position}")
                     }
                 }
             )
@@ -672,7 +665,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     fun tabLayoutMediator(b: Boolean) {
         if (b) {
             rootElement!!.tabLayout.visibility = View.VISIBLE
-
         } else {
 //            tlm?.detach()
             rootElement!!.tabLayout.visibility = View.GONE
@@ -697,7 +689,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onDestroyView() {
         Log.d("!!!onDestroyView", "AddShelterFragment")
         super.onDestroyView()
-        viewModel.adShelteAfterPhotoViewed == null
+        //todo
+//        viewModel.adShelteAfterPhotoViewed = null
         rootElement = null
     }
 
@@ -775,13 +768,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mapView.onLowMemory()
     }
 
-    companion object {
-        private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
-        const val ADD_PHOTO = 10
-        const val ADD_IMAGE = 20
-        const val REPLACE_IMAGE = 40
-    }
-
     override fun onLocationChanged(location: Location) {
         Log.d("!!!", "onLocationChanged")
         lat = location.latitude
@@ -837,17 +823,39 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    fun toFragOnePhoto(uri: Uri) {
+    fun toFragOnePhoto(uri: Uri) = with(rootElement!!) {
+
+        val instState = viewModel.adShelteAfterPhotoViewed?.copy(
+            tel = edTelNum.text.toString(),
+            name = edName.text.toString(),
+            breed = edBreed.text.toString(),
+            gender = tvGender.text.toString(),
+            size = tvSize.text.toString(),
+            description = edDescription.text.toString(),
+            vaccination = mapOf("plague" to plague.toString(), "rabies" to rabies.toString())
+        )
+        viewModel.adShelteAfterPhotoViewed = instState
 
         navController.navigate(R.id.onePhotoFragment)
-
         viewModel.getOnePhoto(uri.toString())
-        viewModel.isAddSF = true
     }
+
     @SuppressLint("RestrictedApi")
     private fun initBackStack() {
         InitBackStack.initBackStack(navController)
 
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        viewModel.adShelteAfterPhotoViewed = null
+    }
+
+    companion object {
+        private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
+        const val ADD_PHOTO = 10
+        const val ADD_IMAGE = 20
+        const val REPLACE_IMAGE = 40
     }
 }
 

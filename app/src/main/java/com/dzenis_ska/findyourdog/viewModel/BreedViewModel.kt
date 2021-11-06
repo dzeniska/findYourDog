@@ -57,7 +57,7 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     var backPressed: Int = 0
 
     //Для выхода из OnePfotoFragment
-    var isAddSF: Boolean = true
+//    var isAddSF: Boolean = true
 //////////////////////////////////////////////////////////////////////
 
     fun listPhoto(listP: ArrayList<String>) {
