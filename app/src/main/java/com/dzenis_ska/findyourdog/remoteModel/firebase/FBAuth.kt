@@ -1,9 +1,7 @@
 package com.dzenis_ska.findyourdog.remoteModel.firebase
 
 import android.content.Context
-import android.net.Uri
 import android.util.Log
-import android.view.View
 
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -11,7 +9,6 @@ import com.dzenis_ska.desk.constants.FirebaseAuthConstants
 import com.dzenis_ska.findyourdog.ui.fragments.LoginFragment
 import com.google.firebase.auth.*
 import com.dzenis_ska.findyourdog.R
-import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -32,7 +29,7 @@ class FBAuth(private val fragment: Fragment) {
                 }?.addOnFailureListener {
                     Toast.makeText(
                         context,
-                        "signUpWithEmail ${it}",
+                        "signUpWithEmail $it",
                         Toast.LENGTH_LONG
                     ).show()
                 }
@@ -42,7 +39,7 @@ class FBAuth(private val fragment: Fragment) {
         }catch (e: ExceptionInInitializerError){
             Toast.makeText(
                 context,
-                "signUpWithEmail ${e}",
+                "signUpWithEmail $e",
                 Toast.LENGTH_LONG
             ).show()
         }
@@ -51,8 +48,6 @@ class FBAuth(private val fragment: Fragment) {
 
     private fun createUserWithEmailAndPassword(email: String, password: String, context: Context, create: Boolean) {
         try {
-
-
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     Toast.makeText(
@@ -71,7 +66,8 @@ class FBAuth(private val fragment: Fragment) {
                             signInWithEmail(email, password, context, create)
                             Toast.makeText(
                                 context,
-                                FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE,
+                                "Ваш аккаунт есть в базе \n \"Дог терапия\"",
+//                                FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE,
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
@@ -114,13 +110,13 @@ class FBAuth(private val fragment: Fragment) {
         }catch (e: ExceptionInInitializerError){
             Toast.makeText(
                 context,
-                "createUserWithEmailAndPassword ${e}",
+                "createUserWithEmailAndPassword $e",
                 Toast.LENGTH_LONG
             ).show()
         }
     }
 
-    fun signInWithEmail(email: String, password: String, context: Context, create: Boolean) {
+    private fun signInWithEmail(email: String, password: String, context: Context, create: Boolean) {
         if (email.isNotEmpty() && password.isNotEmpty()) {
             try {
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->

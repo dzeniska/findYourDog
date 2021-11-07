@@ -297,23 +297,45 @@
                     android:layout_marginStart="32dp"
                     android:padding="10dp"
                     android:textColor="@color/black"
+
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/edDescription" />
 
+                <ImageView
+                    android:id="@+id/imIsVaccine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:src="@drawable/ic_attention"
+                    app:layout_constraintStart_toEndOf="@id/tvVaccine"
+                    app:layout_constraintTop_toTopOf="@id/tvVaccine"
+                    app:layout_constraintBottom_toBottomOf="@id/tvVaccine"/>
+
+                <Space
+                    android:id="@+id/space2"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:orientation="horizontal"
+                    app:layout_constraintTop_toBottomOf="@id/tvVaccine"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
                 <ImageButton
                     android:id="@+id/ibPlague"
                     android:layout_width="0dp"
                     android:layout_height="35dp"
+                    android:layout_marginTop="32dp"
                     android:layout_marginStart="32dp"
                     android:layout_marginEnd="32dp"
                     android:background="@drawable/intro_back_normal"
                     android:padding="4dp"
                     android:scaleType="fitEnd"
                     android:src="@drawable/ic_calendar"
+                    android:visibility="gone"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/tvVaccine"
+                    app:layout_constraintTop_toBottomOf="@+id/space2"
                     tools:ignore="SpeakableTextPresentCheck" />
 
                 <TextView

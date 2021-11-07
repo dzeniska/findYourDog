@@ -83,7 +83,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var adShelterToEdit: AdShelter? = null
     var boolEditOrNew: Boolean? = false
     var imageIndex = 0
-    val photoArrayList = mutableListOf<String>()
+    private val photoArrayList = mutableListOf<String>()
     var adapterArraySize = 0
     var sizeDog: Int = 1
     var ltlng: Boolean = true
@@ -294,9 +294,11 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 tvPlague.text = "От чумы привита"
             }
             if(rab != "null") {
+                imIsVaccine.setImageResource(R.drawable.ic_done)
                 rabies = rab?.toLong()
                 tvRabies.text = "От бешенства привита"
             }
+
 
             edTelNum.setText(adShelter.tel)
             edTelNum.isEnabled = isEnabled
@@ -503,6 +505,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             ivTel.setOnClickListener {
                 viewModel.adCalled()
                 call()
+            }
+            tvVaccine.setOnClickListener {
+                if(fbAuth.mAuth.currentUser?.uid == viewModel.adShelteAfterPhotoViewed?.uid) ibPlague.isVisible = !ibPlague.isVisible
             }
             ibPlague.setOnClickListener {
                 DialogCalendar.createDialogCalendar(activity as MainActivity,

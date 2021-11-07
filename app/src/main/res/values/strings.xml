@@ -72,8 +72,8 @@
     <string name="description">Описание</string>
     <string name="gendMan">Мальчик</string>
     <string name="vaccine"> Прививки: </string>
-    <string name="plague">От чумы</string>
-    <string name="rabies">От бешенства</string>
+    <string name="plague">От чумы …</string>
+    <string name="rabies">От бешенства …</string>
     <string name="gendWoMan">Девочка</string>
     <string name="sizeS">Маленький(ая)</string>
     <string name="sizeM">Средний(ая)</string>
