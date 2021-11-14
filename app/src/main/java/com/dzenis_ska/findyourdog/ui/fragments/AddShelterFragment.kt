@@ -507,7 +507,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 call()
             }
             tvVaccine.setOnClickListener {
-                if(fbAuth.mAuth.currentUser?.uid == viewModel.adShelteAfterPhotoViewed?.uid) ibPlague.isVisible = !ibPlague.isVisible
+                if(fbAuth.mAuth.currentUser?.uid == viewModel.adShelteAfterPhotoViewed?.uid ||
+                    viewModel.btnDelState == true)
+                        ibPlague.isVisible = !ibPlague.isVisible
             }
             ibPlague.setOnClickListener {
                 DialogCalendar.createDialogCalendar(activity as MainActivity,
@@ -854,6 +856,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onDetach() {
         super.onDetach()
         viewModel.adShelteAfterPhotoViewed = null
+
     }
 
     companion object {

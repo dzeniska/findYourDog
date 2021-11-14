@@ -75,9 +75,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     var markerOne: Marker? = null
 
-
     var isEditing: Boolean = false
-//    private val check: CheckNetwork = CheckNetwork()
 
     //для определения последней локации
     private var fusedLocationClient: FusedLocationProviderClient? = null
@@ -100,10 +98,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         Log.d("!!!on", "onViewCreatedMF")
         navController = findNavController()
 
+
         mapFragment = childFragmentManager.findFragmentById(R.id.mapFr) as SupportMapFragment?
+
         Log.d("!!!SupportMapFragment", "SupportMapFragmentMF")
         mapFragment?.getMapAsync(this)
-
 
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
@@ -199,7 +198,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun init(){
         if(viewModel.dbManager.auth.currentUser?.isAnonymous == false && viewModel.dbManager.auth.currentUser != null ){
             if(isEmailVeryfied()) {
-
                 rootElement?.floatBtnAddShelter?.visibility = View.VISIBLE
             }
         }
@@ -404,6 +402,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
 
     override fun onInfoWindowClick(markerInfo: Marker) {
+
         isEditing = false
         for(info in viewModel.listShelter){
             if(info.key == markerInfo.tag){

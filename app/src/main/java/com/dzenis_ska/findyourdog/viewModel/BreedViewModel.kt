@@ -2,6 +2,7 @@ package com.dzenis_ska.findyourdog.viewModel
 
 import android.app.AlertDialog
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,7 @@ import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
 import com.dzenis_ska.findyourdog.Repository.Repository
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
 import com.dzenis_ska.findyourdog.remoteModel.firebase.DbManager
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +42,6 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
 
     private val _onePhoto = MutableLiveData<ByteArray>()
     val onePhoto: LiveData<ByteArray> = _onePhoto
-
 
 
 

@@ -16,7 +16,7 @@ class RemoteModel @Inject constructor() {
         val photoString = ""
         return try {
             photo = apiOnePhoto.getOnePhoto(url).bytes()
-            Log.d("!!!ps", photo.toString())
+            Log.d("!!!ps", "$url")
             return photo
         } catch (e: Exception) {
             Log.d("!!!ps", e.toString())
