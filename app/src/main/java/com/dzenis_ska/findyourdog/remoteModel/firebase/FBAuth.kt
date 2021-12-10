@@ -16,45 +16,30 @@ class FBAuth(private val fragment: Fragment) {
 
     val mAuth = Firebase.auth
 
-    fun signUpWithEmail(
-        email: String,
-        password: String,
-        context: Context
-    ) {
-//        Log.d("!!!userAnDelete", "${mAuth.currentUser?.isAnonymous}")
+
+    fun signUpWithEmail(email: String, password: String, context: Context) {
         try {
             if (mAuth.currentUser?.isAnonymous == true) {
-                mAuth.currentUser?.delete()?.addOnCompleteListener {
+                mAuth.currentUser?.delete()?.addOnSuccessListener {
                     createUserWithEmailAndPassword(email, password, context, true)
                 }?.addOnFailureListener {
-                    Toast.makeText(
-                        context,
-                        "signUpWithEmail $it",
-                        Toast.LENGTH_LONG
-                    ).show()
+//                    Toast.makeText(context, "signUpWithEmail $it", Toast.LENGTH_LONG).show()
                 }
             } else {
                 createUserWithEmailAndPassword(email, password, context, false)
             }
-        }catch (e: ExceptionInInitializerError){
-            Toast.makeText(
-                context,
-                "signUpWithEmail $e",
-                Toast.LENGTH_LONG
-            ).show()
+        } catch (e: ExceptionInInitializerError){
+            Toast.makeText(context, "signUpWithEmail $e", Toast.LENGTH_LONG).show()
         }
 
     }
+
 
     private fun createUserWithEmailAndPassword(email: String, password: String, context: Context, create: Boolean) {
         try {
             mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    Toast.makeText(
-                        context,
-                        context.resources.getString(R.string.reg_up_is_successful),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(context, context.resources.getString(R.string.reg_up_is_successful), Toast.LENGTH_SHORT).show()
                     sendEmailVerification(task.result?.user!!, context)
                     if (fragment is LoginFragment) {
                         fragment.uiUpdateMain(task.result?.user!!)
@@ -64,55 +49,30 @@ class FBAuth(private val fragment: Fragment) {
                         val exception = task.exception as FirebaseAuthUserCollisionException
                         if (exception.errorCode == FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE) {
                             signInWithEmail(email, password, context, create)
-                            Toast.makeText(
-                                context,
-                                "Ваш аккаунт есть в базе \n \"Дог терапия\"",
-//                                FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(context, FirebaseAuthConstants.ERROR_EMAIL_ALREADY_IN_USE.substringAfter('_'), Toast.LENGTH_SHORT).show()
                         }
                     } else if (task.exception is FirebaseAuthInvalidCredentialsException) {
                         if (create) signInAnonimously(context) {}
                         val exception = task.exception as FirebaseAuthInvalidCredentialsException
                         if (exception.errorCode == FirebaseAuthConstants.ERROR_INVALID_EMAIL) {
-                            Toast.makeText(
-                                context,
-                                FirebaseAuthConstants.ERROR_INVALID_EMAIL,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(context, FirebaseAuthConstants.ERROR_INVALID_EMAIL, Toast.LENGTH_SHORT).show()
                         } else if (exception.errorCode == FirebaseAuthConstants.ERROR_WEAK_PASSWORD) {
-                            Toast.makeText(
-                                context,
-                                FirebaseAuthConstants.ERROR_WEAK_PASSWORD,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(context, FirebaseAuthConstants.ERROR_WEAK_PASSWORD, Toast.LENGTH_SHORT).show()
                         }
                     }
                     if (task.exception is FirebaseAuthWeakPasswordException) {
                         if (create) signInAnonimously(context) {}
                         val exception = task.exception as FirebaseAuthWeakPasswordException
                         if (exception.errorCode == FirebaseAuthConstants.ERROR_WEAK_PASSWORD) {
-                            Toast.makeText(
-                                context,
-                                FirebaseAuthConstants.ERROR_WEAK_PASSWORD,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            Toast.makeText(context, FirebaseAuthConstants.ERROR_WEAK_PASSWORD, Toast.LENGTH_SHORT).show()
                         }
                     }
                 }
             }.addOnFailureListener {
-                Toast.makeText(
-                    context,
-                    "createUserWithEmailAndPassword ${it.message}",
-                    Toast.LENGTH_LONG
-                ).show()
+//                Toast.makeText(context, "createUserWithEmailAndPassword ${it.message}", Toast.LENGTH_LONG).show()
             }
         }catch (e: ExceptionInInitializerError){
-            Toast.makeText(
-                context,
-                "createUserWithEmailAndPassword $e",
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(context, "createUserWithEmailAndPassword $e", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -121,11 +81,7 @@ class FBAuth(private val fragment: Fragment) {
             try {
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        Toast.makeText(
-                            context,
-                            "Вы вошли как ${task.result?.user?.email}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(context, "Вы вошли как ${task.result?.user?.email}", Toast.LENGTH_SHORT).show()
                         if (fragment is LoginFragment) {
                             fragment.uiUpdateMain(task.result?.user!!)
                         }
@@ -169,11 +125,11 @@ class FBAuth(private val fragment: Fragment) {
                     ).show()
                 }
             }catch (e: ExceptionInInitializerError){
-                Toast.makeText(
-                    context,
-                    "signInWithEmail ${e}",
-                    Toast.LENGTH_LONG
-                ).show()
+//                Toast.makeText(
+//                    context,
+//                    "signInWithEmail ${e}",
+//                    Toast.LENGTH_LONG
+//                ).show()
             }
         }
     }

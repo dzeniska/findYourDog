@@ -7,6 +7,7 @@
         <entry key="..\:/DogTherapy/FindYourDog/app/src/main/res/layout/frag_intro.xml" value="0.2" />
         <entry key="..\:/DogTherapy/FindYourDog/app/src/main/res/layout/fragment_add_shelter.xml" value="0.2" />
         <entry key="..\:/DogTherapy/FindYourDog/app/src/main/res/layout/fragment_maps.xml" value="0.2" />
+        <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/drawable-anydpi/ic_wait_a_litle.xml" value="0.2703125" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/drawable-hdpi/background_img_item.xml" value="0.2703125" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/drawable-hdpi/intro_back_pressed.xml" value="0.2703125" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/drawable-hdpi/intro_but_back.xml" value="0.2703125" />
@@ -23,6 +24,7 @@
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/fragment_one_breed.xml" value="0.18125" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/fragment_one_photo.xml" value="0.140625" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/intro_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/item_layout_for_first_fr.xml" value="0.25416666666666665" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/progress_dialog_layout.xml" value="0.2296875" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/vaccinate_dialog.xml" value="0.25416666666666665" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/menu/menu.xml" value="0.25416666666666665" />

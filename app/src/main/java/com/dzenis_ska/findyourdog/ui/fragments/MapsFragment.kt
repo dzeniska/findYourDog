@@ -441,38 +441,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         addCircle = mMap.addCircle(circleOptions)
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, zoom))
-//        marker = mMap.addMarker(
-//            MarkerOptions().position(target).title("Marker in Sydney").draggable(
-//                false
-//            )
-//        )
-
-       /* mMap.setOnCameraMoveListener {
-
-        }*/
-
-       /* mMap.setOnCameraIdleListener {
-            if(job1 == null) {
-                job1 = CoroutineScope(Dispatchers.Main).launch {
-                    val positionAfterOneSec = mMap.getCameraPosition().target
-                    Log.d("!!!targetIdleAfterOneSec", "targetIdle $positionAfterOneSec")
-                    delay(2200)
-                    val positionAfter = mMap.getCameraPosition().target //to center in map
-                    Log.d("!!!targetIdleAfter", "targetIdle $positionAfter")
-
-                    if(positionAfter == positionAfterOneSec){
-                        viewModel.getAllAdsForAdapter(positionAfter.longitude) {listSh->
-                            Log.d("!!!targetIdleUpdateAdapter", "targetIdle UpdateAdapter")
-                            updateAdapter(listSh)
-                            markerOne?.let { m -> clickMarker(m, listSh) }
-                            job1 = null
-                        }
-                    } else {
-                        job1 = null
-                    }
-                }
-            }
-        }*/
     }
     override fun onCameraIdle() {
         Log.d("!!!onCameraIdle", "targetIdleMF")

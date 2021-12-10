@@ -33,8 +33,6 @@ class FirstFragment : Fragment() {
     var navController: NavController? = null
     private val fbAuth = FBAuth(this)
     var adapter: FirstFrAdapter? = null
-//    private val check: CheckNetwork = CheckNetwork()
-//    private var isClick: Boolean = true
 
     private val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -63,14 +61,6 @@ class FirstFragment : Fragment() {
         return rootElement.root
     }
 
-//    @SuppressLint("RestrictedApi")
-//    private fun initBackStack() {
-//        val fList = navController?.backStack
-//        fList?.forEach {
-//            Log.d("!!!frFF", "${it.destination.label}")
-//        }
-//    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!on", "onViewCreated")
@@ -78,7 +68,6 @@ class FirstFragment : Fragment() {
 
         init()
         initClick()
-//        initBackStack()
     }
 
     private fun isAuth() = with(rootElement!!){
@@ -87,7 +76,7 @@ class FirstFragment : Fragment() {
             fbAuth.signInAnonimously(context) {
                 if(it == true) {
                     navController?.navigate(R.id.mapsFragment)
-                }else{
+                } else {
                     CheckNetwork.check(activity as MainActivity)
                 }
             }
@@ -95,6 +84,7 @@ class FirstFragment : Fragment() {
             navController?.navigate(R.id.mapsFragment)
         }
     }
+
     private fun init(){
         val listPhoto = arrayListOf(
             R.drawable.sobaka_ulibaka_1,
@@ -206,7 +196,7 @@ class FirstFragment : Fragment() {
         Log.d("!!!on", "onDestroyView")
     }
     private fun currentUser(currentUser: FirebaseUser?) {
-        Log.d("!!!currentUser", "currentUser")
+        Log.d("!!!currentUser", "${currentUser?.email}")
         if (currentUser == null) {
             fbAuth.signInAnonimously(context){
                 if(it == false)

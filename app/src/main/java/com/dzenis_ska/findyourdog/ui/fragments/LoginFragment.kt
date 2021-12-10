@@ -92,7 +92,6 @@ class LoginFragment : Fragment(), AuthInterface {
 
     @SuppressLint("SetTextI18n")
     private fun currentUser(currentUser: FirebaseUser?) {
-        Log.d("!!!userLFonComplete", "${currentUser}")
         rootElement?.apply {
             if (currentUser == null) {
                 fbAuth.signInAnonimously(context) {
@@ -101,7 +100,6 @@ class LoginFragment : Fragment(), AuthInterface {
                         tvRegIn.text = "Вы вошли как Гость"
                     else
                         CheckNetwork.check(activity as MainActivity)
-                    Log.d("!!!userLFonComplete", "${currentUser?.uid}")
                 }
             } else if (currentUser.isAnonymous) {
                 isEditEnable(false)
@@ -240,8 +238,6 @@ class LoginFragment : Fragment(), AuthInterface {
                     ) {
                         requestPermissions.launch(permissions)
                     } else {
-//                        navController?.popBackStack()
-//                        navController?.navigate(R.id.mapsFragment)
                         navController!!.navigate(R.id.mapsFragment, null, navOptions {
                             popUpTo(R.id.mapsFragment){
                                 inclusive = true
@@ -254,8 +250,6 @@ class LoginFragment : Fragment(), AuthInterface {
                         tvRegIn.animation =
                             AnimationUtils.loadAnimation(context, R.anim.alpha_replace_user_down)
                         tvRegIn.visibility = View.GONE
-
-
                         if (edEmail.text.isNotEmpty() && edPassword.text.isNotEmpty()) {
                             if (!edEmail.text.contains('@') || !edEmail.text.contains('.')) {
                                 Toast.makeText(

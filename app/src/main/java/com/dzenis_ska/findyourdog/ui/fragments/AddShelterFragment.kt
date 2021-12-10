@@ -120,7 +120,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         setHasOptionsMenu(true)
 
 
-//todo
         val mapViewBundle = savedInstanceState?.getBundle(MAPVIEW_BUNDLE_KEY)
         Log.d("!!!SupportMapFragment", "SupportMapFragmentASF")
         mapView = rootElement!!.mapView
@@ -182,7 +181,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 """.trimIndent()
                 Toast.makeText(context, info, Toast.LENGTH_LONG).show()
                 true
-            }else -> super.onOptionsItemSelected(item)
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
     private fun onFavClicked(dog: AdShelter, callback: (isFav: Boolean) -> Unit){
@@ -850,7 +850,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     @SuppressLint("RestrictedApi")
     private fun initBackStack() {
         InitBackStack.initBackStack(navController)
-
     }
 
     override fun onDetach() {
