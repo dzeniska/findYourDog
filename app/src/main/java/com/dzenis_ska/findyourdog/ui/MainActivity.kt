@@ -50,8 +50,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var menuBreedItem: TextView? = null
     var menuMapItem: TextView? = null
 
-    private val fragmentLogin = LoginFragment()
-    private val fbAuth = FBAuth(fragmentLogin)
+    private val fbAuth = FBAuth()
     var rootElement: ActivityMainBinding? = null
 
     @Inject
@@ -92,7 +91,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun uiUpdateMain(user: FirebaseUser?) {
         if (user?.email != null) {
             tvHeaderAcc.text = """Рады видеть Вас
-                |${user?.email}
+                |${user.email}
             """.trimMargin()
         } else {
             tvHeaderAcc.text = "Рады видеть Вас"

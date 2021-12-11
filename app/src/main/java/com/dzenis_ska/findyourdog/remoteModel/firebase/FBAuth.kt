@@ -1,19 +1,12 @@
 package com.dzenis_ska.findyourdog.remoteModel.firebase
 
-import android.annotation.SuppressLint
-import android.content.Context
-import android.util.Log
-
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.dzenis_ska.desk.constants.FirebaseAuthConstants
-import com.dzenis_ska.findyourdog.ui.fragments.LoginFragment
 import com.google.firebase.auth.*
-import com.dzenis_ska.findyourdog.R
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
-class FBAuth(private val fragment: Fragment) {
+class FBAuth() {
 
     val mAuth = Firebase.auth
 
@@ -46,9 +39,12 @@ class FBAuth(private val fragment: Fragment) {
         }
     }
 
+
     fun signInWithEmail(email: String, password: String, callback: (isSign: Boolean?, messSign: String, fbUser: FirebaseUser?) -> Unit) {
         signOutAnon()
         mAuth.signInWithEmailAndPassword(email, password).addOnSuccessListener { task ->
+
+            task.credential
             callback(true, "${task.user?.email}", task.user)
         }.addOnFailureListener { task->
             callback(false, "$task", null)

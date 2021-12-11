@@ -167,7 +167,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun showMyAds() {
-        val fbAuth = FBAuth(this)
+        val fbAuth = FBAuth()
         val listAll = arrayListOf<AdShelter>()
         listAdShelterForAllSh.clear()
         listAdShelterForAllSh.addAll(listAdShelter)

@@ -28,7 +28,7 @@ import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
 class FirstFragment : Fragment() {
     var rootElement: FragIntroBinding? = null
     var navController: NavController? = null
-    private val fbAuth = FBAuth(this)
+    private val fbAuth = FBAuth()
     var adapter: FirstFrAdapter? = null
 
     private val requestPermissions =

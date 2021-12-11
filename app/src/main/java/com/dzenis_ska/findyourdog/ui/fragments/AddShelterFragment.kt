@@ -55,7 +55,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMyLocationButtonClickListener,
     GoogleMap.OnMyLocationClickListener {
     val viewModel: BreedViewModel by activityViewModels()
-    private val fbAuth = FBAuth(this)
+    private val fbAuth = FBAuth()
     lateinit var breed: DogBreeds
     lateinit var vpAdapter: VpAdapter
 
@@ -152,22 +152,20 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         val dog = viewModel.adShelteAfterPhotoViewed
         return when(item.itemId){
             R.id.isFav -> {
-                if(fbAuth.mAuth.currentUser?.isAnonymous == false) {
-                    dog?.let {
-                        onFavClicked(it){isFavorite ->
-                            if(isFavorite){
-                                val adShelter = viewModel.adShelteAfterPhotoViewed?.copy(isFav = isFavorite)
-                                viewModel.adShelteAfterPhotoViewed = adShelter
-                                item.icon = resources.getDrawable(R.drawable.paw_red_2)
-                            }else{
-                                val adShelter = viewModel.adShelteAfterPhotoViewed?.copy(isFav = isFavorite)
-                                viewModel.adShelteAfterPhotoViewed = adShelter
-                                item.icon = resources.getDrawable(R.drawable.paw_blue)
-                            }
+                dog?.let {
+                    onFavClicked(it) { isFavorite ->
+                        if (isFavorite) {
+                            val adShelter =
+                                viewModel.adShelteAfterPhotoViewed?.copy(isFav = isFavorite)
+                            viewModel.adShelteAfterPhotoViewed = adShelter
+                            item.icon = resources.getDrawable(R.drawable.paw_red_2)
+                        } else {
+                            val adShelter =
+                                viewModel.adShelteAfterPhotoViewed?.copy(isFav = isFavorite)
+                            viewModel.adShelteAfterPhotoViewed = adShelter
+                            item.icon = resources.getDrawable(R.drawable.paw_blue)
                         }
                     }
-                } else {
-                    Toast.makeText(context, "Для добавления в \"избранное\" необходимо пройти регистрацию", Toast.LENGTH_LONG).show()
                 }
                 true
             }

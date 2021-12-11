@@ -33,7 +33,7 @@ class LoginFragment : Fragment(){
 
     val viewModel: BreedViewModel by activityViewModels()
     var rootElement: FragmentLoginBinding? = null
-    private val fbAuth = FBAuth(this)
+    private val fbAuth = FBAuth()
     var navController: NavController? = null
 
     private val requestPermissions =
