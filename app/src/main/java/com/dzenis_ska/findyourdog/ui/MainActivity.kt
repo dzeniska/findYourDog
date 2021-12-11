@@ -131,7 +131,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun init() {
 
-
 //        val remoteModel = RemoteModel()
 //         val localModel = LocalModel(this)
 //         val repository = Repository(remoteModel, localModel)
@@ -190,6 +189,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onBackPressed() {
         Log.d("!!!bakPressed", "${viewModel.backPressed}")
+
         when (viewModel.backPressed) {
             0 -> {
                 super.onBackPressed()
@@ -239,16 +239,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun isAuth() {
-
-        Log.d("!!!isClick", "is")
-        if (fbAuth.mAuth.currentUser == null) {
-            fbAuth.signInAnonimously(this) {
-                if (it == true) {
+        val currUser = fbAuth.mAuth.currentUser
+        if (currUser == null) {
+            fbAuth.signInAnonymously() {isSignAnon, messAnonSign ->
+                if(isSignAnon == true) {
                     navigateTo(R.id.mapsFragment)
                     closeDrawer()
                 } else {
                     CheckNetwork.check(this)
                 }
+                Toast.makeText(this, messAnonSign, Toast.LENGTH_LONG).show()
             }
         } else {
             navigateTo(R.id.mapsFragment)

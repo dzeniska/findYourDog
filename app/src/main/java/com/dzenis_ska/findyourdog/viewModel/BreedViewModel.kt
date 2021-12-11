@@ -70,6 +70,7 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
         userUpdate.postValue(user)
     }
 
+
     fun openFragShelter(adShelter: AdShelter?){
         liveAdsDataAddShelter.value = adShelter
         adShelter?.let { adViewed(it, VIEWS_COUNTER) }

@@ -10,8 +10,6 @@ import com.dzenis_ska.findyourdog.ui.MainActivity
 
 object CheckNetwork {
     fun check(act: MainActivity): Boolean {
-        //проверка на доступ к сети
-        Log.d("!!!isClick", "is3")
         val cManager = act.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val info = cManager.getNetworkCapabilities(cManager.activeNetwork)
         if (info == null) {

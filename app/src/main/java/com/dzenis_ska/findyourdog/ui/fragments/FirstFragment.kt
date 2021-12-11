@@ -15,7 +15,6 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -25,8 +24,6 @@ import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.FirstFrAdapter
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
-import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.*
 
 class FirstFragment : Fragment() {
     var rootElement: FragIntroBinding? = null
@@ -71,14 +68,15 @@ class FirstFragment : Fragment() {
     }
 
     private fun isAuth() = with(rootElement!!){
-
-        if (fbAuth.mAuth.currentUser == null) {
-            fbAuth.signInAnonimously(context) {
-                if(it == true) {
+        val currUser = fbAuth.mAuth.currentUser
+        if (currUser == null) {
+            fbAuth.signInAnonymously() {isSignAnon, messAnonSign ->
+                if(isSignAnon == true) {
                     navController?.navigate(R.id.mapsFragment)
                 } else {
                     CheckNetwork.check(activity as MainActivity)
                 }
+                Toast.makeText(context, messAnonSign, Toast.LENGTH_LONG).show()
             }
         } else {
             navController?.navigate(R.id.mapsFragment)
@@ -181,7 +179,8 @@ class FirstFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        currentUser(fbAuth.mAuth.currentUser)
+        //todo
+//        currentUser()
         Log.d("!!!on", "onResume")
     }
 
@@ -195,17 +194,7 @@ class FirstFragment : Fragment() {
         super.onDestroyView()
         Log.d("!!!on", "onDestroyView")
     }
-    private fun currentUser(currentUser: FirebaseUser?) {
-        Log.d("!!!currentUser", "${currentUser?.email}")
-        if (currentUser == null) {
-            fbAuth.signInAnonimously(context){
-                if(it == false)
-                    CheckNetwork.check(activity as MainActivity)
-                else
-                    Toast.makeText(context, context?.resources?.getString(R.string.hi), Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
+
     companion object {
         private val permissions = arrayOf(
             Manifest.permission.ACCESS_FINE_LOCATION

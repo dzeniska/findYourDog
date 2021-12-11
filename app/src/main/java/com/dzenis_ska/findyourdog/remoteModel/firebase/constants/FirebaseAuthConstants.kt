@@ -7,4 +7,6 @@ object FirebaseAuthConstants {
     const val ERROR_WEAK_PASSWORD = "ERROR_WEAK_PASSWORD"
     const val ERROR_USER_NOT_FOUND = "ERROR_USER_NOT_FOUND"
 
+    const val LUCKY_CREATOR = "LUCKY_CREATOR"
+
 }

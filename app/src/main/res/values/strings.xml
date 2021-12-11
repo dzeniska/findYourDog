@@ -105,4 +105,11 @@
     <string name="fragment_one_photo">Просмотр</string>
     <string name="save">Сохранить</string>
 
+
+
+    <string name="enter_as_anon">ну гостем будешь! ok</string>
+    <string name="check_email">Проверьте почтовый ящик!</string>
+    <string name="check_email_else">Проверьте почтовый ящик, говорю!</string>
+    <string name="created_account">Аккаунт создан</string>
+
 </resources>
