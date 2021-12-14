@@ -510,17 +510,19 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         ibPlague.isVisible = !ibPlague.isVisible
             }
             ibPlague.setOnClickListener {
+                if(plague == null) plague = viewModel.adShelteAfterPhotoViewed?.vaccination?.get(DialogCalendar.PLAGUE)?.toLong()
                 DialogCalendar.createDialogCalendar(activity as MainActivity,
                     this@AddShelterFragment,
                     DialogCalendar.PLAGUE,
-                    viewModel.adShelteAfterPhotoViewed?.vaccination?.get(DialogCalendar.PLAGUE), isSave)
+                    plague.toString(), isSave)
             }
             ibRabies.setOnClickListener {
+                if(rabies == null) rabies = viewModel.adShelteAfterPhotoViewed?.vaccination?.get(DialogCalendar.RABIES)?.toLong()
                 DialogCalendar.createDialogCalendar(
                     activity as MainActivity,
                     this@AddShelterFragment,
                     DialogCalendar.RABIES,
-                    viewModel.adShelteAfterPhotoViewed?.vaccination?.get(DialogCalendar.RABIES), isSave)
+                    rabies.toString(), isSave)
             }
         }
     }
