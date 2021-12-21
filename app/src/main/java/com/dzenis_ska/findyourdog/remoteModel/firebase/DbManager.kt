@@ -6,7 +6,6 @@ import android.util.Log
 import com.dzenis_ska.findyourdog.ui.utils.FilterManager
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -18,13 +17,13 @@ import com.google.firebase.storage.ktx.storage
 
 class DbManager() {
     val db = Firebase.database.getReference(MAIN_NODE)
-    val auth = Firebase.auth
+    val mAuth = Firebase.auth
     val ref = Firebase.storage.getReference(STORAGE_NODE)
 
 
     fun publishAdShelter(adTemp: AdShelter, callback: (text: String) -> Unit) {
-        if (auth.uid != null) {
-            db.child(adTemp.key ?: "empty").child(auth.uid!!).child(AD_SHELTER_NODE)
+        if (mAuth.uid != null) {
+            db.child(adTemp.key ?: "empty").child(mAuth.uid!!).child(AD_SHELTER_NODE)
                 .setValue(adTemp)
                 .addOnCompleteListener { task1 ->
                     if (task1.isSuccessful) {
@@ -47,19 +46,29 @@ class DbManager() {
                 }
         }
     }
-    fun deletePhoto(url: String, listener: OnSuccessListener<Void>) {
-        val desertRef = ref
-            .child(auth.uid!!)
-            .child(url)
-        desertRef.delete().addOnSuccessListener(listener).addOnFailureListener {
-            Log.d("!!!deletePhotoExeption", "${it}")
-        }
+    fun deletePhoto(url: String) {
+        Log.d("!!!deletePhotoUri", " db man ${url}")
+            val desertRef = ref
+                .child(Firebase.auth.uid!!)
+                .child(url)
+            desertRef.delete()
+        //ERROR ERROR
+//                .addOnSuccessListener {
+//                    Log.d("!!!deletePhotoUri", " db man ${url}")
+//                    callback(true)
+//                }
+//                .addOnFailureListener {
+//                    Log.d("!!!deleteExeption", "${it.message}")
+//                    callback(false)
+//                }
     }
+
+
 
     fun addPhotoToStorage(adTemp: ByteArray, listener: OnCompleteListener<Uri>) {
         Log.d("!!!itTaskJopa", "${adTemp}")
         val imStorageRef = ref
-            .child(auth.uid!!)
+            .child(mAuth.uid!!)
             .child("image_${System.currentTimeMillis()}")
 
         val upTask = imStorageRef.putBytes(adTemp)
@@ -103,7 +112,7 @@ class DbManager() {
         val counterC = adShelter.callsCounter.toInt()
         when (anyCounter) {
             BreedViewModel.VIEWS_COUNTER -> {
-                if (auth.uid != null)
+                if (mAuth.uid != null)
                     Log.d("!!!counterVC", "${counterV} ${counterC}")
                 db.child(adShelter.key ?: "empty").child(INFO_NODE)
                     .setValue(InfoItem(counterV.plus(1).toString(), counterC.toString()))
@@ -112,7 +121,7 @@ class DbManager() {
                     }
             }
             BreedViewModel.CALLS_COUNTER -> {
-                if (auth.uid != null)
+                if (mAuth.uid != null)
                     Log.d("!!!counterCV", "${counterV} ${counterC}")
                 db.child(adShelter.key ?: "empty").child(INFO_NODE)
                     .setValue(InfoItem(counterV.toString(), counterC.plus(1).toString()))
@@ -136,7 +145,7 @@ class DbManager() {
 
 
                     val infoItem = item.child(INFO_NODE).getValue(InfoItem::class.java)
-                    val isFav = auth.uid?.let { item.child(FAVS_NODE).child(it).getValue(String::class.java) }
+                    val isFav = mAuth.uid?.let { item.child(FAVS_NODE).child(it).getValue(String::class.java) }
                     adShelter?.isFav = isFav != null
                     val favCounter = item.child(FAVS_NODE).childrenCount
                     adShelter?.viewsCounter = infoItem?.viewsCounter ?: "0"
@@ -166,7 +175,7 @@ class DbManager() {
     }
     private fun removeFromFavs(dog: AdShelter, callback: (isFav: Boolean) -> Unit){
         dog.key?.let {key ->
-            auth.uid?.let { uid ->
+            mAuth.uid?.let { uid ->
                 db.child(key).child(FAVS_NODE).child(uid).removeValue()
                     .addOnCompleteListener { task->
                         if(task.isSuccessful) callback(false)
@@ -176,7 +185,7 @@ class DbManager() {
     }
     private fun addToFavs(dog: AdShelter, callback: (isFav: Boolean) -> Unit){
         dog.key?.let {key ->
-            auth.uid?.let { uid ->
+            mAuth.uid?.let { uid ->
                 db.child(key).child(FAVS_NODE).child(uid).setValue(uid)
                     .addOnCompleteListener { task->
                         if(task.isSuccessful) callback(true)

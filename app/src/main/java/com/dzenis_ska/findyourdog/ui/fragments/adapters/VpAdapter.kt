@@ -105,7 +105,7 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
         arrayPhotoBool.clear()
         Log.d("!!!parseUri", "${arrayPhotoBool}")
         for (n in 0..4){
-            arrayPhotoBool.put(n, b)
+            arrayPhotoBool[n] = b
         }
         Log.d("!!!parseUri", "${arrayPhotoBool}")
         addSF.rootElement!!.apply {

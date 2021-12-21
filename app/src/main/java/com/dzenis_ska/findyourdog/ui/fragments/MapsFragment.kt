@@ -17,7 +17,6 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
@@ -196,7 +195,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun init(){
-        if(viewModel.dbManager.auth.currentUser?.isAnonymous == false && viewModel.dbManager.auth.currentUser != null ){
+        if(viewModel.dbManager.mAuth.currentUser?.isAnonymous == false && viewModel.dbManager.mAuth.currentUser != null ){
             if(isEmailVeryfied()) {
                 rootElement?.floatBtnAddShelter?.visibility = View.VISIBLE
             }
@@ -209,7 +208,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         snapHelper.attachToRecyclerView(rootElement!!.rcViewMapPhoto)
 
     }
-    private fun isEmailVeryfied() = viewModel.dbManager.auth.currentUser!!.isEmailVerified
+    private fun isEmailVeryfied() = viewModel.dbManager.mAuth.currentUser!!.isEmailVerified
 
     @SuppressLint("MissingPermission")
     private fun getLocation() {
@@ -385,7 +384,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             marker!!.tag = item.key
             if(marker.tag == chose) marker.showInfoWindow()
             listMainPhoto.add(item.photoes?.get(0) ?: "empty")
-            if(item.uid == viewModel.dbManager.auth.uid) {
+            if(item.uid == viewModel.dbManager.mAuth.uid) {
 //                marker.showInfoWindow()
                 marker.alpha = 0.6f
             }

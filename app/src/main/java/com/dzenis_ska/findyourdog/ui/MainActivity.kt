@@ -2,27 +2,24 @@ package com.dzenis_ska.findyourdog.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
-
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-
-import android.view.*
+import android.view.Gravity
+import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuItemCompat
 import androidx.lifecycle.Observer
-
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
@@ -30,15 +27,12 @@ import androidx.navigation.ui.setupWithNavController
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.ActivityMainBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
-import com.dzenis_ska.findyourdog.ui.fragments.LoginFragment
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModelFactory
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
-import io.ak1.pix.helpers.PixBus
-
 import javax.inject.Inject
 
 
@@ -186,10 +180,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         menuMapItem?.text = "+${count}"
     }
 
-    override fun onBackPressed() {
-        Log.d("!!!bakPressed", "${viewModel.backPressed}")
+//    override fun onBackPressed() {
+//        Log.d("!!!bakPressed", "${viewModel.backPressed}")
 
-        when (viewModel.backPressed) {
+        /*when (viewModel.backPressed) {
             0 -> {
                 super.onBackPressed()
             }
@@ -206,8 +200,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
                 viewModel.backPressed--
             }
-        }
-    }
+        }*/
+//    }
 
     @SuppressLint("RestrictedApi")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

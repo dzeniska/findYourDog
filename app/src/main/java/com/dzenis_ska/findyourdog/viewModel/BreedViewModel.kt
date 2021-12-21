@@ -55,7 +55,7 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     var adShelteAfterPhotoViewed: AdShelter? = null
 
     //Для backPressed
-    var backPressed: Int = 0
+//    var backPressed: Int = 0
 
     //Для выхода из OnePfotoFragment
 //    var isAddSF: Boolean = true
@@ -114,10 +114,8 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     fun adCalled(){
         adShelteAfterPhotoViewed?.let { adViewed(it, CALLS_COUNTER) }
     }
-    fun deletePhoto(uri: String, callback:()-> Unit ){
-        dbManager.deletePhoto(uri){
-            callback()
-        }
+    fun deletePhoto(url: String){
+        dbManager.deletePhoto(url)
     }
     fun publishPhoto(adTemp: ByteArray, callback: (imageUri: Uri?)-> Unit) {
         Log.d("!!!itTask", "${adTemp}")

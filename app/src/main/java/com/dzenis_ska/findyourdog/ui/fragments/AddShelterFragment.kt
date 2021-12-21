@@ -2,11 +2,9 @@ package com.dzenis_ska.findyourdog.ui.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import android.content.pm.PackageManager
+import android.content.*
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -15,9 +13,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
@@ -33,13 +32,10 @@ import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.VpAdapter
-import com.dzenis_ska.findyourdog.ui.utils.DialogCalendar
-import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
-import com.dzenis_ska.findyourdog.ui.utils.ProgressDialog
-import com.dzenis_ska.findyourdog.ui.utils.SortListPhoto
+import com.dzenis_ska.findyourdog.ui.utils.*
 import com.dzenis_ska.findyourdog.ui.utils.imageManager.ImageManager
-import com.dzenis_ska.findyourdog.ui.utils.imageManager.ImagePicker
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
@@ -48,6 +44,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.*
+import java.util.*
 import kotlin.random.Random
 
 
@@ -92,11 +89,40 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var rabies: Long? = null
     var isSave: Boolean? = null
     private lateinit var locationManager: LocationManager
-    private val locationPermissionCode = 200
 
 
     //для определения последней локации
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
+    private var requestPhoto = 0
+
+    private val requestPermissions =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
+            updatePermissionsState(it as MutableMap<String, Boolean>)
+        }
+
+    private val startForProfileImageResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            val resultCode = result.resultCode
+            val data = result.data
+
+            if (resultCode == Activity.RESULT_OK) {
+                //Image Uri will not be null for RESULT_OK
+                val fileUri = data?.data!!
+                Log.d("!!!listUri", "${fileUri}")
+
+                when (requestPhoto) {
+                    ADD_PHOTO -> vpAdapter.updateAdapter(listOf(fileUri), false)
+                    ADD_IMAGE -> vpAdapter.updateAdapterForSinglePhoto(listOf(fileUri))
+                    REPLACE_IMAGE -> vpAdapter.replaceItemAdapter(listOf(fileUri))
+                }
+
+            } else if (resultCode == ImagePicker.RESULT_ERROR) {
+                Toast.makeText(context, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(context, "Task Cancelled", Toast.LENGTH_SHORT).show()
+            }
+        }
 
 
     override fun onCreateView(
@@ -120,6 +146,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         setHasOptionsMenu(true)
 
 
+
         val mapViewBundle = savedInstanceState?.getBundle(MAPVIEW_BUNDLE_KEY)
         Log.d("!!!SupportMapFragment", "SupportMapFragmentASF")
         mapView = rootElement!!.mapView
@@ -129,11 +156,11 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
-
+        getLocation()
         val dialog = ProgressDialog.createProgressDialog(activity as MainActivity, ProgressDialog.ADD_SHELTER_FRAGMENT)
         initViewModel()
         initRecyclerView()
-        onClick(this, dialog)
+        onClick(dialog)
         initBackStack()
     }
 
@@ -234,7 +261,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             Log.d("!!!onviewModelASF", "AddShelterFragment ${adShelter?.description}")
             rootElement!!.apply {
                 if(viewModel.adShelteAfterPhotoViewed != null){
-                    if (viewModel.adShelteAfterPhotoViewed!!.uid == viewModel.dbManager.auth.uid) {
+                    if (viewModel.adShelteAfterPhotoViewed!!.uid == viewModel.dbManager.mAuth.uid) {
                         fillFrag(viewModel.adShelteAfterPhotoViewed!!, true)
                         boolEditOrNew = true
                         fabDeleteShelter.isVisible = true
@@ -244,7 +271,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     }
                 } else if (adShelter != null) {
                     viewModel.adShelteAfterPhotoViewed = adShelter
-                    if (adShelter.uid == viewModel.dbManager.auth.uid) {
+                    if (adShelter.uid == viewModel.dbManager.mAuth.uid) {
                         fillFrag(adShelter, true)
                         boolEditOrNew = true
                         fabDeleteShelter.isVisible = true
@@ -279,6 +306,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         Log.d("!!!listUri", "1")
                     }
                     Log.d("!!!listUri", "2")
+
                     vpAdapter.updateAdapter(listUri, true)
                 }
             }
@@ -336,6 +364,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
 
     private fun fillAdShelter(photoUrlList: ArrayList<String>): AdShelter {
+
         var adShelter: AdShelter
         val breed = if(rootElement!!.edBreed.text.isNotEmpty()) rootElement!!.edBreed.text.toString() else "без породы"
         val time = System.currentTimeMillis().toString()
@@ -354,7 +383,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 photoUrlList,
                 "empty",
                 viewModel.dbManager.db.push().key,
-                viewModel.dbManager.auth.uid,
+                viewModel.dbManager.mAuth.uid,
                 (Random.nextInt(0, 360)).toFloat(),
                 time
             )
@@ -414,31 +443,39 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
+    private fun imagePicker(){
+        ImagePicker.with(this)
+            // Crop Image(User can choose Aspect Ratio)
+            .crop()
+            // User can only select image from Gallery
+//            .galleryOnly()
+
+            .galleryMimeTypes(arrayOf("image/png","image/jpg","image/jpeg" ))
+            // Image resolution will be less than 1080 x 1920
+            .maxResultSize(1080, 1920)
+            // .saveDir(getExternalFilesDir(null))
+            .createIntent { intent ->
+                startForProfileImageResult.launch(intent)
+            }
+    }
+
+
     @SuppressLint("RestrictedApi")
-    private fun onClick(addShelterFragment: AddShelterFragment, dialog: AlertDialog) {
+    private fun onClick(dialog: AlertDialog) {
+
         rootElement!!.apply {
             imgAddPhoto.setOnClickListener() {
                 fullScreen(250, 0.50f)
-//                imgAddPhoto.alpha = 0.8f
-//                hideAddShelterButton(false)
-
-                ImagePicker.choosePhotoes(
-                    activity as MainActivity,
-                    addShelterFragment,
-                    5,
-                    ADD_PHOTO
-                )
+                requestPhoto = ADD_PHOTO
+                requestPermissionsForMediaStore()
             }
+
             fabAddImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
-//                hideAddShelterButton(false)
-                ImagePicker.choosePhotoes(
-                    activity as MainActivity,
-                    addShelterFragment,
-                    5 - vpAdapter.arrayPhoto.size,
-                    ADD_IMAGE
-                )
+                requestPhoto = ADD_IMAGE
+                requestPermissionsForMediaStore()
             }
+
             fabDeleteImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
                 CoroutineScope(Dispatchers.Main).launch {
@@ -448,13 +485,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             fabReplaceImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
-//                hideAddShelterButton(false)
-                ImagePicker.choosePhotoes(
-                    activity as MainActivity,
-                    addShelterFragment,
-                    1,
-                    REPLACE_IMAGE
-                )
+                requestPhoto = REPLACE_IMAGE
+                requestPermissionsForMediaStore()
             }
 
             fabDeleteShelter.setOnClickListener {
@@ -527,6 +559,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
+
     private fun publishImagesAd(dialog: AlertDialog) {
         Log.d("!!!transpImage1", "$imageIndex")
         dialog.show()
@@ -541,16 +574,19 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun addPhoto(uri: Uri?, dialog: AlertDialog) {
+        Log.d("!!!photoUrlList1", "${uri}")
         if (vpAdapter.arrayPhoto.size == imageIndex) {
-            publishAdShelter(fillAdShelter(photoArrayList as ArrayList<String>), dialog)
+            val adTemp = fillAdShelter(photoArrayList as ArrayList<String>)
+            publishAdShelter(adTemp, dialog)
             return
         }
-        Log.d("!!!transpImageNewUri", "${uri}")
+
         if(uri != null) oldOrNew(uri, dialog)
     }
 
     private fun oldOrNew(it: Uri, dialog: AlertDialog) {
-        if (it.toString().contains("content")) {
+
+        if (!it.toString().contains("https:")) {
             val arrayListUri = arrayListOf<Uri>()
             arrayListUri.add(it)
             CoroutineScope(Dispatchers.Main).launch {
@@ -558,8 +594,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 val arrayListByteArray =
                     ImageManager.imageResize(arrayListUri, activity as MainActivity)
                 Log.d("!!!transpImageNew2", "jopa")
-                Log.d("!!!transpImageNew2", "${arrayListByteArray.stream().count()}")
+
                 if(arrayListByteArray.size == 0){
+                    Log.d("!!!transpImageNew2", "jopa ${arrayListByteArray.size}")
                     imageIndex++
                     if (vpAdapter.arrayPhoto.size == imageIndex) {
                         addPhoto(null, dialog)
@@ -599,12 +636,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun deletePhoto(s: String) {
-        viewModel.deletePhoto(s){
-            Log.d("!!!deletePhotoExeption", "Deleted")
-        }
+        viewModel.deletePhoto(s)
     }
 
     private fun publishAdShelter(adTemp: AdShelter, dialog: AlertDialog) {
+
+
         if (boolEditOrNew == true) {
 //            Log.d("!!!uid", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
 
@@ -720,43 +757,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d("!!!", "onMapReady")
         mMap = googleMap
-        if (shLat != null) {
-//            if(viewModel.btnDelState == false)
-                setMarker(shLat!!, shLng!!, 11f)
-//            else
-//                setMarker(shLat!!, shLng!!, 12f)
-        } else {
-//            setMarker(shLat!!, shLng!!, 12f)
-            getPermission()
-        }
+        if (shLat != null) setMarker(shLat!!, shLng!!, 11f)
 
         mMap.setOnMyLocationButtonClickListener(this)
         mMap.setOnMyLocationClickListener(this)
-    }
-
-    private fun getPermission() {
-        Log.d("!!!", "getPermission")
-        if (!::mMap.isInitialized) return
-        if (ActivityCompat.checkSelfPermission(
-                context as MainActivity,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                context as MainActivity,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-            != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                activity as MainActivity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                locationPermissionCode
-            )
-        } else {
-            getLocation()
-//            mMap.isMyLocationEnabled = true
-        }
     }
 
     override fun onPause() {
@@ -842,7 +846,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             vaccination = mapOf("plague" to plague.toString(), "rabies" to rabies.toString())
         )
         viewModel.adShelteAfterPhotoViewed = instState
-
         navController.navigate(R.id.onePhotoFragment)
         viewModel.getOnePhoto(uri.toString())
     }
@@ -858,11 +861,34 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     }
 
+    private fun updatePermissionsState(permMap: MutableMap<String, Boolean>) {
+        var countPerm = 0
+        permMap.forEach{map->
+            Log.d("!!!perm", "${map.key} _ ${map.value}")
+            if(map.value != true) {
+                Toast.makeText(context as MainActivity, "Необходимы разрешения для использования фоток!", Toast.LENGTH_LONG).show()
+                return@updatePermissionsState
+            } else {
+                countPerm++
+            }
+            if(countPerm == 2) imagePicker()
+        }
+    }
+
+    private fun requestPermissionsForMediaStore() {
+        requestPermissions.launch(permissions)
+    }
+
+
     companion object {
         private const val MAPVIEW_BUNDLE_KEY = "MapViewBundleKey"
         const val ADD_PHOTO = 10
         const val ADD_IMAGE = 20
         const val REPLACE_IMAGE = 40
+                private val permissions = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.CAMERA
+                )
     }
 }
 
