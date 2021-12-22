@@ -2,7 +2,6 @@ package com.dzenis_ska.findyourdog.ui.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
 import android.location.Location
@@ -13,7 +12,6 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
@@ -35,7 +33,6 @@ import com.dzenis_ska.findyourdog.ui.fragments.adapters.VpAdapter
 import com.dzenis_ska.findyourdog.ui.utils.*
 import com.dzenis_ska.findyourdog.ui.utils.imageManager.ImageManager
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
-import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
@@ -51,6 +48,7 @@ import kotlin.random.Random
 class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMyLocationButtonClickListener,
     GoogleMap.OnMyLocationClickListener {
+
     val viewModel: BreedViewModel by activityViewModels()
     private val fbAuth = FBAuth()
     lateinit var breed: DogBreeds
@@ -101,29 +99,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             updatePermissionsState(it as MutableMap<String, Boolean>)
         }
 
-    private val startForProfileImageResult =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-            val resultCode = result.resultCode
-            val data = result.data
-
-            if (resultCode == Activity.RESULT_OK) {
-                //Image Uri will not be null for RESULT_OK
-                val fileUri = data?.data!!
-                Log.d("!!!listUri", "${fileUri}")
-
-                when (requestPhoto) {
-                    ADD_PHOTO -> vpAdapter.updateAdapter(listOf(fileUri), false)
-                    ADD_IMAGE -> vpAdapter.updateAdapterForSinglePhoto(listOf(fileUri))
-                    REPLACE_IMAGE -> vpAdapter.replaceItemAdapter(listOf(fileUri))
-                }
-
-            } else if (resultCode == ImagePicker.RESULT_ERROR) {
-                Toast.makeText(context, ImagePicker.getError(data), Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Task Cancelled", Toast.LENGTH_SHORT).show()
-            }
-        }
-
+    private var imagePicker: ImagePicker? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -146,7 +122,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         setHasOptionsMenu(true)
 
 
-
         val mapViewBundle = savedInstanceState?.getBundle(MAPVIEW_BUNDLE_KEY)
         Log.d("!!!SupportMapFragment", "SupportMapFragmentASF")
         mapView = rootElement!!.mapView
@@ -162,6 +137,18 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         initRecyclerView()
         onClick(dialog)
         initBackStack()
+
+        imagePicker = ImagePicker(activity?.activityResultRegistry!!, viewLifecycleOwner) { fileUri ->
+            Log.d("!!!imagePicker", "${fileUri} ")
+            if(fileUri != null){
+                when (requestPhoto) {
+                    ADD_PHOTO -> vpAdapter.updateAdapter(listOf(fileUri), false)
+                    ADD_IMAGE -> vpAdapter.updateAdapterForSinglePhoto(listOf(fileUri))
+                    REPLACE_IMAGE -> vpAdapter.replaceItemAdapter(listOf(fileUri))
+                }
+            }
+        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -221,8 +208,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         clEditPhoto.visibility = if(!b) View.VISIBLE else View.GONE
     }
 
+    //for choose photo from fragment
     fun hideAddShelterButton(bool: Boolean) {
-
         rootElement!!.apply {
             when (bool) {
                 false -> {
@@ -234,7 +221,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     scrollView.visibility = View.VISIBLE
                 }
             }
-
             fabAddShelter.visibility = if (!bool) View.GONE else View.VISIBLE
             if (viewModel.btnDelState == false) {
                 fabDeleteShelter.visibility = if (!bool) View.GONE else View.VISIBLE
@@ -411,7 +397,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         viewModel.locationManagerBool = true
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 5f, this)
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
     }
 
     private fun setMarker(lat: Double, lng: Double, zoom: Float) {
@@ -442,23 +428,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
         }
     }
-
-    private fun imagePicker(){
-        ImagePicker.with(this)
-            // Crop Image(User can choose Aspect Ratio)
-            .crop()
-            // User can only select image from Gallery
-//            .galleryOnly()
-
-            .galleryMimeTypes(arrayOf("image/png","image/jpg","image/jpeg" ))
-            // Image resolution will be less than 1080 x 1920
-            .maxResultSize(1080, 1920)
-            // .saveDir(getExternalFilesDir(null))
-            .createIntent { intent ->
-                startForProfileImageResult.launch(intent)
-            }
-    }
-
 
     @SuppressLint("RestrictedApi")
     private fun onClick(dialog: AlertDialog) {
@@ -733,7 +702,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onDestroyView() {
         Log.d("!!!onDestroyView", "AddShelterFragment")
         super.onDestroyView()
-        //todo
+        if (viewModel.locationManagerBool) {
+            locationManager.removeUpdates(this)
+            viewModel.locationManagerBool = false
+        }
 //        viewModel.adShelteAfterPhotoViewed = null
         rootElement = null
     }
@@ -747,10 +719,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onStop() {
         Log.d("!!!onStop", "AddShelterFragment")
         mapView.onStop()
-        if (viewModel.locationManagerBool) {
-            locationManager.removeUpdates(this)
-            viewModel.locationManagerBool = false
-        }
+
         super.onStop()
     }
 
@@ -871,7 +840,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             } else {
                 countPerm++
             }
-            if(countPerm == 2) imagePicker()
+            if(countPerm == 2) imagePicker?.selectImage()
         }
     }
 
@@ -887,6 +856,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         const val REPLACE_IMAGE = 40
                 private val permissions = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
+//            Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA
                 )
     }

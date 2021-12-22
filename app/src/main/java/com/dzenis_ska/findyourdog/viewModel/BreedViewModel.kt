@@ -27,6 +27,7 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     var fileName: String = ""
     var selectedBreed: DogBreeds? = null
     var locationManagerBool: Boolean = false
+    var locationManagerBoolMF: Boolean = false
     var numPage: Int = 0
     var btnDelState: Boolean? = false
     var isFav: Boolean = false

@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -116,7 +117,7 @@ class LoginFragment : Fragment(){
     private fun onClick() {
         Log.d("!!!onClickLF", "onResumeLF")
         rootElement?.apply {
-            imgButtonEnter.setOnClickListener(enterEmailAndPassword(fbAuth))
+            imgButtonEnter.setOnClickListener(enterEmailAndPassword())
             imgButtonExit.setOnClickListener {
                 fbAuth.signOut()
                 groupForgot.visibility = View.GONE
@@ -126,6 +127,14 @@ class LoginFragment : Fragment(){
             }
             imgButtonForgot.setOnClickListener() {
                 setOnClickResetPassword()
+            }
+            edPassword.setOnEditorActionListener { v, actionId, event ->
+                if(actionId == EditorInfo.IME_ACTION_DONE){
+                    pushEnter()
+                    return@setOnEditorActionListener false
+                } else {
+                    return@setOnEditorActionListener false
+                }
             }
         }
     }
@@ -209,54 +218,58 @@ class LoginFragment : Fragment(){
         edPassword.isEnabled = !edit
     }
 
-    private fun enterEmailAndPassword(fbAuth: FBAuth): View.OnClickListener {
+    private fun enterEmailAndPassword(): View.OnClickListener {
         return View.OnClickListener {
-            rootElement?.apply {
-                if (tvEnter.text == "Карта") {
-                    if (ContextCompat.checkSelfPermission(
-                            requireContext(),
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        requestPermissions.launch(permissions)
-                    } else {
-                        navController!!.navigate(R.id.mapsFragment, null, navOptions {
-                            popUpTo(R.id.mapsFragment){
-                                inclusive = true
-                            }
-                        })
-                    }
+            pushEnter()
+        }
+    }
+
+    private fun pushEnter(){
+        rootElement?.apply {
+            if (tvEnter.text == "Карта") {
+                if (ContextCompat.checkSelfPermission(
+                        requireContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    requestPermissions.launch(permissions)
                 } else {
-                    rootElement.apply {
-                        imgInUp.animation = AnimationUtils.loadAnimation(context, R.anim.rotation)
-                        tvRegIn.animation =
-                            AnimationUtils.loadAnimation(context, R.anim.alpha_replace_user_down)
-                        tvRegIn.visibility = View.GONE
-                        val email = edEmail.text.toString()
-                        val pass = edPassword.text.toString()
-                        if (email.isNotEmpty() && pass.isNotEmpty()) {
-                            if (!email.contains('@') || !email.contains('.')) {
-                                Toast.makeText(
-                                    context,
-                                    "Поле Email должно включать символы '@' и '.'",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            } else if (pass.length < 6) {
-                                Toast.makeText(
-                                    context,
-                                    "Пароль должен содержать не менее 6 символов",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                            } else {
-                                signInWithEmail(email, pass)
-                            }
-                        } else {
+                    navController!!.navigate(R.id.mapsFragment, null, navOptions {
+                        popUpTo(R.id.mapsFragment){
+                            inclusive = true
+                        }
+                    })
+                }
+            } else {
+                rootElement.apply {
+                    imgInUp.animation = AnimationUtils.loadAnimation(context, R.anim.rotation)
+                    tvRegIn.animation =
+                        AnimationUtils.loadAnimation(context, R.anim.alpha_replace_user_down)
+                    tvRegIn.visibility = View.GONE
+                    val email = edEmail.text.toString()
+                    val pass = edPassword.text.toString()
+                    if (email.isNotEmpty() && pass.isNotEmpty()) {
+                        if (!email.contains('@') || !email.contains('.')) {
                             Toast.makeText(
                                 context,
-                                "Вы забыли ввести Email или Password",
+                                "Поле Email должно включать символы '@' и '.'",
                                 Toast.LENGTH_LONG
                             ).show()
+                        } else if (pass.length < 6) {
+                            Toast.makeText(
+                                context,
+                                "Пароль должен содержать не менее 6 символов",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            signInWithEmail(email, pass)
                         }
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Вы забыли ввести Email или Password",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             }

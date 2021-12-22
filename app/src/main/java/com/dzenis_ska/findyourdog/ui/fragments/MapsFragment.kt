@@ -230,7 +230,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 }
 
         locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        viewModel.locationManagerBool = true
+        viewModel.locationManagerBoolMF = true
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
     }
 
@@ -361,7 +361,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         setMarker(lat, lng, 10f)
         if(lat != lastLat && lng != lastLng) {
             locationManager.removeUpdates(this)
-            viewModel.locationManagerBool = false
+            viewModel.locationManagerBoolMF = false
             rootElement!!.floatBtnGPS.visibility = View.VISIBLE
         }
     }
@@ -468,9 +468,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mapFragment?.onStop()
         super.onStop()
         Log.d("!!!on", "onStopMF")
-        if(viewModel.locationManagerBool){
+        if(viewModel.locationManagerBoolMF){
             locationManager.removeUpdates(this)
-            viewModel.locationManagerBool = false
+            viewModel.locationManagerBoolMF = false
         }
     }
 

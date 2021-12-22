@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuItemCompat
 import androidx.lifecycle.Observer
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
@@ -180,28 +181,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         menuMapItem?.text = "+${count}"
     }
 
-//    override fun onBackPressed() {
-//        Log.d("!!!bakPressed", "${viewModel.backPressed}")
-
-        /*when (viewModel.backPressed) {
-            0 -> {
-                super.onBackPressed()
-            }
-            2 -> {
-                PixBus.onBackPressedEvent()
-                viewModel.backPressed--
-            }
-            1 -> {
-                val fList = supportFragmentManager.fragments
-                fList.forEach { frag ->
-                    if (frag.toString().startsWith("PixFragment")) {
-                        supportFragmentManager.beginTransaction().remove(frag).commit()
-                    }
-                }
-                viewModel.backPressed--
-            }
-        }*/
-//    }
 
     @SuppressLint("RestrictedApi")
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -254,9 +233,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun navigateTo(id: Int) {
+        var idToBack: Int? = null
+        var t: String? = null
+        navController?.backQueue?.forEach {
+            Log.d("!!!navController", "${it.destination.label}")
+//            if(it.destination.id != id)
+            when(it.destination.label) {
+                "Список пород" -> {
+                    idToBack = R.id.dogsListFragment
+                    t = "Список пород"
+                    return@forEach
+                }
+                "LoginFragment" -> {
+                    idToBack = R.id.loginFragment
+                    t = "LoginFragment"
+                    return@forEach
+
+                }
+                "MapsFragment" -> {
+                    idToBack = R.id.mapsFragment
+                    t = "MapsFragment"
+                    return@forEach
+                }
+            }
+        }
+        Log.d("!!!navControllerT", "${t}")
+
         navController!!.navigate(id, null, navOptions {
-            popUpTo(id) {
-                inclusive = true
+
+            if(idToBack != null){
+                popUpTo(idToBack!!) { inclusive = true }
             }
         })
     }
