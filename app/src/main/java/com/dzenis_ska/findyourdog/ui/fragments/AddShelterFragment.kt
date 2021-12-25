@@ -2,6 +2,7 @@ package com.dzenis_ska.findyourdog.ui.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
 import android.location.Location
@@ -12,6 +13,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
@@ -40,7 +42,12 @@ import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.tabs.TabLayoutMediator
+import com.yalantis.ucrop.UCrop
+import io.ak1.pix.helpers.PixBus
+import io.ak1.pix.helpers.pixFragment
+import io.ak1.pix.models.Options
 import kotlinx.coroutines.*
+import java.io.File
 import java.util.*
 import kotlin.random.Random
 
@@ -99,6 +106,25 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             updatePermissionsState(it as MutableMap<String, Boolean>)
         }
 
+    val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent = result.data
+            // Handle the Intent
+
+
+
+
+            val fileUri = intent?.let { UCrop.getOutput(it) }
+            if(fileUri != null){
+                when (requestPhoto) {
+                    ADD_PHOTO -> vpAdapter.updateAdapter(listOf(fileUri), false)
+                    ADD_IMAGE -> vpAdapter.updateAdapterForSinglePhoto(listOf(fileUri))
+                    REPLACE_IMAGE -> vpAdapter.replaceItemAdapter(listOf(fileUri))
+                }
+            }
+        }
+    }
+
     private var imagePicker: ImagePicker? = null
 
     override fun onCreateView(
@@ -138,17 +164,35 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         onClick(dialog)
         initBackStack()
 
+
         imagePicker = ImagePicker(activity?.activityResultRegistry!!, viewLifecycleOwner) { fileUri ->
             Log.d("!!!imagePicker", "${fileUri} ")
-            if(fileUri != null){
-                when (requestPhoto) {
-                    ADD_PHOTO -> vpAdapter.updateAdapter(listOf(fileUri), false)
-                    ADD_IMAGE -> vpAdapter.updateAdapterForSinglePhoto(listOf(fileUri))
-                    REPLACE_IMAGE -> vpAdapter.replaceItemAdapter(listOf(fileUri))
-                }
-            }
-        }
 
+            //todo uCrop
+
+            val uriF = File(requireContext().cacheDir, "temp.tmp")
+
+            if (fileUri != null) {
+                val uCrop = UCrop.of(fileUri, Uri.fromFile(uriF))
+                    .withAspectRatio(9f, 16f)
+//                    .withMaxResultSize(maxWidth, maxHeight)
+                    .getIntent(requireContext())
+
+                startForResult.launch(uCrop)
+            }
+
+
+
+
+
+//            if(fileUri != null){
+//                when (requestPhoto) {
+//                    ADD_PHOTO -> vpAdapter.updateAdapter(listOf(fileUri), false)
+//                    ADD_IMAGE -> vpAdapter.updateAdapterForSinglePhoto(listOf(fileUri))
+//                    REPLACE_IMAGE -> vpAdapter.replaceItemAdapter(listOf(fileUri))
+//                }
+//            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
