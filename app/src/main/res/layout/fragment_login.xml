@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/loginId"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginTop="5dp"
     android:background="@drawable/background_login"
-    tools:context=".ui.fragments.DogsListFragment">
+    tools:context=".ui.fragments.LoginFragment">
 
 
     <EditText
@@ -17,8 +19,7 @@
         android:layout_marginTop="365dp"
         android:layout_marginEnd="101dp"
         android:ems="10"
-        android:autofillHints=""
-        android:hint="Email"
+        android:hint="@string/email"
         android:inputType="textEmailAddress"
         android:textColorHint="@color/item_image"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +32,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:ems="10"
-        android:hint="Password"
+        android:hint="@string/password"
         android:imeOptions="actionDone"
         android:inputType="textPassword"
         android:textColorHint="@color/item_image"
@@ -66,7 +67,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="TextView"
         android:textColor="@color/white"
         android:gravity="center"
         android:textSize="24sp"
@@ -91,7 +91,6 @@
         android:layout_width="0dp"
         android:layout_height="32dp"
         android:background="@drawable/forgot_back"
-        android:text="@string/forgot_password"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="@+id/edPassword"
         app:layout_constraintHorizontal_bias="1.0"

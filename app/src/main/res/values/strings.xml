@@ -50,6 +50,7 @@
     <string name="reg_up_is_successful">Удачная регистрация, человек!</string>
     <string name="error_reg">Ошибка регистрации!</string>
     <string name="error_enter">Ошибка входа!</string>
+    <string name="email">Email</string>
     <string name="email_add">Подтвердите регистрацию по Email и нажмите \"войти\"</string>
     <string name="email_no_add">Ошибка отправки подтверждения регистрации по Email!</string>
 
@@ -62,6 +63,7 @@
     <string name="email_reset_password_was_send">Check Your Email!</string>
     <string name="email_reset_password_was_not_send">Сheck the correctness of your Email!</string>
     <string name="fill_the_email">Fill the Email!</string>
+    <string name="password">Password</string>
 
     <!-- Add Shelter fragment-->
     <string name="name_shelter">Название</string>

@@ -508,6 +508,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         super.onPause()
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        mapFragment?.onAttach(context)
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        mapFragment?.onDetach()
+    }
+
     override fun onLowMemory() {
         Log.d("!!!on", "onDestroyViewMF")
         super.onLowMemory()

@@ -43,9 +43,6 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.tabs.TabLayoutMediator
 import com.yalantis.ucrop.UCrop
-import io.ak1.pix.helpers.PixBus
-import io.ak1.pix.helpers.pixFragment
-import io.ak1.pix.models.Options
 import kotlinx.coroutines.*
 import java.io.File
 import java.util.*
@@ -66,8 +63,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var tlm: TabLayoutMediator? = null
 
     lateinit var navController: NavController
-    var pref: SharedPreferences? = null
-    private var counter: Long = 1000
 
     private lateinit var mMap: GoogleMap
     private lateinit var mapView: MapView
@@ -110,10 +105,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         if (result.resultCode == Activity.RESULT_OK) {
             val intent = result.data
             // Handle the Intent
-
-
-
-
             val fileUri = intent?.let { UCrop.getOutput(it) }
             if(fileUri != null){
                 when (requestPhoto) {
@@ -157,7 +148,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
-        getLocation()
+//        getLocation()
         val dialog = ProgressDialog.createProgressDialog(activity as MainActivity, ProgressDialog.ADD_SHELTER_FRAGMENT)
         initViewModel()
         initRecyclerView()
@@ -167,8 +158,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         imagePicker = ImagePicker(activity?.activityResultRegistry!!, viewLifecycleOwner) { fileUri ->
             Log.d("!!!imagePicker", "${fileUri} ")
-
-            //todo uCrop
 
             val uriF = File(requireContext().cacheDir, "temp.tmp")
 
@@ -180,18 +169,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
                 startForResult.launch(uCrop)
             }
-
-
-
-
-
-//            if(fileUri != null){
-//                when (requestPhoto) {
-//                    ADD_PHOTO -> vpAdapter.updateAdapter(listOf(fileUri), false)
-//                    ADD_IMAGE -> vpAdapter.updateAdapterForSinglePhoto(listOf(fileUri))
-//                    REPLACE_IMAGE -> vpAdapter.replaceItemAdapter(listOf(fileUri))
-//                }
-//            }
         }
     }
 
@@ -732,8 +709,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onResume() {
         super.onResume()
         Log.d("!!!onResume", "AddShelterFragment")
-        pref = this.activity?.getSharedPreferences("FUCK", 0)
-        counter = pref?.getLong("counter", 5000)!!
         mapView.onResume()
     }
 
@@ -750,7 +725,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             locationManager.removeUpdates(this)
             viewModel.locationManagerBool = false
         }
-//        viewModel.adShelteAfterPhotoViewed = null
         rootElement = null
     }
 
@@ -880,7 +854,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             Log.d("!!!perm", "${map.key} _ ${map.value}")
             if(map.value != true) {
                 Toast.makeText(context as MainActivity, "Необходимы разрешения для использования фоток!", Toast.LENGTH_LONG).show()
-                return@updatePermissionsState
+//                return@updatePermissionsState
             } else {
                 countPerm++
             }
@@ -900,7 +874,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         const val REPLACE_IMAGE = 40
                 private val permissions = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
-//            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA
                 )
     }
