@@ -85,6 +85,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var sizeDog: Int = 1
     var ltlng: Boolean = true
 
+    var countTempPhoto = 0
+
     var plague: Long? = null
     var rabies: Long? = null
     var isSave: Boolean? = null
@@ -97,24 +99,27 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private var requestPhoto = 0
 
     private val requestPermissions =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
             updatePermissionsState(it as MutableMap<String, Boolean>)
         }
 
-    val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val intent = result.data
-            // Handle the Intent
-            val fileUri = intent?.let { UCrop.getOutput(it) }
-            if(fileUri != null){
-                when (requestPhoto) {
-                    ADD_PHOTO -> vpAdapter.updateAdapter(listOf(fileUri), false)
-                    ADD_IMAGE -> vpAdapter.updateAdapterForSinglePhoto(listOf(fileUri))
-                    REPLACE_IMAGE -> vpAdapter.replaceItemAdapter(listOf(fileUri))
+    val startForResult =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val intent = result.data
+                // Handle the Intent
+                val fileUri = intent?.let { UCrop.getOutput(it) }
+                if (fileUri != null) {
+                    Log.d("!!!ADD_PHOTO", "${requestPhoto} _ ${fileUri} _ ")
+
+                    when (requestPhoto) {
+                        ADD_PHOTO -> vpAdapter.updateAdapter(listOf(fileUri), false)
+                        ADD_IMAGE -> vpAdapter.updateAdapterForSinglePhoto(listOf(fileUri))
+                        REPLACE_IMAGE -> vpAdapter.replaceItemAdapter(listOf(fileUri))
+                    }
                 }
             }
         }
-    }
 
     private var imagePicker: ImagePicker? = null
 
@@ -149,35 +154,40 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
 //        getLocation()
-        val dialog = ProgressDialog.createProgressDialog(activity as MainActivity, ProgressDialog.ADD_SHELTER_FRAGMENT)
+        val dialog = ProgressDialog.createProgressDialog(
+            activity as MainActivity,
+            ProgressDialog.ADD_SHELTER_FRAGMENT
+        )
         initViewModel()
         initRecyclerView()
         onClick(dialog)
         initBackStack()
 
 
-        imagePicker = ImagePicker(activity?.activityResultRegistry!!, viewLifecycleOwner) { fileUri ->
-            Log.d("!!!imagePicker", "${fileUri} ")
+        imagePicker =
+            ImagePicker(activity?.activityResultRegistry!!, viewLifecycleOwner) { fileUri ->
+                Log.d("!!!imagePicker", "${fileUri} ")
 
-            val uriF = File(requireContext().cacheDir, "temp.tmp")
+                val uriF = File(requireContext().cacheDir, "temp${countTempPhoto++}.tmp")
 
-            if (fileUri != null) {
-                val uCrop = UCrop.of(fileUri, Uri.fromFile(uriF))
-                    .withAspectRatio(9f, 16f)
+                if (fileUri != null) {
+                    val uCrop = UCrop.of(fileUri, Uri.fromFile(uriF))
+                        .withAspectRatio(9f, 9f)
 //                    .withMaxResultSize(maxWidth, maxHeight)
-                    .getIntent(requireContext())
+                        .getIntent(requireContext())
 
-                startForResult.launch(uCrop)
+                    startForResult.launch(uCrop)
+                }
             }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         Log.d("!!!onCreateOptionsMenu", "onCreateOptionsMenu")
         inflater.inflate(R.menu.menu_shelter_frag, menu)
         val item = menu.findItem(R.id.isFav)
-        if(viewModel.adShelteAfterPhotoViewed != null) {
-            if(viewModel.adShelteAfterPhotoViewed?.isFav!!) item.icon = resources.getDrawable(R.drawable.paw_red_2)
+        if (viewModel.adShelteAfterPhotoViewed != null) {
+            if (viewModel.adShelteAfterPhotoViewed?.isFav!!) item.icon =
+                resources.getDrawable(R.drawable.paw_red_2)
         } else {
             menu.clear()
         }
@@ -185,7 +195,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val dog = viewModel.adShelteAfterPhotoViewed
-        return when(item.itemId){
+        return when (item.itemId) {
             R.id.isFav -> {
                 dog?.let {
                     onFavClicked(it) { isFavorite ->
@@ -218,15 +228,16 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             else -> super.onOptionsItemSelected(item)
         }
     }
-    private fun onFavClicked(dog: AdShelter, callback: (isFav: Boolean) -> Unit){
-        viewModel.onFavClick(dog){
+
+    private fun onFavClicked(dog: AdShelter, callback: (isFav: Boolean) -> Unit) {
+        viewModel.onFavClick(dog) {
             callback(it)
         }
     }
 
-    fun hideAddPhoto(b: Boolean) = with(rootElement!!){
-        imgAddPhoto.visibility = if(!b) View.GONE else View.VISIBLE
-        clEditPhoto.visibility = if(!b) View.VISIBLE else View.GONE
+    fun hideAddPhoto(b: Boolean) = with(rootElement!!) {
+        imgAddPhoto.visibility = if (!b) View.GONE else View.VISIBLE
+        clEditPhoto.visibility = if (!b) View.VISIBLE else View.GONE
     }
 
     //for choose photo from fragment
@@ -251,9 +262,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    private fun hidePhotoButtons(b: Boolean){
-        if(!b){
-        rootElement!!.apply {
+    private fun hidePhotoButtons(b: Boolean) {
+        if (!b) {
+            rootElement!!.apply {
                 fabReplaceImage.visibility = View.GONE
                 fabAddImage.visibility = View.GONE
                 fabDeleteImage.visibility = View.GONE
@@ -266,8 +277,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         //Открываем AddShelterFragment и передаём данные
         viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner, { adShelter ->
             Log.d("!!!onviewModelASF", "AddShelterFragment ${adShelter?.description}")
+            Log.d("!!!onviewModelASF", "AddShelterFragment ${viewModel.adShelteAfterPhotoViewed}")
+
             rootElement!!.apply {
-                if(viewModel.adShelteAfterPhotoViewed != null){
+                if (viewModel.adShelteAfterPhotoViewed != null) {
                     if (viewModel.adShelteAfterPhotoViewed!!.uid == viewModel.dbManager.mAuth.uid) {
                         fillFrag(viewModel.adShelteAfterPhotoViewed!!, true)
                         boolEditOrNew = true
@@ -284,8 +297,11 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         fabDeleteShelter.isVisible = true
                         ibGetLocation.isVisible = true
                     } else {
+
                         fillFrag(adShelter, false)
                     }
+                } else {
+                    getLocation()
                 }
             }
         })
@@ -295,14 +311,14 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         val listPhoto = adShelter.photoes
 
         rootElement!!.apply {
-            if(listPhoto == null){
+            if (listPhoto == null) {
                 imgAddPhoto.setImageDrawable(
                     ContextCompat.getDrawable(
                         context as MainActivity,
                         R.drawable.ic_no_one_photo
                     )
                 )
-            }else{
+            } else {
                 CoroutineScope(Dispatchers.Main).launch {
                     adapterArraySize = listPhoto.size
                     val listUri = arrayListOf<Uri>()
@@ -322,15 +338,16 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             val pl = adShelter.vaccination?.get(DialogCalendar.PLAGUE)
             val rab = adShelter.vaccination?.get(DialogCalendar.RABIES)
 
-            if(pl != "null") {
-                plague = pl?.toLong()
+            Log.d("!!!pl", "${pl}")
+            if (!pl.isNullOrEmpty()) {
+                plague = pl.toLong()
                 tvPlague.text = "От чумы привита"
             }
-            if(rab != "null") {
-                imIsVaccine.setImageResource(R.drawable.ic_done)
-                rabies = rab?.toLong()
+            if (!rab.isNullOrEmpty()) {
+                rabies = rab.toLong()
                 tvRabies.text = "От бешенства привита"
             }
+            if (!pl.isNullOrEmpty() && !rab.isNullOrEmpty()) imIsVaccine.setImageResource(R.drawable.ic_done)
 
 
             edTelNum.setText(adShelter.tel)
@@ -361,9 +378,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
                 clMain.background =
                     resources.getDrawable(R.drawable.background_write_fragment)
+
+
             } else {
                 Log.d("!!!!", "${adShelter}")
                 adShelterToEdit = adShelter
+
             }
 //            viewModel.openFragShelter(null)
         }
@@ -373,7 +393,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun fillAdShelter(photoUrlList: ArrayList<String>): AdShelter {
 
         var adShelter: AdShelter
-        val breed = if(rootElement!!.edBreed.text.isNotEmpty()) rootElement!!.edBreed.text.toString() else "без породы"
+        val breed =
+            if (rootElement!!.edBreed.text.isNotEmpty()) rootElement!!.edBreed.text.toString() else "без породы"
         val time = System.currentTimeMillis().toString()
         rootElement!!.apply {
             adShelter = AdShelter(
@@ -386,7 +407,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 edDescription.text.toString(),
                 breed,
                 "empty",
-                mapOf("plague" to plague.toString(), "rabies" to rabies.toString()),
+                mapOf(
+                    "plague" to (plague?.toString() ?: ""),
+                    "rabies" to (rabies?.toString() ?: "")
+                ),
                 photoUrlList,
                 "empty",
                 viewModel.dbManager.db.push().key,
@@ -493,7 +517,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
 
             fabAddShelter.setOnClickListener() {
-                    publishImagesAd(dialog)
+                publishImagesAd(dialog)
             }
             vp2.setOnClickListener {
                 fullScreen(250, 0.50f)
@@ -507,19 +531,25 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 getLocation()
                 ibGetLocation.visibility = View.GONE
             }
-            tvGender.setOnClickListener{
-                if(tvGender.text == resources.getString(R.string.gendMan))
+            tvGender.setOnClickListener {
+                if (tvGender.text == resources.getString(R.string.gendMan))
                     tvGender.text = resources.getText(R.string.gendWoMan)
                 else tvGender.text = resources.getString(R.string.gendMan)
             }
-            tvSize.setOnClickListener{
-                when(sizeDog){
-                    0-> {tvSize.text = resources.getString(R.string.sizeS)
-                        sizeDog = 1}
-                    1-> {tvSize.text = resources.getString(R.string.sizeM)
-                        sizeDog = 2}
-                    2-> {tvSize.text = resources.getString(R.string.sizeL)
-                        sizeDog = 0}
+            tvSize.setOnClickListener {
+                when (sizeDog) {
+                    0 -> {
+                        tvSize.text = resources.getString(R.string.sizeS)
+                        sizeDog = 1
+                    }
+                    1 -> {
+                        tvSize.text = resources.getString(R.string.sizeM)
+                        sizeDog = 2
+                    }
+                    2 -> {
+                        tvSize.text = resources.getString(R.string.sizeL)
+                        sizeDog = 0
+                    }
                 }
             }
             ivTel.setOnClickListener {
@@ -527,24 +557,50 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 call()
             }
             tvVaccine.setOnClickListener {
-                if(fbAuth.mAuth.currentUser?.uid == viewModel.adShelteAfterPhotoViewed?.uid ||
-                    viewModel.btnDelState == true)
-                        ibPlague.isVisible = !ibPlague.isVisible
+                if (fbAuth.mAuth.currentUser?.uid == viewModel.adShelteAfterPhotoViewed?.uid ||
+                    viewModel.btnDelState == true
+                )
+                    ibPlague.isVisible = !ibPlague.isVisible
             }
             ibPlague.setOnClickListener {
-                if(plague == null) plague = viewModel.adShelteAfterPhotoViewed?.vaccination?.get(DialogCalendar.PLAGUE)?.toLong()
-                DialogCalendar.createDialogCalendar(activity as MainActivity,
-                    this@AddShelterFragment,
-                    DialogCalendar.PLAGUE,
-                    plague.toString(), isSave)
+                val plagueString =
+                    viewModel.adShelteAfterPhotoViewed?.vaccination?.get(DialogCalendar.PLAGUE)
+                if (!plagueString.isNullOrEmpty()) {
+                    plague = plagueString.toLong()
+                    DialogCalendar.createDialogCalendar(
+                        activity as MainActivity,
+                        this@AddShelterFragment,
+                        DialogCalendar.PLAGUE,
+                        plagueString, isSave
+                    )
+                } else {
+                    DialogCalendar.createDialogCalendar(
+                        activity as MainActivity,
+                        this@AddShelterFragment,
+                        DialogCalendar.PLAGUE,
+                        null, isSave
+                    )
+                }
             }
             ibRabies.setOnClickListener {
-                if(rabies == null) rabies = viewModel.adShelteAfterPhotoViewed?.vaccination?.get(DialogCalendar.RABIES)?.toLong()
-                DialogCalendar.createDialogCalendar(
-                    activity as MainActivity,
-                    this@AddShelterFragment,
-                    DialogCalendar.RABIES,
-                    rabies.toString(), isSave)
+                val rabiesString =
+                    viewModel.adShelteAfterPhotoViewed?.vaccination?.get(DialogCalendar.RABIES)
+                if (!rabiesString.isNullOrEmpty()) {
+                    rabies = rabiesString.toLong()
+                    DialogCalendar.createDialogCalendar(
+                        activity as MainActivity,
+                        this@AddShelterFragment,
+                        DialogCalendar.RABIES,
+                        rabiesString, isSave
+                    )
+                } else {
+                    DialogCalendar.createDialogCalendar(
+                        activity as MainActivity,
+                        this@AddShelterFragment,
+                        DialogCalendar.RABIES,
+                        null, isSave
+                    )
+                }
             }
         }
     }
@@ -555,10 +611,14 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         dialog.show()
         val vpArray = vpAdapter.arrayPhoto
         val listPhotoForDel = SortListPhoto.listPhotoForDel(viewModel.listPhoto, vpArray)
-        if (listPhotoForDel.size != 0 && viewModel.btnDelState == false) listPhotoForDel.forEach { deletePhoto(it) }
-        if(vpAdapter.arrayPhoto.size != 0) {
+        if (listPhotoForDel.size != 0 && viewModel.btnDelState == false) listPhotoForDel.forEach {
+            deletePhoto(
+                it
+            )
+        }
+        if (vpAdapter.arrayPhoto.size != 0) {
             addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
-        }else{
+        } else {
             addPhoto(null, dialog)
         }
     }
@@ -571,7 +631,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             return
         }
 
-        if(uri != null) oldOrNew(uri, dialog)
+        if (uri != null) oldOrNew(uri, dialog)
     }
 
     private fun oldOrNew(it: Uri, dialog: AlertDialog) {
@@ -585,7 +645,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     ImageManager.imageResize(arrayListUri, activity as MainActivity)
                 Log.d("!!!transpImageNew2", "jopa")
 
-                if(arrayListByteArray.size == 0){
+                if (arrayListByteArray.size == 0) {
                     Log.d("!!!transpImageNew2", "jopa ${arrayListByteArray.size}")
                     imageIndex++
                     if (vpAdapter.arrayPhoto.size == imageIndex) {
@@ -594,7 +654,11 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
                     }
 //                    photoArrayList.add("https://firebasestorage.googleapis.com/v0/b/findyourdog-6fa93.appspot.com/o/storage%2FdnUUHb4of0WAoF4xuDlV0J95hBy1%2Fimage_1631654334261?alt=media&token=d66cffec-f403-498c-b2e6-30afa473db41")
-                    Toast.makeText(context, "Не удалось загрузить фото, возможно они повреждены", Toast.LENGTH_LONG).show()
+                    Toast.makeText(
+                        context,
+                        "Не удалось загрузить фото, возможно они повреждены",
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
                     viewModel.publishPhoto(arrayListByteArray[0]) { uri ->
 
@@ -615,9 +679,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         } else {
             photoArrayList.add(it.toString())
             imageIndex++
-            if(vpAdapter.arrayPhoto.size == imageIndex) {
+            if (vpAdapter.arrayPhoto.size == imageIndex) {
                 addPhoto(null, dialog)
-            }else{
+            } else {
                 addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
             }
 
@@ -635,20 +699,22 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         if (boolEditOrNew == true) {
 //            Log.d("!!!uid", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
 
-                var lt = shLat.toString()
-                var lg = shLng.toString()
-            if(!ltlng) {
+            var lt = shLat.toString()
+            var lg = shLng.toString()
+            if (!ltlng) {
                 lt = adTemp.lat.toString()
                 lg = adTemp.lng.toString()
             }
             viewModel.publishAdShelter(
                 adTemp
-                    .copy(key = adShelterToEdit?.key,
+                    .copy(
+                        key = adShelterToEdit?.key,
                         markerColor = adShelterToEdit?.markerColor,
                         lat = lt,
                         lng = lg,
                         time = adShelterToEdit?.time.toString()
-                    ), dialog){
+                    ), dialog
+            ) {
 //                Log.d("!!!uidIt", "${it}}")
                 navController.popBackStack(R.id.addShelterFragment, true)
                 navController.popBackStack(R.id.mapsFragment, true)
@@ -777,7 +843,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             rootElement!!.ibGetLocation.visibility = View.VISIBLE
         }
     }
-    private fun call() = with(rootElement!!){
+
+    private fun call() = with(rootElement!!) {
         val callUri = "tel:${edTelNum.text}"
         val iCall = Intent(Intent.ACTION_DIAL)
         iCall.data = callUri.toUri()
@@ -806,17 +873,17 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         _year: Int,
         _month: Int,
         _dayOfMonth: Int
-    )  = with(rootElement!!){
-        when(vaccine){
-            DialogCalendar.PLAGUE-> {
+    ) = with(rootElement!!) {
+        when (vaccine) {
+            DialogCalendar.PLAGUE -> {
                 plague = timeInMillis
                 val text = tvPlague.text.toString()
-                tvPlague.text = "$text $_year.${_month+1}.$_dayOfMonth"
+                tvPlague.text = "$text $_year.${_month + 1}.$_dayOfMonth"
             }
-            DialogCalendar.RABIES-> {
+            DialogCalendar.RABIES -> {
                 rabies = timeInMillis
                 val text = tvRabies.text.toString()
-                tvRabies.text = "$text $_year.${_month+1}.$_dayOfMonth"
+                tvRabies.text = "$text $_year.${_month + 1}.$_dayOfMonth"
             }
         }
     }
@@ -850,16 +917,14 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     private fun updatePermissionsState(permMap: MutableMap<String, Boolean>) {
         var countPerm = 0
-        permMap.forEach{map->
+        permMap.forEach { map ->
             Log.d("!!!perm", "${map.key} _ ${map.value}")
-            if(map.value != true) {
-                Toast.makeText(context as MainActivity, "Необходимы разрешения для использования фоток!", Toast.LENGTH_LONG).show()
-//                return@updatePermissionsState
-            } else {
-                countPerm++
-            }
-            if(countPerm == 2) imagePicker?.selectImage()
+            if (map.value) countPerm++
         }
+        if (countPerm >= 2) imagePicker?.selectImage()
+        else Toast.makeText(context as MainActivity, "Необходимы разрешения для использования фоток!", Toast.LENGTH_LONG).show()
+//                return@updatePermissionsState
+
     }
 
     private fun requestPermissionsForMediaStore() {
@@ -872,11 +937,11 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         const val ADD_PHOTO = 10
         const val ADD_IMAGE = 20
         const val REPLACE_IMAGE = 40
-                private val permissions = arrayOf(
+        private val permissions = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.CAMERA
-                )
+        )
     }
 }
 
