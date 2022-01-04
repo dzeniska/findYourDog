@@ -55,6 +55,8 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     val dialog = MutableLiveData<AlertDialog>()
     var adShelteAfterPhotoViewed: AdShelter? = null
 
+    var mapFragToAddShelterFragId = 0
+
     //Для backPressed
 //    var backPressed: Int = 0
 

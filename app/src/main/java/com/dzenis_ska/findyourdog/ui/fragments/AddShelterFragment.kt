@@ -161,7 +161,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         initViewModel()
         initRecyclerView()
         onClick(dialog)
-        initBackStack()
 
 
         imagePicker =
@@ -274,22 +273,33 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     @SuppressLint("UseCompatLoadingForDrawables")
     private fun initViewModel() {
+        Log.d("!!!mapFragToAddShelterFragId", "mapFragToAddShelterFragId ${viewModel.mapFragToAddShelterFragId}")
+
+        when(viewModel.mapFragToAddShelterFragId){
+            ADD_DOG -> getLocation()
+            SHOW_DOG-> {}
+            else -> {}
+        }
+
         //Открываем AddShelterFragment и передаём данные
         viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner, { adShelter ->
             Log.d("!!!onviewModelASF", "AddShelterFragment ${adShelter?.description}")
-            Log.d("!!!onviewModelASF", "AddShelterFragment ${viewModel.adShelteAfterPhotoViewed}")
 
             rootElement!!.apply {
-                if (viewModel.adShelteAfterPhotoViewed != null) {
-                    if (viewModel.adShelteAfterPhotoViewed!!.uid == viewModel.dbManager.mAuth.uid) {
-                        fillFrag(viewModel.adShelteAfterPhotoViewed!!, true)
-                        boolEditOrNew = true
-                        fabDeleteShelter.isVisible = true
-                        ibGetLocation.isVisible = true
-                    } else {
-                        fillFrag(viewModel.adShelteAfterPhotoViewed!!, false)
-                    }
-                } else if (adShelter != null) {
+//                if (viewModel.adShelteAfterPhotoViewed != null) {
+//                    Log.d("!!!adShelteAfterPhotoViewed", "2")
+//                    if (viewModel.adShelteAfterPhotoViewed!!.uid == viewModel.dbManager.mAuth.uid) {
+//                        fillFrag(viewModel.adShelteAfterPhotoViewed!!, true)
+//                        boolEditOrNew = true
+//                        fabDeleteShelter.isVisible = true
+//                        ibGetLocation.isVisible = true
+//                    } else {
+//                        fillFrag(viewModel.adShelteAfterPhotoViewed!!, false)
+//                    }
+//                } else
+
+
+                if (adShelter != null) {
                     viewModel.adShelteAfterPhotoViewed = adShelter
                     if (adShelter.uid == viewModel.dbManager.mAuth.uid) {
                         fillFrag(adShelter, true)
@@ -297,11 +307,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         fabDeleteShelter.isVisible = true
                         ibGetLocation.isVisible = true
                     } else {
-
                         fillFrag(adShelter, false)
                     }
-                } else {
-                    getLocation()
                 }
             }
         })
@@ -897,17 +904,16 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             gender = tvGender.text.toString(),
             size = tvSize.text.toString(),
             description = edDescription.text.toString(),
-            vaccination = mapOf("plague" to plague.toString(), "rabies" to rabies.toString())
+            vaccination = mapOf(
+                "plague" to (plague?.toString() ?: ""),
+                "rabies" to (rabies?.toString() ?: "")
+            )
         )
         viewModel.adShelteAfterPhotoViewed = instState
         navController.navigate(R.id.onePhotoFragment)
         viewModel.getOnePhoto(uri.toString())
     }
 
-    @SuppressLint("RestrictedApi")
-    private fun initBackStack() {
-        InitBackStack.initBackStack(navController)
-    }
 
     override fun onDetach() {
         super.onDetach()
@@ -937,6 +943,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         const val ADD_PHOTO = 10
         const val ADD_IMAGE = 20
         const val REPLACE_IMAGE = 40
+
+        const val ADD_DOG = 101
+        const val SHOW_DOG = 102
+
         private val permissions = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,

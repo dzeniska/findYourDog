@@ -69,10 +69,13 @@ class DbManager() {
         Log.d("!!!itTaskJopa", "${adTemp}")
         val imStorageRef = ref
             .child(mAuth.uid!!)
+//            .child("image_${System.currentTimeMillis()}")
             .child("image_${System.currentTimeMillis()}")
 
+
         val upTask = imStorageRef.putBytes(adTemp)
-        upTask.continueWithTask { task ->
+        upTask
+            .continueWithTask { task ->
             if (!task.isSuccessful) {
                 task.exception?.let {
                     throw it
@@ -104,7 +107,9 @@ class DbManager() {
         }
         db.child(adShelter.key).child(INFO_NODE).removeValue()
         db.child(adShelter.key).child(CALLS_NODE).removeValue()
-//        придумать логику загрузки
+        db.child(adShelter.key).child(FAVS_NODE).removeValue()
+        db.child(adShelter.key).child(FILTER_NODE).removeValue()
+        db.child(adShelter.key).child(VACCINE_NODE).removeValue()
     }
 
     fun adViewed(adShelter: AdShelter, anyCounter: Int, listener: FinishWorkListener) {

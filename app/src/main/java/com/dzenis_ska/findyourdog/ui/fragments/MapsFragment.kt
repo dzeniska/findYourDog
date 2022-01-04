@@ -32,7 +32,6 @@ import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.MapPhotoAdapter
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
-import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
@@ -79,11 +78,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     //для определения последней локации
     private var fusedLocationClient: FusedLocationProviderClient? = null
 
-//    private val requestPermissions =
-//        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){
-//            updatePermissionsState(it)
-//        }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
@@ -124,8 +118,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         init()
         initClick()
-            initBackStack()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -182,12 +174,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     private fun initClick() = with(rootElement!!){
         floatBtnGPS.setOnClickListener() {
-            getLocation()
             floatBtnGPS.visibility = View.GONE
         }
         floatBtnAddShelter.setOnClickListener() {
-
-//            requestPermissions.launch(permissions)
+            viewModel.mapFragToAddShelterFragId = AddShelterFragment.ADD_DOG
             viewModel.btnDelState = true
             viewModel.openFragShelter(null)
             navController.navigate(R.id.addShelterFragment)
@@ -245,8 +235,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         getPermission()
     }
-
-
 
 
     /** Demonstrates customizing the info window and/or its contents.  */
@@ -401,7 +389,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
 
     override fun onInfoWindowClick(markerInfo: Marker) {
-
+        viewModel.mapFragToAddShelterFragId = AddShelterFragment.SHOW_DOG
         isEditing = false
         for(info in viewModel.listShelter){
             if(info.key == markerInfo.tag){
@@ -527,6 +515,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onMarkerClick(m: Marker): Boolean {
         Log.d("!!!marker", "${m.tag}")
 //        markerOne = m
+
         clickMarker(m)
         return false
     }
@@ -561,15 +550,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             cs.constrainWidth(R.id.rcViewMapPhoto, i)
             Log.d("!!!markInd", "${i}")
             cs.applyTo(rootElement!!.clFM)
-    }
-
-    @SuppressLint("RestrictedApi")
-    private fun initBackStack() {
-        InitBackStack.initBackStack(navController)
-//        val fList = navController.backStack
-//        fList.forEach {
-//            Log.d("!!!frMF", "${it.destination.label}")
-//        }
     }
 
     private fun updatePermissionsState(permMap: MutableMap<String, Boolean>) {
