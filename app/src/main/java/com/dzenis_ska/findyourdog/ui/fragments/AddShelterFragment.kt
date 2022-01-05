@@ -485,11 +485,15 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun onClick(dialog: AlertDialog) {
 
         rootElement!!.apply {
+
             imgAddPhoto.setOnClickListener() {
-                fullScreen(250, 0.50f)
-                requestPhoto = ADD_PHOTO
-                requestPermissionsForMediaStore()
+                if (fabDeleteImage.isVisible) {
+                    fullScreen(250, 0.50f)
+                    requestPhoto = ADD_PHOTO
+                    requestPermissionsForMediaStore()
+                }
             }
+
 
             fabAddImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
@@ -884,13 +888,13 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         when (vaccine) {
             DialogCalendar.PLAGUE -> {
                 plague = timeInMillis
-                val text = tvPlague.text.toString()
-                tvPlague.text = "$text $_year.${_month + 1}.$_dayOfMonth"
+//                val text = tvPlague.text.toString()
+                tvPlague.text = "$_year.${_month + 1}.$_dayOfMonth"
             }
             DialogCalendar.RABIES -> {
                 rabies = timeInMillis
-                val text = tvRabies.text.toString()
-                tvRabies.text = "$text $_year.${_month + 1}.$_dayOfMonth"
+//                val text = tvRabies.text.toString()
+                tvRabies.text = "$_year.${_month + 1}.$_dayOfMonth"
             }
         }
     }

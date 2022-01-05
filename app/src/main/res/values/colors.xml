@@ -42,4 +42,8 @@
     <color name="surface_color_pix">#ffffff</color>
     <color name="text_color_pix">#807f7f</color>-->
 
+        <color name="vaccine_1">#A7FFEB</color>
+    <color name="vaccine_2">#B9F6CA</color>
+    <color name="vaccine_3">#CCFF90</color>
+
 </resources>

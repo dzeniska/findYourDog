@@ -8,6 +8,8 @@ import androidx.core.view.isVisible
 import com.dzenis_ska.findyourdog.databinding.CalendarDialogBinding
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.AddShelterFragment
+import java.text.SimpleDateFormat
+import java.util.*
 
 object DialogCalendar {
     private var _year: Int = 0
@@ -35,6 +37,7 @@ object DialogCalendar {
 
 
         rootDialogElement.calendarView.setOnDateChangeListener { _, year, month, dayOfMonth ->
+            rootDialogElement.btnSave.isVisible = true
             _year = year
             _month = month
             _dayOfMonth = dayOfMonth
@@ -50,15 +53,39 @@ object DialogCalendar {
                 _dayOfMonth
             )
 //            rootDialogElement.calendarView.date = calendar.timeInMillis
-            Toast.makeText(act, "Сохранено!", Toast.LENGTH_LONG).show()
-            Log.d("!!!DC", "${calendar.timeInMillis}")
-            aSF.vaccineDataEdit(vaccine, calendar.timeInMillis,_year,
-                _month,
-                _dayOfMonth)
-//            dialog.dismiss()
+//            Toast.makeText(act, "Сохранено!", Toast.LENGTH_LONG).show()
+            val timeMillis = getCurrentData()
+            Log.d("!!!DC", "${timeMillis}")
+            val calTimeMillis = calendar.timeInMillis
+            Log.d("!!!DC", "${calTimeMillis}")
+
+//            if(calTimeMillis < 0){
+//                val s = SimpleDateFormat("yyyy_MM_dd")
+//                val format: String = s.format(Date())
+//                Log.d("!!!DC", "${format}")
+//                _year = format.split("_")[0].toInt()
+//                _month = format.split("_")[1].toInt().minus(1)
+//                _dayOfMonth = format.split("_")[2].toInt()
+//                calendar.set(
+//                    _year,
+//                    _month,
+//                    _dayOfMonth
+//                )
+//                val calTimeMillis = calendar.timeInMillis
+//
+//                aSF.vaccineDataEdit(vaccine, calTimeMillis,_year,
+//                    _month,
+//                    _dayOfMonth)
+//            } else {
+                aSF.vaccineDataEdit(vaccine, calTimeMillis,_year,
+                    _month,
+                    _dayOfMonth)
+//            }
+            dialog.dismiss()
         }
 
     }
+    private fun getCurrentData() = System.currentTimeMillis()
     const val PLAGUE = "plague"
     const val RABIES = "rabies"
 }
