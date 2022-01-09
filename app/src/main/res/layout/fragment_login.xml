@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+
+
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,158 +12,171 @@
     android:background="@drawable/background_login"
     tools:context=".ui.fragments.LoginFragment">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
 
-    <EditText
-        android:id="@+id/edEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="101dp"
-        android:layout_marginTop="365dp"
-        android:layout_marginEnd="101dp"
-        android:ems="10"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
-        android:textColorHint="@color/item_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+            <EditText
+                android:id="@+id/edEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="101dp"
+                android:layout_marginEnd="101dp"
+                android:layout_marginTop="150dp"
+                android:ems="10"
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:textColorHint="@color/item_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvRegIn" />
 
-    <EditText
-        android:id="@+id/edPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="@string/password"
-        android:imeOptions="actionDone"
-        android:inputType="textPassword"
-        android:textColorHint="@color/item_image"
-        app:layout_constraintEnd_toEndOf="@+id/edEmail"
-        app:layout_constraintStart_toStartOf="@+id/edEmail"
-        app:layout_constraintTop_toBottomOf="@+id/edEmail" />
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatBtnSendEmailAndPassword"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:src="@drawable/ic_entrance"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
-        android:id="@+id/imgInUp"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="50dp"
-        android:src="@drawable/ic_reg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvRegIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:textColor="@color/white"
-        android:gravity="center"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/imgInUp"
-        app:layout_constraintStart_toStartOf="@+id/imgInUp"
-        app:layout_constraintTop_toBottomOf="@+id/imgInUp" />
-
-    <TextView
-        android:id="@+id/tvForgotPas"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/forgot_password"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="@+id/imgButtonForgot"
-        app:layout_constraintEnd_toEndOf="@+id/imgButtonForgot"
-        app:layout_constraintStart_toStartOf="@+id/imgButtonForgot"
-        app:layout_constraintTop_toTopOf="@+id/imgButtonForgot" />
-
-    <ImageButton
-        android:id="@+id/imgButtonForgot"
-        android:layout_width="0dp"
-        android:layout_height="32dp"
-        android:background="@drawable/forgot_back"
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="@+id/edPassword"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/edPassword"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupForgot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="tvForgotPas, imgButtonForgot"/>
+            <EditText
+                android:id="@+id/edPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:ems="10"
+                android:hint="@string/password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
+                android:textColorHint="@color/item_image"
+                app:layout_constraintEnd_toEndOf="@+id/edEmail"
+                app:layout_constraintStart_toStartOf="@+id/edEmail"
+                app:layout_constraintTop_toBottomOf="@+id/edEmail" />
 
 
-    <ImageButton
-        android:id="@+id/imgButtonEnter"
-        android:layout_width="80dp"
-        android:layout_height="57dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/forgot_back"
-        android:padding="8dp"
-        android:elevation="4dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_in_white"
-        app:layout_constraintStart_toStartOf="@+id/edPassword"
-        app:layout_constraintTop_toBottomOf="@+id/edPassword" />
 
-    <ImageButton
-        android:id="@+id/imgButtonExit"
-        android:layout_width="80dp"
-        android:layout_height="57dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/forgot_back"
-        android:padding="8dp"
-        android:elevation="4dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_out"
-        app:layout_constraintEnd_toEndOf="@+id/edPassword"
-        app:layout_constraintTop_toBottomOf="@+id/edPassword"
-        app:tint="@color/white" />
+            <ImageView
+                android:id="@+id/imgInUp"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="50dp"
+                android:src="@drawable/ic_reg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tvEnter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Вход"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="@+id/imgButtonEnter"
-        app:layout_constraintStart_toStartOf="@+id/imgButtonEnter"
-        app:layout_constraintTop_toBottomOf="@+id/imgButtonEnter" />
+            <TextView
+                android:id="@+id/tvRegIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@+id/imgInUp"
+                app:layout_constraintStart_toStartOf="@+id/imgInUp"
+                app:layout_constraintTop_toBottomOf="@+id/imgInUp" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Выход"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="@+id/imgButtonExit"
-        app:layout_constraintStart_toStartOf="@+id/imgButtonExit"
-        app:layout_constraintTop_toBottomOf="@+id/imgButtonExit" />
 
-    <TextView
-        android:id="@+id/tvReplaseUser"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:gravity="center"
-        android:text="@string/remove_user"
-        android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/edEmail"
-        app:layout_constraintEnd_toEndOf="@+id/edEmail"
-        app:layout_constraintStart_toStartOf="@+id/edEmail" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tvForgotPas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forgot_password"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/imgButtonForgot"
+                app:layout_constraintEnd_toEndOf="@+id/imgButtonForgot"
+                app:layout_constraintStart_toStartOf="@+id/imgButtonForgot"
+                app:layout_constraintTop_toTopOf="@+id/imgButtonForgot" />
+
+            <ImageButton
+                android:id="@+id/imgButtonForgot"
+                android:layout_width="0dp"
+                android:layout_height="32dp"
+                android:background="@drawable/forgot_back"
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/edPassword"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/edPassword"
+                app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupForgot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="tvForgotPas, imgButtonForgot"/>
+
+
+            <ImageButton
+                android:id="@+id/imgButtonEnter"
+                android:layout_width="80dp"
+                android:layout_height="57dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/forgot_back"
+                android:padding="8dp"
+                android:elevation="4dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_in_white"
+                app:layout_constraintStart_toStartOf="@+id/edPassword"
+                app:layout_constraintTop_toBottomOf="@+id/edPassword" />
+
+            <ImageButton
+                android:id="@+id/imgButtonExit"
+                android:layout_width="80dp"
+                android:layout_height="57dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/forgot_back"
+                android:padding="8dp"
+                android:elevation="4dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_out"
+                app:layout_constraintEnd_toEndOf="@+id/edPassword"
+                app:layout_constraintTop_toBottomOf="@+id/edPassword"
+                app:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/tvEnter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Вход"
+                android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="@+id/imgButtonEnter"
+                app:layout_constraintStart_toStartOf="@+id/imgButtonEnter"
+                app:layout_constraintTop_toBottomOf="@+id/imgButtonEnter" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Выход"
+                android:textColor="#FFFFFF"
+                app:layout_constraintEnd_toEndOf="@+id/imgButtonExit"
+                app:layout_constraintStart_toStartOf="@+id/imgButtonExit"
+                app:layout_constraintTop_toBottomOf="@+id/imgButtonExit" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                app:layout_constraintTop_toTopOf="@id/textView2"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/tvReplaseUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:text="@string/remove_user"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toTopOf="@+id/edEmail"
+                app:layout_constraintEnd_toEndOf="@+id/edEmail"
+                app:layout_constraintStart_toStartOf="@+id/edEmail" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
+</FrameLayout>

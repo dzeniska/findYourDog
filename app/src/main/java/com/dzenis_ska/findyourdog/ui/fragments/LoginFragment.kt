@@ -245,7 +245,7 @@ class LoginFragment : Fragment(){
                     imgInUp.animation = AnimationUtils.loadAnimation(context, R.anim.rotation)
                     tvRegIn.animation =
                         AnimationUtils.loadAnimation(context, R.anim.alpha_replace_user_down)
-                    tvRegIn.visibility = View.GONE
+                    tvRegIn.visibility = View.INVISIBLE
                     val email = edEmail.text.toString()
                     val pass = edPassword.text.toString()
                     if (email.isNotEmpty() && pass.isNotEmpty()) {
