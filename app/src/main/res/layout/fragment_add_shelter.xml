@@ -55,7 +55,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/main_background"
-                android:clickable="true"
                 android:foregroundGravity="center"
                 android:src="@drawable/ic_delete_photo"
                 app:layout_constraintStart_toStartOf="parent"
@@ -331,7 +330,6 @@
                     android:padding="4dp"
                     android:scaleType="fitEnd"
                     android:src="@drawable/ic_calendar"
-                    android:visibility="gone"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -376,6 +374,14 @@
                     app:layout_constraintBottom_toBottomOf="@+id/ibRabies"
                     app:layout_constraintStart_toStartOf="@+id/ibRabies"
                     app:layout_constraintTop_toTopOf="@+id/ibRabies" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/groupVaccine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:constraint_referenced_ids="ibPlague, tvPlague, ibRabies, tvRabies"/>
+
 
                 <Space
                     android:id="@+id/space"

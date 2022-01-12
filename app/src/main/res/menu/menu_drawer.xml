@@ -14,7 +14,7 @@
             android:title="@string/shelters">
             <menu>
                 <item
-                    android:id="@+id/mapFr"
+                    android:id="@+id/goToMapFr"
                     android:icon="@drawable/ic_map"
                     app:actionViewClass="android.widget.TextView"
                     android:title="@string/dog_map" />

@@ -77,7 +77,7 @@ class FBAuth() {
         if(mAuth.currentUser == null) {
             mAuth.signInAnonymously()
                 .addOnSuccessListener {
-                    val mess = "ну, гостем будешь, ok!"
+                    val mess = "гостем будешь!"
                     callback(true, mess)
                 }
                 .addOnFailureListener { callback(false, "${it.message}") }

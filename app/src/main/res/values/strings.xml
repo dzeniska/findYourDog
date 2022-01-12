@@ -74,8 +74,8 @@
     <string name="description">Описание</string>
     <string name="gendMan">Мальчик</string>
     <string name="vaccine"> Прививки: </string>
-    <string name="plague">От чумы …</string>
-    <string name="rabies">От бешенства …</string>
+    <string name="plague">От чумы: НЕТ</string>
+    <string name="rabies">От бешенства: НЕТ</string>
     <string name="gendWoMan">Девочка</string>
     <string name="sizeS">Маленький(ая)</string>
     <string name="sizeM">Средний(ая)</string>
@@ -106,11 +106,11 @@
     <string name="remove_user">Для смены пользователя \n нажмите \"Выход\"</string>
     <string name="fragment_one_photo">Просмотр</string>
     <string name="save">Сохранить</string>
-    <string name="ok">ok</string>
+    <string name="ok">OK</string>
 
 
 
-    <string name="enter_as_anon">ну гостем будешь! ok</string>
+    <string name="enter_as_anon">гостем будешь!</string>
     <string name="check_email">Проверьте почтовый ящик!</string>
     <string name="check_email_else">Проверьте почтовый ящик, говорю!</string>
     <string name="created_account">Аккаунт создан</string>

@@ -126,6 +126,7 @@ class FirstFragment : Fragment() {
                 }
                 false
             }
+
             imBtnMap.setOnTouchListener { v, event ->
                 Log.d("!!!click", "click")
                 if (event.action == MotionEvent.ACTION_DOWN) {
@@ -150,6 +151,7 @@ class FirstFragment : Fragment() {
                 }
                 false
             }
+
             imBtnAuth.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     v.isPressed = true

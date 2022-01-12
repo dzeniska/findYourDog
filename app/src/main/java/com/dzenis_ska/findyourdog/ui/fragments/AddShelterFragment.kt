@@ -111,7 +111,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 val fileUri = intent?.let { UCrop.getOutput(it) }
                 if (fileUri != null) {
                     Log.d("!!!ADD_PHOTO", "${requestPhoto} _ ${fileUri} _ ")
-
+                    if(lat == 0.0) {getLocation()}
                     when (requestPhoto) {
                         ADD_PHOTO -> vpAdapter.updateAdapter(listOf(fileUri), false)
                         ADD_IMAGE -> vpAdapter.updateAdapterForSinglePhoto(listOf(fileUri))
@@ -239,28 +239,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         clEditPhoto.visibility = if (!b) View.VISIBLE else View.GONE
     }
 
-    //for choose photo from fragment
-    fun hideAddShelterButton(bool: Boolean) {
-        rootElement!!.apply {
-            when (bool) {
-                false -> {
-                    constraintLayout2.visibility = View.GONE
-                    scrollView.visibility = View.GONE
-                }
-                else -> {
-                    constraintLayout2.visibility = View.VISIBLE
-                    scrollView.visibility = View.VISIBLE
-                }
-            }
-            fabAddShelter.visibility = if (!bool) View.GONE else View.VISIBLE
-            if (viewModel.btnDelState == false) {
-                fabDeleteShelter.visibility = if (!bool) View.GONE else View.VISIBLE
-            } else {
-                fabDeleteShelter.visibility = View.GONE
-            }
-        }
-    }
-
     private fun hidePhotoButtons(b: Boolean) {
         if (!b) {
             rootElement!!.apply {
@@ -271,10 +249,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
     private fun initViewModel() {
-        Log.d("!!!mapFragToAddShelterFragId", "mapFragToAddShelterFragId ${viewModel.mapFragToAddShelterFragId}")
-
         when(viewModel.mapFragToAddShelterFragId){
             ADD_DOG -> getLocation()
             SHOW_DOG-> {}
@@ -286,19 +261,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             Log.d("!!!onviewModelASF", "AddShelterFragment ${adShelter?.description}")
 
             rootElement!!.apply {
-//                if (viewModel.adShelteAfterPhotoViewed != null) {
-//                    Log.d("!!!adShelteAfterPhotoViewed", "2")
-//                    if (viewModel.adShelteAfterPhotoViewed!!.uid == viewModel.dbManager.mAuth.uid) {
-//                        fillFrag(viewModel.adShelteAfterPhotoViewed!!, true)
-//                        boolEditOrNew = true
-//                        fabDeleteShelter.isVisible = true
-//                        ibGetLocation.isVisible = true
-//                    } else {
-//                        fillFrag(viewModel.adShelteAfterPhotoViewed!!, false)
-//                    }
-//                } else
-
-
                 if (adShelter != null) {
                     viewModel.adShelteAfterPhotoViewed = adShelter
                     if (adShelter.uid == viewModel.dbManager.mAuth.uid) {
@@ -443,6 +405,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     lastLng = location.longitude
                     // Got last known location. In some rare situations this can be null.
                 } else {
+                    setMarker(53.9303802,27.5054665, 10f)
                     Toast.makeText(context, "No last location!", Toast.LENGTH_LONG).show()
                 }
             }
@@ -487,7 +450,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         rootElement!!.apply {
 
             imgAddPhoto.setOnClickListener() {
-                if (fabDeleteImage.isVisible) {
+                if (fabDeleteImage.isVisible == true) {
                     fullScreen(250, 0.50f)
                     requestPhoto = ADD_PHOTO
                     requestPermissionsForMediaStore()
@@ -570,8 +533,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             tvVaccine.setOnClickListener {
                 if (fbAuth.mAuth.currentUser?.uid == viewModel.adShelteAfterPhotoViewed?.uid ||
                     viewModel.btnDelState == true
-                )
-                    ibPlague.isVisible = !ibPlague.isVisible
+                ){
+                    groupVaccine.isVisible = !groupVaccine.isVisible
+                }
             }
             ibPlague.setOnClickListener {
                 val plagueString =

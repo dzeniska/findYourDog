@@ -143,7 +143,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         viewModel.liveAdsDataAllShelter.observe(this, {
             //добавляем счётчик в item menu_drawer
             menuMapItem = MenuItemCompat.getActionView(
-                rootElement!!.navView.menu.findItem(R.id.mapFr)
+                rootElement!!.navView.menu.findItem(R.id.goToMapFr)
             ) as (TextView)
             mapCounter(it.size)
         })
@@ -191,7 +191,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 closeDrawer()
                 Toast.makeText(applicationContext, "Любимчики", Toast.LENGTH_SHORT).show()
             }
-            R.id.mapFr -> {
+            R.id.goToMapFr -> {
                 if (ContextCompat.checkSelfPermission(
                         this,
                         Manifest.permission.ACCESS_FINE_LOCATION

@@ -8,12 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
+import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.FragmentOnePhotoBinding
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
@@ -76,6 +78,10 @@ class OnePhotoFragment : Fragment() {
                         progressBarLine.visibility = View.GONE
                     }
                 } else {
+                    rootElement!!.apply {
+                        imgBrokenPhoto.visibility = View.VISIBLE
+                        progressBarLine.visibility = View.GONE
+                    }
                     Toast.makeText(
                         activity as MainActivity,
                         "Плохое соединение с интернетом!",
@@ -90,6 +96,7 @@ class OnePhotoFragment : Fragment() {
         super.onResume()
         Log.d("!!!onResume", "OnePhotoFragment")
         rootElement!!.apply {
+            imgBrokenPhoto.visibility = View.GONE
             imgOnePhoto.visibility = View.GONE
             progressBarLine.visibility = View.VISIBLE
         }
@@ -124,8 +131,9 @@ class OnePhotoFragment : Fragment() {
     override fun onDestroyView() {
 
         Log.d("!!!onDestroyView", "OnePhotoFragment")
-        super.onDestroyView()
         rootElement = null
+        super.onDestroyView()
+
     }
     companion object {
         const val PHOTO_URI = "photoUri"
