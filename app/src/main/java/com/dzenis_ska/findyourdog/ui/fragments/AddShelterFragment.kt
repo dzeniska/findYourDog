@@ -670,7 +670,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     private fun publishAdShelter(adTemp: AdShelter, dialog: AlertDialog) {
 
-
         if (boolEditOrNew == true) {
 //            Log.d("!!!uid", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
 

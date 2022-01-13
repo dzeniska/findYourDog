@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="118dp"
     android:layout_height="match_parent"
     android:layout_marginTop="4dp"
@@ -20,4 +21,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_auth" />
+
+    <ImageView
+        android:id="@+id/progressBarMapItemAdapter"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:src="@drawable/paw_blue"
+        app:layout_constraintBottom_toBottomOf="@+id/ivMapFrAdapter"
+        app:layout_constraintEnd_toEndOf="@+id/ivMapFrAdapter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ivMapFrAdapter" />
+
+    <ProgressBar
+        android:id="@+id/progressBar4"
+        style="@android:style/Widget.Holo.Light.ProgressBar.Small.Inverse"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="8dp"
+        android:indeterminateTint="@color/light_blue_A400_60"
+        app:layout_constraintBottom_toBottomOf="@+id/ivMapFrAdapter"
+        app:layout_constraintEnd_toEndOf="@+id/ivMapFrAdapter"
+        app:layout_constraintStart_toStartOf="@+id/ivMapFrAdapter"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

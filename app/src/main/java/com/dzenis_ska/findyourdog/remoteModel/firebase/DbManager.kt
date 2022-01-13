@@ -17,8 +17,9 @@ import com.google.firebase.storage.ktx.storage
 
 class DbManager() {
     val db = Firebase.database.getReference(MAIN_NODE)
+    val dbMap = Firebase.database.getReference(MAIN_MAP_NODE)
     val mAuth = Firebase.auth
-    val ref = Firebase.storage.getReference(STORAGE_NODE)
+    private val ref = Firebase.storage.getReference(STORAGE_NODE)
 
 
     fun publishAdShelter(adTemp: AdShelter, callback: (text: String) -> Unit) {
@@ -37,8 +38,18 @@ class DbManager() {
                                         .setValue(FilterManager.createFilter(adTemp))
                                         .addOnCompleteListener {
                                             Log.d("!!!publishAdShelterDBtask", "${adTemp}")
+                                            dbMap.child(adTemp.key ?: "empty")
+                                                .setValue(AdForMap(
+                                                    name = adTemp.name,
+                                                    gender = adTemp.gender,
+                                                    lat = adTemp.lat,
+                                                    lng = adTemp.lng,
+                                                    markerColor = adTemp.markerColor,
+                                                    key = adTemp.key
+                                                )).addOnCompleteListener {
+                                                callback("task")
+                                            }
 
-                                            callback("task")
                                         }
                                 }
                             }
@@ -58,7 +69,7 @@ class DbManager() {
 //                    callback(true)
 //                }
 //                .addOnFailureListener {
-//                    Log.d("!!!deleteExeption", "${it.message}")
+//                    Log.d("!!!deleteException", "${it.message}")
 //                    callback(false)
 //                }
     }
@@ -68,8 +79,7 @@ class DbManager() {
     fun addPhotoToStorage(adTemp: ByteArray, listener: OnCompleteListener<Uri>) {
         Log.d("!!!itTaskJopa", "${adTemp}")
         val imStorageRef = ref
-            .child(mAuth.uid!!)
-//            .child("image_${System.currentTimeMillis()}")
+            .child(mAuth.currentUser?.email + "_" + mAuth.uid!!)
             .child("image_${System.currentTimeMillis()}")
 
 
@@ -86,7 +96,7 @@ class DbManager() {
     }
 
     fun getAllAds(readDataCallback: ReadDataCallback?) {
-        val query = db.orderByChild("/adFilterVaccine/plague")
+        val query = db.orderByChild("/${VACCINE_NODE}/plague")
 //            .startAt("1635430194000")
         readDataFromDB(query, readDataCallback)
     }
@@ -94,7 +104,7 @@ class DbManager() {
     //на будущее pagination
     fun getAllAdsForAdapter(lng: Double, readDataCallback: ReadDataCallback?) {
         Log.d("!!!lat_lng", "${lng.minus(0.5)}_${lng.plus(0.5)}")
-        val query = db.orderByChild("/adFilter/lng")
+        val query = db.orderByChild("/${FILTER_NODE}/lng")
             .startAt("${lng.minus(1.0)}").endBefore("${lng.plus(1.0)}")
 //            .limitToFirst(2)
         readDataFromDB(query, readDataCallback)
@@ -107,7 +117,7 @@ class DbManager() {
         }
         db.child(adShelter.key).child(INFO_NODE).removeValue()
         db.child(adShelter.key).child(CALLS_NODE).removeValue()
-        db.child(adShelter.key).child(FAVS_NODE).removeValue()
+        db.child(adShelter.key).child(FAVORS_NODE).removeValue()
         db.child(adShelter.key).child(FILTER_NODE).removeValue()
         db.child(adShelter.key).child(VACCINE_NODE).removeValue()
     }
@@ -137,22 +147,54 @@ class DbManager() {
         }
     }
 
+//    private fun readDataFromDBForMapFr(query: Query, readDataCallback: ReadDataCallback?) {
+//        query.addListenerForSingleValueEvent(object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                val adShelterArray = ArrayList<AdForMap>()
+//                for (item in snapshot.children) {
+//                    var adForMap: AdForMap? = null
+//                    item.children.forEach { data ->
+//                        if (adForMap == null) adShelter =
+//                            data.child(AD_SHELTER_NODE).getValue(AdShelter::class.java)
+//                    }
+//
+//
+//                    val infoItem = item.child(INFO_NODE).getValue(InfoItem::class.java)
+//                    val isFav = mAuth.uid?.let { item.child(FAVS_NODE).child(it).getValue(String::class.java) }
+//                    adShelter?.isFav = isFav != null
+//                    val favCounter = item.child(FAVS_NODE).childrenCount
+//                    adShelter?.viewsCounter = infoItem?.viewsCounter ?: "0"
+//                    adShelter?.callsCounter = infoItem?.callsCounter ?: "0"
+//                    adShelter?.favCounter = favCounter.toString()
+//
+//                    if (adShelter != null) adShelterArray.add(adShelter!!)
+//                }
+//
+//                readDataCallback?.readData(adShelterArray)
+//            }
+//            override fun onCancelled(error: DatabaseError) {
+//            }
+//        })
+//    }
+
     private fun readDataFromDB(query: Query, readDataCallback: ReadDataCallback?) {
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val adShelterArray = ArrayList<AdShelter>()
                 for (item in snapshot.children) {
                     var adShelter: AdShelter? = null
+
                     item.children.forEach { data ->
+                        Log.d("!!!readDataFromDB", "${data}")
                         if (adShelter == null) adShelter =
                             data.child(AD_SHELTER_NODE).getValue(AdShelter::class.java)
                     }
 
 
                     val infoItem = item.child(INFO_NODE).getValue(InfoItem::class.java)
-                    val isFav = mAuth.uid?.let { item.child(FAVS_NODE).child(it).getValue(String::class.java) }
+                    val isFav = mAuth.uid?.let { item.child(FAVORS_NODE).child(it).getValue(String::class.java) }
                     adShelter?.isFav = isFav != null
-                    val favCounter = item.child(FAVS_NODE).childrenCount
+                    val favCounter = item.child(FAVORS_NODE).childrenCount
                     adShelter?.viewsCounter = infoItem?.viewsCounter ?: "0"
                     adShelter?.callsCounter = infoItem?.callsCounter ?: "0"
                     adShelter?.favCounter = favCounter.toString()
@@ -181,7 +223,7 @@ class DbManager() {
     private fun removeFromFavs(dog: AdShelter, callback: (isFav: Boolean) -> Unit){
         dog.key?.let {key ->
             mAuth.uid?.let { uid ->
-                db.child(key).child(FAVS_NODE).child(uid).removeValue()
+                db.child(key).child(FAVORS_NODE).child(uid).removeValue()
                     .addOnCompleteListener { task->
                         if(task.isSuccessful) callback(false)
                     }
@@ -191,7 +233,7 @@ class DbManager() {
     private fun addToFavs(dog: AdShelter, callback: (isFav: Boolean) -> Unit){
         dog.key?.let {key ->
             mAuth.uid?.let { uid ->
-                db.child(key).child(FAVS_NODE).child(uid).setValue(uid)
+                db.child(key).child(FAVORS_NODE).child(uid).setValue(uid)
                     .addOnCompleteListener { task->
                         if(task.isSuccessful) callback(true)
                     }
@@ -210,13 +252,14 @@ class DbManager() {
     }
 
     companion object {
-        const val AD_SHELTER_NODE = "adShelter"
-        const val FILTER_NODE = "adFilter"
-        const val VACCINE_NODE = "adFilterVaccine"
+        const val AD_SHELTER_NODE = "ad_shelter"
+        const val FILTER_NODE = "ad_filter"
+        const val VACCINE_NODE = "ad_filter_vaccine"
         const val INFO_NODE = "info"
-        const val FAVS_NODE = "favs"
+        const val FAVORS_NODE = "favors"
         const val CALLS_NODE = "calls"
         const val MAIN_NODE = "main"
+        const val MAIN_MAP_NODE = "main_map"
         const val STORAGE_NODE = "storage"
         const val ADS_LIMIT = 2
 

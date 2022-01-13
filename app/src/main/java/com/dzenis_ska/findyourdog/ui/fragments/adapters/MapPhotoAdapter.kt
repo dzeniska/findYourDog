@@ -2,7 +2,9 @@ package com.dzenis_ska.findyourdog.ui.fragments.adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.dzenis_ska.findyourdog.R
@@ -10,8 +12,10 @@ import com.dzenis_ska.findyourdog.databinding.ItemLayoutForMapFrBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
 import com.dzenis_ska.findyourdog.ui.fragments.MapsFragment
 import com.dzenis_ska.findyourdog.ui.utils.CropSquareTransformation
+import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
+import java.lang.Exception
 
 class MapPhotoAdapter(val mapFr: MapsFragment): RecyclerView.Adapter<MapPhotoAdapter.MPHolder>() {
     val listShelter = arrayListOf<AdShelter>()
@@ -20,15 +24,30 @@ class MapPhotoAdapter(val mapFr: MapsFragment): RecyclerView.Adapter<MapPhotoAda
         fun setData(adShelter: AdShelter, mapFr: MapsFragment) {
             val imageView = rootElement.ivMapFrAdapter as ImageView
 
+            val anim = AnimationUtils.loadAnimation(mapFr.context, R.anim.alpha_fab)
+            rootElement.progressBarMapItemAdapter.startAnimation(anim)
+
             Picasso.get()
                 .load(adShelter.photoes?.get(0))
                 .placeholder(R.drawable.ic_wait_a_litle)
-                .error(R.drawable.drawer_back_6)
+                .error(R.drawable.ic_broken_image)
 //                .resize(w, h)
                 .transform(CropSquareTransformation())
 //                .centerCrop()
                 .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)
-                .into(imageView)
+                .into(imageView, object : Callback{
+                    override fun onSuccess() {
+                        rootElement.progressBarMapItemAdapter.visibility = View.GONE
+                        rootElement.progressBarMapItemAdapter.clearAnimation()
+                        rootElement.progressBar4.visibility = View.GONE
+                    }
+                    override fun onError(e: Exception?) {
+                        rootElement.progressBarMapItemAdapter.visibility = View.GONE
+                        rootElement.progressBarMapItemAdapter.clearAnimation()
+                        rootElement.progressBar4.visibility = View.GONE
+                    }
+
+                })
             imageView.setOnClickListener {
                 mapFr.animateCamera(adShelter)
             }
