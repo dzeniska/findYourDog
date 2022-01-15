@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.ItemLayoutForMapFrBinding

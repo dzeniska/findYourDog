@@ -1,10 +1,8 @@
 package com.dzenis_ska.findyourdog.ui.fragments
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
@@ -18,7 +16,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
@@ -27,11 +24,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.FragmentMapsBinding
+import com.dzenis_ska.findyourdog.remoteModel.firebase.AdForMap
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
-import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.MapPhotoAdapter
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
+import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
@@ -42,9 +40,9 @@ import kotlin.collections.ArrayList
 
 class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMyLocationButtonClickListener,
-    GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener,
-    GoogleMap.OnMarkerClickListener,
-    GoogleMap.OnCameraIdleListener
+    GoogleMap.OnMyLocationClickListener,
+    GoogleMap.OnInfoWindowClickListener,
+    GoogleMap.OnMarkerClickListener
 {
 
     val viewModel: BreedViewModel by activityViewModels()
@@ -61,8 +59,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var lng: Double = 0.0
     var lastLat: Double = 0.0
     var lastLng: Double = 0.0
+    var keyMarker = ""
     var mapFragment: SupportMapFragment? = null
     var dialogF: AlertDialog? = null
+    val listMarkers = arrayListOf<AdForMap>()
     val listAdShelter = arrayListOf<AdShelter>()
     val listAdShelterForAllSh = arrayListOf<AdShelter>()
     val listAdShelterMainPhoto = mutableListOf<String>()
@@ -72,8 +72,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     val cs = ConstraintSet()
 
     var markerOne: Marker? = null
-
-    var isEditing: Boolean = false
 
     //для определения последней локации
     private var fusedLocationClient: FusedLocationProviderClient? = null
@@ -90,98 +88,112 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!on", "onViewCreatedMF")
         navController = findNavController()
-
-
+        InitBackStack.initBackStack(navController)
         mapFragment = childFragmentManager.findFragmentById(R.id.mapFr) as SupportMapFragment?
-
-        Log.d("!!!SupportMapFragment", "SupportMapFragmentMF")
         mapFragment?.getMapAsync(this)
-
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
-
         viewModel.dialog.observe(viewLifecycleOwner, {dialog->
             dialogF = dialog
         })
 
+        //todo
+        viewModel.liveAdsDataForMapAdapter.observe(viewLifecycleOwner,{listAS ->
+            Log.d("!!!on", "viewModel.liveAdsDataForMapAdapter")
+            updateAdapter(listAS)
 
-        viewModel.liveAdsDataAllShelter.observe(viewLifecycleOwner,{list ->
-            Log.d("!!!on", "viewModel.liveAdsDataAllShelterMF")
-            val list1 = list
-            if(list.size == 0) CheckNetwork.check(activity as MainActivity)
-            if (::mMap.isInitialized) {
-                getAllMarkers(list1, null)
-                listAdShelter.clear()
-                listAdShelter.addAll(list1)
+            listAS.forEach {
+                if (it.key == keyMarker) {
+                    val index = listAS.indexOf(it)
+
+                    if(job3 == null) {
+                        job3 = CoroutineScope(Dispatchers.Main).launch {
+                            var height = rootElement!!.rcViewMapPhoto.height
+                            constraint(height.minus(10))
+                            delay(10)
+                            scrollToPos(index)
+                            delay(7000)
+                            constraint(ConstraintSet.MATCH_CONSTRAINT)
+                            job3 = null
+                        }
+                    }
+                }
             }
         })
 
+        viewModel.liveAdsDataAllMarkers.observe(viewLifecycleOwner,{ list ->
+            Log.d("!!!on", "viewModel.liveAdsDataForMapFr")
+            if(list.size == 0) CheckNetwork.check(activity as MainActivity)
+            if (::mMap.isInitialized) {
+                showAllMarkers(list, null)
+            }
+        })
         init()
         initClick()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.sample_menu, menu)
-        val item = menu.findItem(R.id.action_done)
-        if(!isEmailVeryfied()) item.icon = resources.getDrawable(R.drawable.ic_replay)
-    }
+//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+//        inflater.inflate(R.menu.sample_menu, menu)
+//        val item = menu.findItem(R.id.action_done)
+//        if(!isEmailVeryfied()) item.icon = resources.getDrawable(R.drawable.ic_replay)
+//    }
+//
+//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        Log.d("!!!onOptionsItemSelected", "${isEditing}")
+//        return when (item.itemId) {
+//            R.id.action_settings -> {
+//                // navigate to settings screen
+//                true
+//            }
+//            R.id.action_done -> {
+//                if(!isEmailVeryfied()){
+//                    showAllAds()
+//                }else{
+//                    if(!isEditing){
+//                        showMyAds()
+//                        item.icon = resources.getDrawable(R.drawable.ic_all)
+//                    }else{
+//                        showAllAds()
+//                        item.icon = resources.getDrawable(R.drawable.ic_my)
+//                    }
+//                    isEditing = !isEditing
+//                }
+//                true
+//            }
+//            else -> super.onOptionsItemSelected(item)
+//        }
+//    }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d("!!!onOptionsItemSelected", "${isEditing}")
-        return when (item.itemId) {
-            R.id.action_settings -> {
-                // navigate to settings screen
-                true
-            }
-            R.id.action_done -> {
-                if(!isEmailVeryfied()){
-                    showAllAds()
-                }else{
-                    if(!isEditing){
-                        showMyAds()
-                        item.icon = resources.getDrawable(R.drawable.ic_all)
-                    }else{
-                        showAllAds()
-                        item.icon = resources.getDrawable(R.drawable.ic_my)
-                    }
-                    isEditing = !isEditing
-                }
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-    private fun showAllAds(){
-        listAdShelter.clear()
-        listAdShelter.addAll(listAdShelterForAllSh)
-        viewModel.getAllAds()
-    }
-
-    private fun showMyAds() {
-        val fbAuth = FBAuth()
-        val listAll = arrayListOf<AdShelter>()
-        listAdShelterForAllSh.clear()
-        listAdShelterForAllSh.addAll(listAdShelter)
-        listAdShelter.forEach {
-            if(fbAuth.mAuth.uid == it.uid) listAll.add(it)
-        }
-        if(listAll.size != 0) {
-            listAdShelter.clear()
-            listAdShelter.addAll(listAll)
-            getAllMarkers(listAll, null)
-        }
-    }
+//    private fun showMyAds() {
+//        val fbAuth = FBAuth()
+//        val listAll = arrayListOf<AdShelter>()
+//        listAdShelterForAllSh.clear()
+//        listAdShelterForAllSh.addAll(listAdShelter)
+//        listAdShelter.forEach {
+//            if(fbAuth.mAuth.uid == it.uid) listAll.add(it)
+//        }
+//        if(listAll.size != 0) {
+//            listAdShelter.clear()
+//            listAdShelter.addAll(listAll)
+//            //todo
+////            getAllMarkers(listAll, null)
+//        }
+//    }
 
     private fun initClick() = with(rootElement!!){
         floatBtnGPS.setOnClickListener() {
+            //todo ???
             floatBtnGPS.visibility = View.GONE
+            getLocation()
         }
         floatBtnAddShelter.setOnClickListener() {
+            //todo no uses? mapFragToAddShelterFragId
+
             viewModel.mapFragToAddShelterFragId = AddShelterFragment.ADD_DOG
-            viewModel.btnDelState = true
             viewModel.openFragShelter(null)
             navController.navigate(R.id.addShelterFragment)
         }
+
     }
 
     private fun init(){
@@ -196,6 +208,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         rootElement!!.rcViewMapPhoto.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(rootElement!!.rcViewMapPhoto)
+        snapHelper.findTargetSnapPosition(LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false), 10, 10)
 
     }
     private fun isEmailVeryfied() = viewModel.dbManager.mAuth.currentUser!!.isEmailVerified
@@ -213,6 +226,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         setMarker(location.latitude, location.longitude, 6f)
                         lastLat = location.latitude
                         lastLng = location.longitude
+
                         // Got last known location. In some rare situations this can be null.
                     }else{
                         Toast.makeText(context, "No last location!", Toast.LENGTH_LONG).show()
@@ -220,7 +234,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 }
 
         locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        viewModel.locationManagerBoolMF = true
+//        viewModel.locationManagerBoolMF = true
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
     }
 
@@ -232,21 +246,25 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mMap.setInfoWindowAdapter(CustomInfoWindowAdapter())
         mMap.setOnInfoWindowClickListener(this)
         mMap.setOnMarkerClickListener(this)
-
-        getPermission()
+//        mMap.setMinZoomPreference(6.0f)
+        mMap.setOnCameraIdleListener {
+//            Log.d("!!!setOnCameraIdleListener", "setOnCameraIdleListener ${mMap.cameraPosition.zoom}")
+            Log.d("!!!setOnCameraIdleListener", "latitude ${mMap.cameraPosition.target.latitude}")
+            Log.d("!!!setOnCameraIdleListener", "longitude ${mMap.cameraPosition.target.longitude}")
+//            getAdsForAdapter(mMap.cameraPosition.target.latitude, mMap.cameraPosition.target.longitude)
+        }
+        viewModel.getAllMarkersForMap()
+        getLocation()
     }
-
 
     /** Demonstrates customizing the info window and/or its contents.  */
     internal inner class CustomInfoWindowAdapter : GoogleMap.InfoWindowAdapter {
-
         // These are both view groups containing an ImageView with id "badge" and two
         // TextViews with id "title" and "snippet".
         private val window: View = layoutInflater.inflate(R.layout.custom_info_window, null)
         private val contents: View = layoutInflater.inflate(R.layout.custom_info_contents, null)
 
         override fun getInfoWindow(marker: Marker): View? {
-
             render(marker, window)
             return window
         }
@@ -257,21 +275,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
 
         private fun render(marker: Marker, view: View) {
-//            val badge = R.drawable.add_photo
             val badge = R.drawable.ic_waling_man_dog
-//            var uri = ""
-//            listAdShelter.forEach {
-//                if (it.key == marker.tag) {
-//                    uri = it.photoes?.get(0) ?: ""
-//                }
-//            }
-
             view.findViewById<ImageView>(R.id.badge).setImageResource(badge)
-
             // Set the title and snippet for the custom info window
             val title: String? = marker.title
             val titleUi = view.findViewById<TextView>(R.id.title)
-
             if (title != null) {
                 // Spannable string allows us to edit the formatting of the text.
                 titleUi.text = SpannableString(title).apply {
@@ -294,109 +302,55 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    private fun getPermission() {
-        Log.d("!!!", "getPermission")
-            if (!::mMap.isInitialized) return
-        if (ActivityCompat.checkSelfPermission(
-                context as MainActivity,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            != PackageManager.PERMISSION_GRANTED &&
-            ActivityCompat.checkSelfPermission(
-                context as MainActivity,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            )
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                activity as MainActivity,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                locationPermissionCode
-            )
-        }else{
-//            getAllMarkers()
-            viewModel.getAllAds()
-            getLocation()
-//            mMap.isMyLocationEnabled = true
-        }
-    }
-
-
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode != LOCATION_PERMISSION_REQUEST_CODE) {
-            return
-        }
-        if (requestCode == locationPermissionCode) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(activity as MainActivity, "Permission Granted", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                Toast.makeText(activity as MainActivity, "Permission Denied", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
-    }
-
     override fun onLocationChanged(location: Location) {
         Log.d("!!!", "onLocationChanged")
         lat = location.latitude
         lng = location.longitude
-
         setMarker(lat, lng, 10f)
         if(lat != lastLat && lng != lastLng) {
             locationManager.removeUpdates(this)
-            viewModel.locationManagerBoolMF = false
             rootElement!!.floatBtnGPS.visibility = View.VISIBLE
         }
     }
 
-    private fun getAllMarkers(list: List<AdShelter>, chose: String?){
+    private fun showAllMarkers(list: List<AdForMap>, chose: String?){
+        if(listMarkers.isEmpty()){
+            listMarkers.clear()
+            listMarkers.addAll(list)
+        }
         mMap.clear()
-        val listMainPhoto = arrayListOf<String>()
+        val uid = viewModel.dbManager.mAuth.uid
         for(item in list){
             val target = LatLng(item.lat!!.toDouble(), item.lng!!.toDouble())
             val marker = mMap.addMarker(
                 MarkerOptions().position(target)
-                    .icon(BitmapDescriptorFactory.defaultMarker(item.markerColor?:15f))
+                    .icon(BitmapDescriptorFactory.defaultMarker(item.markerColor ?: 15f))
                     .title("${item.gender}")
                     .snippet(item.name)
                     .draggable(false)
-
-//                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.paw_mark))
             )
 
             marker!!.tag = item.key
+            //todo ?
             if(marker.tag == chose) marker.showInfoWindow()
-            listMainPhoto.add(item.photoes?.get(0) ?: "empty")
-            if(item.uid == viewModel.dbManager.mAuth.uid) {
-//                marker.showInfoWindow()
+            if(item.uid == uid) {
                 marker.alpha = 0.6f
             }
         }
-        updateAdapter(list as ArrayList<AdShelter>)
         setHasOptionsMenu(true)
-
     }
 
     private fun updateAdapter(listMainPhoto: ArrayList<AdShelter>) {
         adapter?.updateAdapter(listMainPhoto)
     }
 
-
-
     override fun onInfoWindowClick(markerInfo: Marker) {
         viewModel.mapFragToAddShelterFragId = AddShelterFragment.SHOW_DOG
-        isEditing = false
-        for(info in viewModel.listShelter){
+        for(info in viewModel.liveAdsDataForMapAdapter.value!!){
             if(info.key == markerInfo.tag){
-                if(viewModel.btnDelState == true) viewModel.btnDelState = false
                 viewModel.openFragShelter(info)
                 navController.navigate(R.id.addShelterFragment)
-                Toast.makeText(context as MainActivity, "${info.key}", Toast.LENGTH_LONG).show()
+//                Toast.makeText(context as MainActivity, "${info.key}", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -404,13 +358,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     fun animateCamera(adShelter: AdShelter){
         if(job2 == null) {
             job2 = CoroutineScope(Dispatchers.Main).launch {
-                getAllMarkers(listAdShelter, adShelter.key)
+                //todo
                 val target =
                     LatLng(adShelter.lat!!.toDouble(), adShelter.lng!!.toDouble())
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 10f))
                 delay(1500)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 16f))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 14f))
                 job2 = null
+                showAllMarkers(listMarkers, adShelter.key)
             }
         }
     }
@@ -428,9 +383,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         addCircle = mMap.addCircle(circleOptions)
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, zoom))
+        getAdsForAdapter(lat, lng)
     }
-    override fun onCameraIdle() {
-        Log.d("!!!onCameraIdle", "targetIdleMF")
+
+    private fun getAdsForAdapter(lat: Double, lng: Double) {
+        Log.d("!!!fillAdapter", "${lat}")
+        viewModel.getAllAdsForAdapter(lat, lng)
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
@@ -456,10 +414,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mapFragment?.onStop()
         super.onStop()
         Log.d("!!!on", "onStopMF")
-        if(viewModel.locationManagerBoolMF){
-            locationManager.removeUpdates(this)
-            viewModel.locationManagerBoolMF = false
-        }
+        locationManager.removeUpdates(this)
     }
 
     override fun onMyLocationButtonClick(): Boolean {
@@ -492,6 +447,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     override fun onPause() {
         Log.d("!!!on", "onPauseMF")
+        keyMarker = ""
         mapFragment?.onPause()
         super.onPause()
     }
@@ -513,60 +469,25 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onMarkerClick(m: Marker): Boolean {
-        Log.d("!!!marker", "${m.tag}")
-//        markerOne = m
-
-        clickMarker(m)
-        return false
-    }
-
-    private fun clickMarker(m: Marker/*, listShForAdapter: ArrayList<AdShelter>*/) {
-//        listShForAdapter.forEach {
-        listAdShelter.forEach {
-            if (it.key == m.tag) {
-                val index = listAdShelter.indexOf(it)
-
-                if(job3 == null) {
-                    job3 = CoroutineScope(Dispatchers.Main).launch {
-                        var height = rootElement!!.rcViewMapPhoto.height
-                        constraint(height.minus(10))
-                        delay(10)
-                        scrollToPos(index)
-                        delay(2000)
-                        constraint(ConstraintSet.MATCH_CONSTRAINT)
-                        job3 = null
-                    }
+        listMarkers.forEach {
+            if(it.key == m.tag){
+                keyMarker = it.key.toString()
+                if(it.lat != null && it.lng != null){
+                    getAdsForAdapter(it.lat.toDouble(), it.lng.toDouble())
                 }
             }
         }
+        return false
     }
 
     private fun scrollToPos(index: Int) {
         rootElement!!.rcViewMapPhoto.smoothScrollToPosition(index)
     }
 
-    private fun constraint(i: Int) {
+    fun constraint(i: Int) {
             cs.clone(rootElement!!.clFM)
             cs.constrainWidth(R.id.rcViewMapPhoto, i)
-            Log.d("!!!markInd", "${i}")
             cs.applyTo(rootElement!!.clFM)
-    }
-
-    private fun updatePermissionsState(permMap: MutableMap<String, Boolean>) {
-//        val permissionsStates: Map<String, Boolean> = permissions.associateWith { permission ->
-//            ActivityCompat.checkSelfPermission(requireContext(), permission) == PackageManager.PERMISSION_GRANTED
-//        }
-        permMap.forEach{map->
-            Log.d("!!!perm", "${map.key} _ ${map.value}")
-            if(map.value != true) {
-                Toast.makeText(context as MainActivity, "Необходимы разрешения!", Toast.LENGTH_LONG).show()
-                return@updatePermissionsState
-            }
-        }
-
-            viewModel.btnDelState = true
-            viewModel.openFragShelter(null)
-            navController.navigate(R.id.addShelterFragment)
     }
 
     companion object {
@@ -577,5 +498,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 //            Manifest.permission.READ_PHONE_STATE
 //        )
     }
+
+
 
 }

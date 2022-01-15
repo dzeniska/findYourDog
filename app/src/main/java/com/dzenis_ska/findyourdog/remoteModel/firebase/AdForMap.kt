@@ -8,4 +8,5 @@ data class AdForMap(
     val lng: String? = null,
     val markerColor: Float? = null,
     val key: String? = null,
+    val uid: String? = null,
 )

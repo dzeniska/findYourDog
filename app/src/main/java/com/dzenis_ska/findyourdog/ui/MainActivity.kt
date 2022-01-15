@@ -20,7 +20,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuItemCompat
 import androidx.lifecycle.Observer
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
@@ -140,7 +139,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             ) as (TextView)
             breedCounter(it.size)
         })
-        viewModel.liveAdsDataAllShelter.observe(this, {
+        viewModel.liveAdsDataAllMarkers.observe(this, {
             //добавляем счётчик в item menu_drawer
             menuMapItem = MenuItemCompat.getActionView(
                 rootElement!!.navView.menu.findItem(R.id.goToMapFr)
@@ -151,7 +150,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         viewModel.selectBreed()
 
-        viewModel.getAllAds()
+        viewModel.getAllMarkersForMap()
 
         navController = findNavController(R.id.navHost)
 

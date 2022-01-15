@@ -2,16 +2,15 @@ package com.dzenis_ska.findyourdog.viewModel
 
 import android.app.AlertDialog
 import android.net.Uri
-import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.dzenis_ska.findyourdog.remoteModel.DogBreeds
 import com.dzenis_ska.findyourdog.Repository.Repository
+import com.dzenis_ska.findyourdog.remoteModel.firebase.AdForMap
 import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
 import com.dzenis_ska.findyourdog.remoteModel.firebase.DbManager
-import com.google.android.gms.maps.SupportMapFragment
 import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -27,9 +26,8 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     var fileName: String = ""
     var selectedBreed: DogBreeds? = null
     var locationManagerBool: Boolean = false
-    var locationManagerBoolMF: Boolean = false
+//    var locationManagerBoolMF: Boolean = false
     var numPage: Int = 0
-    var btnDelState: Boolean? = false
     var isFav: Boolean = false
 
 
@@ -48,8 +46,8 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
 
     var userUpdate = MutableLiveData<FirebaseUser?>()
     val dbManager = DbManager()
-    var listShelter = ArrayList<AdShelter>()
-    val liveAdsDataAllShelter = MutableLiveData<ArrayList<AdShelter>>()
+    val liveAdsDataForMapAdapter = MutableLiveData<ArrayList<AdShelter>>()
+    val liveAdsDataAllMarkers = MutableLiveData<ArrayList<AdForMap>>()
     val liveAdsDataAddShelter = MutableLiveData<AdShelter?>()
     val listPhoto = arrayListOf<String>()
     val dialog = MutableLiveData<AlertDialog>()
@@ -57,11 +55,6 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
 
     var mapFragToAddShelterFragId = 0
 
-    //Для backPressed
-//    var backPressed: Int = 0
-
-    //Для выхода из OnePfotoFragment
-//    var isAddSF: Boolean = true
 //////////////////////////////////////////////////////////////////////
 
     fun listPhoto(listP: ArrayList<String>) {
@@ -83,9 +76,9 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     fun deleteAdShelter(adShelter: AdShelter?, writedDataCallback: WritedDataCallback){
         dbManager.deleteAdShelter(adShelter, object : DbManager.FinishWorkListener{
             override fun onFinish() {
-                val updateList = liveAdsDataAllShelter.value
+                val updateList = liveAdsDataForMapAdapter.value
                 updateList?.remove(adShelter)
-                liveAdsDataAllShelter.postValue(updateList!!)
+                liveAdsDataForMapAdapter.postValue(updateList!!)
                 writedDataCallback.writedData()
             }
         })
@@ -140,24 +133,16 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun getAllAds(){
-        //Вызывается два раза
-        Log.d("!!!publishAdShelterDB", "qwerty")
-        dbManager.getAllAds(object: DbManager.ReadDataCallback{
-            override fun readData(list: ArrayList<AdShelter>) {
-                liveAdsDataAllShelter.value = list
-                listShelter.clear()
-                listShelter.addAll(list)
-            }
-        })
+    fun getAllMarkersForMap(){
+        dbManager.getAllMarkersForMap(){
+            liveAdsDataAllMarkers.value = it
+        }
     }
 
-    fun getAllAdsForAdapter(lng: Double, callback: (list: ArrayList<AdShelter>) -> Unit){
-        dbManager.getAllAdsForAdapter(lng, object : DbManager.ReadDataCallback {
-            override fun readData(list: ArrayList<AdShelter>) {
-                callback(list)
-            }
-        })
+    fun getAllAdsForAdapter(lat: Double, lng: Double){
+        dbManager.getAllAdsForAdapter(lat, lng){ listAdapter ->
+            liveAdsDataForMapAdapter.value = listAdapter
+        }
     }
 
     //одного фото запрос

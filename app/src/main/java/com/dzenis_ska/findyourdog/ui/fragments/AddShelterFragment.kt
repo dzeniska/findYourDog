@@ -103,7 +103,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             updatePermissionsState(it as MutableMap<String, Boolean>)
         }
 
-    val startForResult =
+    private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val intent = result.data
@@ -111,7 +111,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 val fileUri = intent?.let { UCrop.getOutput(it) }
                 if (fileUri != null) {
                     Log.d("!!!ADD_PHOTO", "${requestPhoto} _ ${fileUri} _ ")
-                    if(lat == 0.0) {getLocation()}
                     when (requestPhoto) {
                         ADD_PHOTO -> vpAdapter.updateAdapter(listOf(fileUri), false)
                         ADD_IMAGE -> vpAdapter.updateAdapterForSinglePhoto(listOf(fileUri))
@@ -165,10 +164,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         imagePicker =
             ImagePicker(activity?.activityResultRegistry!!, viewLifecycleOwner) { fileUri ->
-                Log.d("!!!imagePicker", "${fileUri} ")
-
                 val uriF = File(requireContext().cacheDir, "temp${countTempPhoto++}.tmp")
-
                 if (fileUri != null) {
                     val uCrop = UCrop.of(fileUri, Uri.fromFile(uriF))
                         .withAspectRatio(9f, 9f)
@@ -250,15 +246,16 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun initViewModel() {
-        when(viewModel.mapFragToAddShelterFragId){
+        Log.d("!!!setMarker", "${viewModel.mapFragToAddShelterFragId}")
+        when (viewModel.mapFragToAddShelterFragId) {
             ADD_DOG -> getLocation()
-            SHOW_DOG-> {}
+            SHOW_DOG -> {}
+            CHOOSE_PHOTO -> {}
             else -> {}
         }
 
         //Открываем AddShelterFragment и передаём данные
         viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner, { adShelter ->
-            Log.d("!!!onviewModelASF", "AddShelterFragment ${adShelter?.description}")
 
             rootElement!!.apply {
                 if (adShelter != null) {
@@ -348,7 +345,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 clMain.background =
                     resources.getDrawable(R.drawable.background_write_fragment)
 
-
             } else {
                 Log.d("!!!!", "${adShelter}")
                 adShelterToEdit = adShelter
@@ -393,7 +389,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     @SuppressLint("MissingPermission")
     private fun getLocation() {
-        Log.d("!!!", "getLoc")
+        Log.d("!!!getLocation", "getLoc")
         // получаем последнюю локацию
         fusedLocationClient.lastLocation
             .addOnSuccessListener { location: Location? ->
@@ -405,7 +401,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     lastLng = location.longitude
                     // Got last known location. In some rare situations this can be null.
                 } else {
-                    setMarker(53.9303802,27.5054665, 10f)
+//                    setMarker(53.9303802, 27.5054665, 10f)
                     Toast.makeText(context, "No last location!", Toast.LENGTH_LONG).show()
                 }
             }
@@ -416,6 +412,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun setMarker(lat: Double, lng: Double, zoom: Float) {
+//        Log.d("!!!setMarker", "$zoom")
         var target = LatLng(lat, lng)
         mMap.clear()
 
@@ -450,7 +447,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         rootElement!!.apply {
 
             imgAddPhoto.setOnClickListener() {
-                if (fabDeleteImage.isVisible == true) {
+                if (fabDeleteImage.isVisible) {
                     fullScreen(250, 0.50f)
                     requestPhoto = ADD_PHOTO
                     requestPermissionsForMediaStore()
@@ -532,8 +529,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             tvVaccine.setOnClickListener {
                 if (fbAuth.mAuth.currentUser?.uid == viewModel.adShelteAfterPhotoViewed?.uid ||
-                    viewModel.btnDelState == true
-                ){
+                    viewModel.mapFragToAddShelterFragId == ADD_DOG) {
                     groupVaccine.isVisible = !groupVaccine.isVisible
                 }
             }
@@ -586,10 +582,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         dialog.show()
         val vpArray = vpAdapter.arrayPhoto
         val listPhotoForDel = SortListPhoto.listPhotoForDel(viewModel.listPhoto, vpArray)
-        if (listPhotoForDel.size != 0 && viewModel.btnDelState == false) listPhotoForDel.forEach {
-            deletePhoto(
-                it
-            )
+        if (listPhotoForDel.size != 0) listPhotoForDel.forEach {
+            deletePhoto(it)
         }
         if (vpAdapter.arrayPhoto.size != 0) {
             addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
@@ -671,8 +665,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun publishAdShelter(adTemp: AdShelter, dialog: AlertDialog) {
 
         if (boolEditOrNew == true) {
-//            Log.d("!!!uid", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
-
             var lt = shLat.toString()
             var lg = shLng.toString()
             if (!ltlng) {
@@ -689,16 +681,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         time = adShelterToEdit?.time.toString()
                     ), dialog
             ) {
-//                Log.d("!!!uidIt", "${it}}")
                 navController.popBackStack(R.id.addShelterFragment, true)
                 navController.popBackStack(R.id.mapsFragment, true)
                 navController.navigate(R.id.mapsFragment)
             }
         } else {
-//            Log.d("!!!uid2", "${adTemp.uid} , ${viewModel.dbManager.auth.uid}")
             viewModel.publishAdShelter(adTemp, dialog) {
-//                Log.d("!!!uidIt2", "${it}")
-//                viewModel.getAllAds()
                 navController.popBackStack(R.id.addShelterFragment, true)
                 navController.popBackStack(R.id.mapsFragment, true)
                 navController.navigate(R.id.mapsFragment)
@@ -894,8 +882,15 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             Log.d("!!!perm", "${map.key} _ ${map.value}")
             if (map.value) countPerm++
         }
-        if (countPerm >= 2) imagePicker?.selectImage()
-        else Toast.makeText(context as MainActivity, "Необходимы разрешения для использования фоток!", Toast.LENGTH_LONG).show()
+        if (countPerm >= 2) {
+//            viewModel.mapFragToAddShelterFragId = CHOOSE_PHOTO
+            imagePicker?.selectImage()
+        }
+        else Toast.makeText(
+            context as MainActivity,
+            "Необходимы разрешения для использования фоток!",
+            Toast.LENGTH_LONG
+        ).show()
 //                return@updatePermissionsState
 
     }
@@ -913,6 +908,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         const val ADD_DOG = 101
         const val SHOW_DOG = 102
+        const val CHOOSE_PHOTO = 103
 
         private val permissions = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,

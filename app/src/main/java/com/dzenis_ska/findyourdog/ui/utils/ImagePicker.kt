@@ -24,7 +24,6 @@ class ImagePicker(
 //            Log.w(TAG, "Linked LifecycleOwner is destroyed")
 //            return
 //        }
-
         getContent.launch(MIMETYPE_IMAGES)
     }
 

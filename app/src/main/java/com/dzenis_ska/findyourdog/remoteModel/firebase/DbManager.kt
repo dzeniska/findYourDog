@@ -45,7 +45,8 @@ class DbManager() {
                                                     lat = adTemp.lat,
                                                     lng = adTemp.lng,
                                                     markerColor = adTemp.markerColor,
-                                                    key = adTemp.key
+                                                    key = adTemp.key,
+                                                    uid = adTemp.uid
                                                 )).addOnCompleteListener {
                                                 callback("task")
                                             }
@@ -95,31 +96,74 @@ class DbManager() {
         }.addOnCompleteListener(listener)
     }
 
-    fun getAllAds(readDataCallback: ReadDataCallback?) {
-        val query = db.orderByChild("/${VACCINE_NODE}/plague")
+    fun getAllMarkersForMap(callback: (adShelterArray: ArrayList<AdForMap>) -> Unit) {
+        dbMap.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val adShelterArray = ArrayList<AdForMap>()
+                snapshot.children.forEach {item->
+                    item.getValue(AdForMap::class.java)?.let { adShelterArray.add(it) }
+                }
+                callback(adShelterArray)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.d("!!!getAllAdsForMap", error.message)
+            }
+
+        })
+    }
+
+    fun getAllAds(callback: (adShelterArray: ArrayList<AdShelter>) -> Unit) {
+        val query = db.orderByChild("/${FILTER_NODE}/time")
 //            .startAt("1635430194000")
-        readDataFromDB(query, readDataCallback)
+            .limitToFirst(100)
+        readDataFromDB(query){callback(it)}
     }
 
     //на будущее pagination
-    fun getAllAdsForAdapter(lng: Double, readDataCallback: ReadDataCallback?) {
-        Log.d("!!!lat_lng", "${lng.minus(0.5)}_${lng.plus(0.5)}")
-        val query = db.orderByChild("/${FILTER_NODE}/lng")
-            .startAt("${lng.minus(1.0)}").endBefore("${lng.plus(1.0)}")
-//            .limitToFirst(2)
-        readDataFromDB(query, readDataCallback)
+    fun getAllAdsForAdapter(lat: Double, lng: Double, callback: (adShelterArray: ArrayList<AdShelter>) -> Unit) {
+//        Log.d("!!!lat_lng", "${lng.minus(0.5)}_${lng.plus(0.5)}")
+        val queryLat = db.orderByChild("/${FILTER_NODE}/lat")
+            .startAt("${lat.minus(5.5)}")
+            .endBefore("${lat.plus(5.5)}")
+//            .limitToFirst(100)
+        readDataFromDB(queryLat){adShLat->
+            val queryLng = db.orderByChild("/${FILTER_NODE}/lng")
+                .startAt("${lng.minus(5.5)}")
+                .endBefore("${lng.plus(5.5)}")
+            readDataFromDB(queryLng){adShLng->
+                val listSh = arrayListOf<AdShelter>()
+                adShLat.forEach { adShLatItem->
+                    adShLng.forEach adShLngItem@{ adShLngItem->
+                        if(adShLngItem == adShLatItem) {
+                            listSh.add(adShLngItem)
+                            return@adShLngItem
+                        }
+                    }
+                }
+                callback(listSh)
+            }
+
+        }
     }
 
     fun deleteAdShelter(adShelter: AdShelter?, listener: FinishWorkListener) {
         if (adShelter?.key == null || adShelter.uid == null) return
-        db.child(adShelter.key).child(adShelter.uid).removeValue().addOnCompleteListener { task ->
-            if (task.isSuccessful) listener.onFinish()
+        dbMap.child(adShelter.key).removeValue().addOnSuccessListener {
+            db.child(adShelter.key).child(adShelter.uid).removeValue().addOnSuccessListener {
+                db.child(adShelter.key).child(INFO_NODE).removeValue().addOnSuccessListener{
+                    db.child(adShelter.key).child(CALLS_NODE).removeValue().addOnSuccessListener {
+                        db.child(adShelter.key).child(FAVORS_NODE).removeValue().addOnSuccessListener {
+                            db.child(adShelter.key).child(FILTER_NODE).removeValue().addOnSuccessListener {
+                                db.child(adShelter.key).child(VACCINE_NODE).removeValue().addOnSuccessListener {
+                                    listener.onFinish()
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        db.child(adShelter.key).child(INFO_NODE).removeValue()
-        db.child(adShelter.key).child(CALLS_NODE).removeValue()
-        db.child(adShelter.key).child(FAVORS_NODE).removeValue()
-        db.child(adShelter.key).child(FILTER_NODE).removeValue()
-        db.child(adShelter.key).child(VACCINE_NODE).removeValue()
     }
 
     fun adViewed(adShelter: AdShelter, anyCounter: Int, listener: FinishWorkListener) {
@@ -177,7 +221,7 @@ class DbManager() {
 //        })
 //    }
 
-    private fun readDataFromDB(query: Query, readDataCallback: ReadDataCallback?) {
+    private fun readDataFromDB(query: Query, callback: (adShelterArray: ArrayList<AdShelter>) -> Unit) {
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val adShelterArray = ArrayList<AdShelter>()
@@ -202,7 +246,7 @@ class DbManager() {
                     if (adShelter != null) adShelterArray.add(adShelter!!)
                 }
 
-                readDataCallback?.readData(adShelterArray)
+                callback(adShelterArray)
             }
             override fun onCancelled(error: DatabaseError) {
             }
@@ -239,12 +283,6 @@ class DbManager() {
                     }
             }
         }
-    }
-
-
-    interface ReadDataCallback {
-        fun readData(list: ArrayList<AdShelter>)
-
     }
 
     interface FinishWorkListener {
