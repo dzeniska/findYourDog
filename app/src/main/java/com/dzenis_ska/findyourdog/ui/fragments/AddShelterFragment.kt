@@ -18,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -38,6 +39,7 @@ import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -176,6 +178,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         Log.d("!!!onCreateOptionsMenu", "onCreateOptionsMenu")
         inflater.inflate(R.menu.menu_shelter_frag, menu)
@@ -188,6 +191,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val dog = viewModel.adShelteAfterPhotoViewed
         return when (item.itemId) {
@@ -426,7 +430,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mMap.addCircle(circleOptions)
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, zoom))
         val marker = mMap.addMarker(
-            MarkerOptions().position(target).title("Примерно тут!)").draggable(
+            MarkerOptions().position(target)
+                .title("Примерно тут!)")
+                .draggable(
                 false
             )
         )

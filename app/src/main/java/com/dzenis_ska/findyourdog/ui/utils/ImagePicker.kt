@@ -2,11 +2,9 @@ package com.dzenis_ska.findyourdog.ui.utils
 
 import android.net.Uri
 import android.util.Log
-import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 
 class ImagePicker(

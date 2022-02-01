@@ -105,8 +105,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             this,
             rootElement!!.drawerLayout,
             rootElement!!.appBar.toolbar,
-            android.R.string.yes,
-            android.R.string.no
+            R.string.open,
+            R.string.close
         ) {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 super.onDrawerSlide(drawerView, slideOffset)

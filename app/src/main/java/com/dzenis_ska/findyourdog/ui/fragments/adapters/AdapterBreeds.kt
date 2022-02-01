@@ -78,6 +78,7 @@ class AdapterBreeds(val context: Context?, val fragment: DogsListFragment): Recy
     fun updateAdapterBreeds(list: MutableList<DogBreeds>){
         this.list.clear()
         this.list.addAll(list)
+//        this.list.add(list[0])
         notifyDataSetChanged()
     }
 }

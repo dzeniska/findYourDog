@@ -12,10 +12,13 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.*
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
@@ -35,6 +38,7 @@ import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 import kotlinx.coroutines.*
+import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -66,12 +70,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     val listAdShelter = arrayListOf<AdShelter>()
     val listAdShelterForAllSh = arrayListOf<AdShelter>()
     val listAdShelterMainPhoto = mutableListOf<String>()
-    var job1: Job? = null
     var job2: Job? = null
     var job3: Job? = null
     val cs = ConstraintSet()
 
-    var markerOne: Marker? = null
+    var badgeImage: ImageView? = null
 
     //для определения последней локации
     private var fusedLocationClient: FusedLocationProviderClient? = null
@@ -97,32 +100,37 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             dialogF = dialog
         })
 
+
         //todo
         viewModel.liveAdsDataForMapAdapter.observe(viewLifecycleOwner,{listAS ->
-            Log.d("!!!on", "viewModel.liveAdsDataForMapAdapter")
+            Log.d("!!!on", "viewModel.liveAdsDataForMapAdapter - ${listAS.size}")
             updateAdapter(listAS)
-
-            listAS.forEach {
-                if (it.key == keyMarker) {
-                    val index = listAS.indexOf(it)
-
-                    if(job3 == null) {
-                        job3 = CoroutineScope(Dispatchers.Main).launch {
-                            var height = rootElement!!.rcViewMapPhoto.height
-                            constraint(height.minus(10))
-                            delay(10)
-                            scrollToPos(index)
-                            delay(7000)
-                            constraint(ConstraintSet.MATCH_CONSTRAINT)
-                            job3 = null
+            rootElement!!.progressBarMap.visibility = View.GONE
+            if(keyMarker.isNotEmpty()) {
+                listAS.forEach listAS@{ adSh->
+                    if (adSh.key == keyMarker) {
+                        val index = listAS.indexOfFirst{it.key == adSh.key}
+                        if(job3 == null) {
+                            job3 = CoroutineScope(Dispatchers.Main).launch {
+                                var height = rootElement!!.rcViewMapPhoto.height
+                                constraint(height.minus(10))
+                                delay(10)
+                                scrollToPos(index)
+                                delay(5000)
+                                constraint(ConstraintSet.MATCH_CONSTRAINT)
+                                scrollToPos(index)
+                                rootElement!!.progressBarMap.visibility = View.GONE
+                                job3 = null
+                            }
                         }
+                        return@listAS
                     }
                 }
             }
         })
 
         viewModel.liveAdsDataAllMarkers.observe(viewLifecycleOwner,{ list ->
-            Log.d("!!!on", "viewModel.liveAdsDataForMapFr")
+            Log.d("!!!on", "viewModel.liveAdsDataForMapFr _ ${list.size}")
             if(list.size == 0) CheckNetwork.check(activity as MainActivity)
             if (::mMap.isInitialized) {
                 showAllMarkers(list, null)
@@ -186,14 +194,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             floatBtnGPS.visibility = View.GONE
             getLocation()
         }
+
         floatBtnAddShelter.setOnClickListener() {
             //todo no uses? mapFragToAddShelterFragId
-
             viewModel.mapFragToAddShelterFragId = AddShelterFragment.ADD_DOG
             viewModel.openFragShelter(null)
             navController.navigate(R.id.addShelterFragment)
         }
-
     }
 
     private fun init(){
@@ -206,9 +213,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         adapter = MapPhotoAdapter(this)
         rootElement!!.rcViewMapPhoto.adapter = adapter
         rootElement!!.rcViewMapPhoto.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(rootElement!!.rcViewMapPhoto)
-        snapHelper.findTargetSnapPosition(LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false), 10, 10)
 
     }
     private fun isEmailVeryfied() = viewModel.dbManager.mAuth.currentUser!!.isEmailVerified
@@ -265,18 +272,21 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         private val contents: View = layoutInflater.inflate(R.layout.custom_info_contents, null)
 
         override fun getInfoWindow(marker: Marker): View? {
+            Log.d("!!!getInfoWindow", "marker ${marker.tag}")
             render(marker, window)
             return window
         }
 
         override fun getInfoContents(marker: Marker): View? {
+            Log.d("!!!getInfoContents", "marker ${marker.tag}")
             render(marker, contents)
             return contents
         }
 
         private fun render(marker: Marker, view: View) {
             val badge = R.drawable.ic_waling_man_dog
-            view.findViewById<ImageView>(R.id.badge).setImageResource(badge)
+            badgeImage = view.findViewById<ImageView>(R.id.badge)
+            badgeImage?.setImageResource(badge)
             // Set the title and snippet for the custom info window
             val title: String? = marker.title
             val titleUi = view.findViewById<TextView>(R.id.title)
@@ -346,12 +356,21 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     override fun onInfoWindowClick(markerInfo: Marker) {
         viewModel.mapFragToAddShelterFragId = AddShelterFragment.SHOW_DOG
-        for(info in viewModel.liveAdsDataForMapAdapter.value!!){
+        var bool = false
+        viewModel.liveAdsDataForMapAdapter.value!!.forEach forInfo@{ info->
             if(info.key == markerInfo.tag){
+                bool = true
                 viewModel.openFragShelter(info)
                 navController.navigate(R.id.addShelterFragment)
 //                Toast.makeText(context as MainActivity, "${info.key}", Toast.LENGTH_LONG).show()
+                return@forInfo
             }
+        }
+        Log.d("!!!bool", "${bool}")
+        if(bool == false) {
+            badgeImage?.setImageResource(R.drawable.ic_broken_image)
+            val targ = markerInfo.position
+            getAdsForAdapter(targ.latitude, targ.longitude)
         }
     }
 
@@ -363,7 +382,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     LatLng(adShelter.lat!!.toDouble(), adShelter.lng!!.toDouble())
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 10f))
                 delay(1500)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 14f))
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 12f))
                 job2 = null
                 showAllMarkers(listMarkers, adShelter.key)
             }
@@ -387,8 +406,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun getAdsForAdapter(lat: Double, lng: Double) {
-        Log.d("!!!fillAdapter", "${lat}")
-        viewModel.getAllAdsForAdapter(lat, lng)
+        Log.d("!!!fillAdapter", "${job3}")
+        rootElement!!.progressBarMap.visibility = View.VISIBLE
+        if(job3 == null) viewModel.getAllAdsForAdapter(lat, lng)
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
@@ -441,6 +461,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     override fun onDestroyView() {
         Log.d("!!!on", "onDestroyView")
+        job2 = null
+        job3 = null
         rootElement = null
         super.onDestroyView()
     }
@@ -481,7 +503,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun scrollToPos(index: Int) {
-        rootElement!!.rcViewMapPhoto.smoothScrollToPosition(index)
+        rootElement!!.rcViewMapPhoto.scrollToPosition(index)
     }
 
     fun constraint(i: Int) {

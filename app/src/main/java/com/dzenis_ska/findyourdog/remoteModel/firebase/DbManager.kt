@@ -79,7 +79,7 @@ class DbManager() {
 
     fun addPhotoToStorage(adTemp: ByteArray, listener: OnCompleteListener<Uri>) {
         Log.d("!!!itTaskJopa", "${adTemp}")
-        val imStorageRef = ref
+        val imStorageRef =  ref
             .child(mAuth.currentUser?.email + "_" + mAuth.uid!!)
             .child("image_${System.currentTimeMillis()}")
 
@@ -124,13 +124,13 @@ class DbManager() {
     fun getAllAdsForAdapter(lat: Double, lng: Double, callback: (adShelterArray: ArrayList<AdShelter>) -> Unit) {
 //        Log.d("!!!lat_lng", "${lng.minus(0.5)}_${lng.plus(0.5)}")
         val queryLat = db.orderByChild("/${FILTER_NODE}/lat")
-            .startAt("${lat.minus(5.5)}")
-            .endBefore("${lat.plus(5.5)}")
+            .startAt("${lat.minus(1.0)}")
+            .endBefore("${lat.plus(1.0)}")
 //            .limitToFirst(100)
         readDataFromDB(queryLat){adShLat->
             val queryLng = db.orderByChild("/${FILTER_NODE}/lng")
-                .startAt("${lng.minus(5.5)}")
-                .endBefore("${lng.plus(5.5)}")
+                .startAt("${lng.minus(1.0)}")
+                .endBefore("${lng.plus(1.0)}")
             readDataFromDB(queryLng){adShLng->
                 val listSh = arrayListOf<AdShelter>()
                 adShLat.forEach { adShLatItem->
@@ -264,6 +264,7 @@ class DbManager() {
             }
         }
     }
+
     private fun removeFromFavs(dog: AdShelter, callback: (isFav: Boolean) -> Unit){
         dog.key?.let {key ->
             mAuth.uid?.let { uid ->

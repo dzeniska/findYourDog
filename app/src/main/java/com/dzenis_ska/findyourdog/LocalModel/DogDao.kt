@@ -9,18 +9,12 @@ interface DogDao {
 
     @Insert
     suspend fun insertBreeds(breeds: MutableList<DogBreeds>)
-   /* @Insert
-    suspend fun insertWeight(breeds: MutableList<Weight>)
-    @Insert
-    suspend fun insertHeight(breeds: MutableList<Height>)
-    @Insert
-    suspend fun insertImage(breeds: MutableList<Image>)*/
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertOneDog(newDog: DogBreeds)
+    suspend fun insertOneDog(newDog: DogBreeds)
 
     @Query("SELECT * FROM breeds")
-    fun getAllBreedes(): MutableList<DogBreeds>
+    suspend fun getAllBreedes(): MutableList<DogBreeds>
 
     @Query("UPDATE breeds SET isFavorite = :isSelected WHERE id = :id")
     suspend fun updateOnePost(id: Long, isSelected: Int)

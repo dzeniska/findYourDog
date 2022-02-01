@@ -108,11 +108,22 @@
     <string name="save">Сохранить</string>
     <string name="ok">OK</string>
 
+    <!--Open-close drawer menu-->
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
 
 
     <string name="enter_as_anon">гостем будешь!</string>
     <string name="check_email">Проверьте почтовый ящик!</string>
     <string name="check_email_else">Проверьте почтовый ящик, говорю!</string>
     <string name="created_account">Аккаунт создан</string>
+
+
+    <!-- Реклама -->
+        <string name="ad_id">ca-app-pub-3940256099942544/6300978111</string>
+<!--    <string name="ad_id">ca-app-pub-8644370805049292/7519786153</string>-->
+    <!--    <string name="ad_inter_id">ca-app-pub-3940256099942544/1033173712</string>-->
+<!--    <string name="ad_inter_id">ca-app-pub-8644370805049292/4056959965</string>-->
 
 </resources>

@@ -11,7 +11,7 @@ import retrofit2.http.Url
 import java.util.concurrent.TimeUnit
 
 
-val BASE_URL_RNDOM = "https://dog.ceo/api/"
+const val BASE_URL_RNDOM = "https://dog.ceo/api/"
 
 interface ApiOnePhoto {
     @GET

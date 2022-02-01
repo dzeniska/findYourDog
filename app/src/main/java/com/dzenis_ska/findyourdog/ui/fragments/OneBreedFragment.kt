@@ -177,14 +177,7 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
 //        val breed = resp.substringBeforeLast("/").substringAfterLast("/")
         Log.d("!!!pq", photo)
         navController.navigate(R.id.onePhotoFragment)
-//        viewModel.isAddSF = false
 
-//        onePhotoFrag = OnePhotoFragment()
-//        val fm = activity?.supportFragmentManager?.beginTransaction()
-//
-//        fm?.replace(R.id.fragOneBreed, onePhotoFrag!!)
-//
-//        fm?.commit()
     }
 
 
@@ -194,8 +187,6 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-//        (parent!!.getChildAt(0) as TextView).setTextColor(Color.GRAY)
-//        (parent!!.getChildAt(0) as TextView).textSize = 14f
         if (!bool) {
             Log.d("!!!spinner", "!!!")
             if (parent != null) {

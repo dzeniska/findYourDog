@@ -64,6 +64,18 @@
         map:layout_constraintEnd_toEndOf="parent"
         map:layout_constraintStart_toStartOf="parent" />
 
+    <ProgressBar
+        android:id="@+id/progressBarMap"
+        style="@android:style/Widget.Holo.Light.ProgressBar.Small.Inverse"
+        android:indeterminateTint="@color/light_blue_A400_60"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:visibility="gone"
+        map:layout_constraintBottom_toTopOf="@+id/rcViewMapPhoto"
+        map:layout_constraintEnd_toEndOf="parent"
+        map:layout_constraintStart_toStartOf="parent"
+        map:layout_constraintTop_toTopOf="@+id/mapFr" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

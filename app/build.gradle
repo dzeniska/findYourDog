@@ -28,8 +28,8 @@ android {
         applicationId "com.dzenis_ska.findyourdog"
         minSdkVersion 24
         targetSdkVersion 31
-        versionCode 126
-        versionName "1.2.6"
+        versionCode 128
+        versionName "1.2.8"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -74,6 +74,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
 
     implementation 'com.google.android.gms:play-services-location:19.0.1'
+    implementation 'com.google.android.gms:play-services-ads:20.5.0'
 
 
     testImplementation 'junit:junit:4.13.2'
@@ -117,5 +118,8 @@ dependencies {
 
     implementation "com.squareup.okhttp3:okhttp:4.9.3"
     implementation "com.squareup.okhttp3:okhttp-urlconnection:4.9.3"
+
+    //ads
+    implementation 'com.google.android.gms:play-services-ads:20.5.0'
 
 }

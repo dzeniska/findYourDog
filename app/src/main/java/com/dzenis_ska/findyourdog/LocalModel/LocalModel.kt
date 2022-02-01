@@ -15,9 +15,6 @@ class LocalModel @Inject constructor(@ApplicationContext context: Context) {
     suspend fun insertBreeds(breeds: MutableList<DogBreeds>){
         database.dogDao().insertBreeds(breeds)
     }
-    suspend fun insertOneDog(dog: DogBreeds){
-        database.dogDao().insertOneDog(dog)
-    }
 
     suspend fun getAllBreed(): MutableList<DogBreeds> {
        return  database.dogDao().getAllBreedes()
@@ -29,16 +26,12 @@ class LocalModel @Inject constructor(@ApplicationContext context: Context) {
     suspend fun insertNote(id: Long, note: String){
         database.dogDao().updateOneNote(id, note)
     }
-    suspend fun getOnePost(id : Long):DogBreeds{
-        return database.dogDao().getOnePost(id)
-    }
+
     suspend fun selectFavorites(): MutableList<DogBreeds>{
         return database.dogDao().selectFavorites()
     }
     suspend fun searchView(breed: Array<String>):MutableList<DogBreeds>{
         return database.dogDao().searchView(breed)
     }
-    suspend fun insertOnePost(newBreed: DogBreeds){
-        database.dogDao().insertOnePost(newBreed)
-    }
+
 }

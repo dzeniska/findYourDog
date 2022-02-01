@@ -84,7 +84,7 @@ class FBAuth() {
         }
     }
 
-    fun signOutAnon() {
+    private fun signOutAnon() {
         val anon = mAuth.currentUser
         if (anon?.isAnonymous == true) anon.delete()
     }

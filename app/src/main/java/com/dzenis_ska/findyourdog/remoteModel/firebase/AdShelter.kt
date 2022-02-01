@@ -1,6 +1,5 @@
 package com.dzenis_ska.findyourdog.remoteModel.firebase
 
-import androidx.collection.ArrayMap
 
 data class AdShelter(
     val name: String? = null,

@@ -122,7 +122,7 @@ class OnePhotoFragment : Fragment() {
         Log.d("!!!onDetach", "OnePhotoFragment")
     }
 
-    fun InputStream.saveToFile(f: File) = use { input ->
+    private fun InputStream.saveToFile(f: File) = use { input ->
         f.outputStream().use { output ->
             input.copyTo(output)
         }
@@ -134,9 +134,6 @@ class OnePhotoFragment : Fragment() {
         rootElement = null
         super.onDestroyView()
 
-    }
-    companion object {
-        const val PHOTO_URI = "photoUri"
     }
 }
 

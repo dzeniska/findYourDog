@@ -28,6 +28,8 @@ import com.dzenis_ska.findyourdog.databinding.FragmentLoginBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.auth.FirebaseUser
 
 class LoginFragment : Fragment(){
@@ -63,8 +65,14 @@ class LoginFragment : Fragment(){
         return rootElement.root
     }
 
+    override fun onPause() {
+        rootElement!!.adView.pause()
+        super.onPause()
+    }
+
     override fun onResume() {
         super.onResume()
+        rootElement!!.adView.resume()
         currentUser(fbAuth.mAuth.currentUser)
         Log.d("!!!onResumeLF", "onResumeLF")
     }
@@ -74,7 +82,7 @@ class LoginFragment : Fragment(){
         Log.d("!!!onViewCreatedLf", "onViewCreatedLf")
         init()
         onClick()
-        initBackStack()
+        initAds()
     }
 
     fun showElements(bool: Boolean) {
@@ -94,7 +102,7 @@ class LoginFragment : Fragment(){
         rootElement?.apply {
             if (currentUser == null || currentUser.isAnonymous) {
                 isEditEnable(false)
-                tvRegIn.text = "Привет, Незнакомец!)"
+                tvRegIn.text = "Привет, чел!)"
             } else if (!currentUser.isAnonymous && currentUser.isEmailVerified) {
                 isEditEnable(true)
                 groupForgot.visibility = View.GONE
@@ -305,8 +313,14 @@ class LoginFragment : Fragment(){
 
     override fun onDestroyView() {
         Log.d("!!!onDestroyViewLf", "onDestroyViewLf")
+        rootElement!!.adView.destroy()
         rootElement = null
         super.onDestroyView()
+    }
+    private fun initAds(){
+        MobileAds.initialize(requireContext())
+        val adRequest = AdRequest.Builder().build()
+        rootElement!!.adView.loadAd(adRequest)
     }
 
     companion object {
@@ -314,12 +328,5 @@ class LoginFragment : Fragment(){
             Manifest.permission.ACCESS_FINE_LOCATION
         )
     }
-    @SuppressLint("RestrictedApi")
-    private fun initBackStack() {
-        navController?.let { InitBackStack.initBackStack(it) }
-//        val fList = navController?.backStack
-//        fList?.forEach {
-//            Log.d("!!!frLF", "${it.destination.label}")
-//        }
-    }
+
 }

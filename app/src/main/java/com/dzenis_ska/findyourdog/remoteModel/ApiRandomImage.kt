@@ -9,7 +9,7 @@ import retrofit2.http.*
 import java.util.concurrent.TimeUnit
 
 
-val BASE_URL_RANDOM = "https://dog.ceo/api/"
+const val BASE_URL_RANDOM = "https://dog.ceo/api/"
 
 
 interface ApiRandomImage {

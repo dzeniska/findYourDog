@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.RecyclerView
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.ItemLayoutForMapFrBinding
@@ -16,7 +15,6 @@ import com.dzenis_ska.findyourdog.ui.utils.CropSquareTransformation
 import com.squareup.picasso.Callback
 import com.squareup.picasso.MemoryPolicy
 import com.squareup.picasso.Picasso
-import java.lang.Exception
 
 class MapPhotoAdapter(val mapFr: MapsFragment): RecyclerView.Adapter<MapPhotoAdapter.MPHolder>() {
     val listShelter = arrayListOf<AdShelter>()
@@ -27,6 +25,7 @@ class MapPhotoAdapter(val mapFr: MapsFragment): RecyclerView.Adapter<MapPhotoAda
 
             val anim = AnimationUtils.loadAnimation(mapFr.context, R.anim.alpha_fab)
             rootElement.progressBarMapItemAdapter.startAnimation(anim)
+            rootElement.progressBar4.visibility = View.VISIBLE
 
             Picasso.get()
                 .load(adShelter.photoes?.get(0))
