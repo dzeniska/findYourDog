@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
+import android.content.res.Resources
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -185,7 +186,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         val item = menu.findItem(R.id.isFav)
         if (viewModel.adShelteAfterPhotoViewed != null) {
             if (viewModel.adShelteAfterPhotoViewed?.isFav!!) item.icon =
-                resources.getDrawable(R.drawable.paw_red_2)
+                resources.getDrawable(R.drawable.paw_red_2, context?.theme)
         } else {
             menu.clear()
         }
@@ -202,12 +203,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                             val adShelter =
                                 viewModel.adShelteAfterPhotoViewed?.copy(isFav = isFavorite)
                             viewModel.adShelteAfterPhotoViewed = adShelter
-                            item.icon = resources.getDrawable(R.drawable.paw_red_2)
+                            item.icon = resources.getDrawable(R.drawable.paw_red_2, context?.theme)
                         } else {
                             val adShelter =
                                 viewModel.adShelteAfterPhotoViewed?.copy(isFav = isFavorite)
                             viewModel.adShelteAfterPhotoViewed = adShelter
-                            item.icon = resources.getDrawable(R.drawable.paw_blue)
+                            item.icon = resources.getDrawable(R.drawable.paw_blue, context?.theme)
                         }
                     }
                 }
@@ -277,6 +278,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         })
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private fun fillFrag(adShelter: AdShelter, isEnabled: Boolean) {
         val listPhoto = adShelter.photoes
 
@@ -347,7 +349,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 ivTel.visibility = View.VISIBLE
 
                 clMain.background =
-                    resources.getDrawable(R.drawable.background_write_fragment)
+                    resources.getDrawable(R.drawable.background_write_fragment, context?.theme)
 
             } else {
                 Log.d("!!!!", "${adShelter}")
@@ -366,6 +368,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             if (rootElement!!.edBreed.text.isNotEmpty()) rootElement!!.edBreed.text.toString() else "без породы"
         val time = System.currentTimeMillis().toString()
         rootElement!!.apply {
+            val dbManager = viewModel.dbManager
+            val mAuth = dbManager.mAuth
             adShelter = AdShelter(
                 edName.text.toString(),
                 edTelNum.text.toString(),
@@ -375,15 +379,15 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 targetLng.toString(),
                 edDescription.text.toString(),
                 breed,
-                "empty",
+                mAuth.currentUser?.email,
                 mapOf(
                     "plague" to (plague?.toString() ?: ""),
                     "rabies" to (rabies?.toString() ?: "")
                 ),
                 photoUrlList,
                 "empty",
-                viewModel.dbManager.db.push().key,
-                viewModel.dbManager.mAuth.uid,
+                dbManager.db.push().key,
+                mAuth.uid,
                 (Random.nextInt(0, 360)).toFloat(),
                 time
             )

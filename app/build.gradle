@@ -28,8 +28,8 @@ android {
         applicationId "com.dzenis_ska.findyourdog"
         minSdkVersion 24
         targetSdkVersion 31
-        versionCode 128
-        versionName "1.2.8"
+        versionCode 141
+        versionName "1.4.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

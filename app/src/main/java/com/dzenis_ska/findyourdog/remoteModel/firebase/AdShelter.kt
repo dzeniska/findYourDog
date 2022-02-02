@@ -10,7 +10,7 @@ data class AdShelter(
     val lng: String? = null,
     val description: String? = null,
     val breed: String? = null,
-    val etc: String? = null,
+    val email: String? = null,
 
     val vaccination: Map<String, String>? = null,
     val photoes: ArrayList<String>? = null,
@@ -23,5 +23,5 @@ data class AdShelter(
     var viewsCounter: String = "0",
     var callsCounter: String = "0",
     var isFav: Boolean = false,
-    var favCounter: String = "0"
+    var favCounter: String = "0",
 )

@@ -46,7 +46,8 @@ class DbManager() {
                                                     lng = adTemp.lng,
                                                     markerColor = adTemp.markerColor,
                                                     key = adTemp.key,
-                                                    uid = adTemp.uid
+                                                    uid = adTemp.uid,
+                                                    email = adTemp.email
                                                 )).addOnCompleteListener {
                                                 callback("task")
                                             }
@@ -190,36 +191,6 @@ class DbManager() {
             }
         }
     }
-
-//    private fun readDataFromDBForMapFr(query: Query, readDataCallback: ReadDataCallback?) {
-//        query.addListenerForSingleValueEvent(object : ValueEventListener {
-//            override fun onDataChange(snapshot: DataSnapshot) {
-//                val adShelterArray = ArrayList<AdForMap>()
-//                for (item in snapshot.children) {
-//                    var adForMap: AdForMap? = null
-//                    item.children.forEach { data ->
-//                        if (adForMap == null) adShelter =
-//                            data.child(AD_SHELTER_NODE).getValue(AdShelter::class.java)
-//                    }
-//
-//
-//                    val infoItem = item.child(INFO_NODE).getValue(InfoItem::class.java)
-//                    val isFav = mAuth.uid?.let { item.child(FAVS_NODE).child(it).getValue(String::class.java) }
-//                    adShelter?.isFav = isFav != null
-//                    val favCounter = item.child(FAVS_NODE).childrenCount
-//                    adShelter?.viewsCounter = infoItem?.viewsCounter ?: "0"
-//                    adShelter?.callsCounter = infoItem?.callsCounter ?: "0"
-//                    adShelter?.favCounter = favCounter.toString()
-//
-//                    if (adShelter != null) adShelterArray.add(adShelter!!)
-//                }
-//
-//                readDataCallback?.readData(adShelterArray)
-//            }
-//            override fun onCancelled(error: DatabaseError) {
-//            }
-//        })
-//    }
 
     private fun readDataFromDB(query: Query, callback: (adShelterArray: ArrayList<AdShelter>) -> Unit) {
         query.addListenerForSingleValueEvent(object : ValueEventListener {

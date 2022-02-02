@@ -76,6 +76,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     var badgeImage: ImageView? = null
 
+
     //для определения последней локации
     private var fusedLocationClient: FusedLocationProviderClient? = null
 
@@ -259,6 +260,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             Log.d("!!!setOnCameraIdleListener", "latitude ${mMap.cameraPosition.target.latitude}")
             Log.d("!!!setOnCameraIdleListener", "longitude ${mMap.cameraPosition.target.longitude}")
 //            getAdsForAdapter(mMap.cameraPosition.target.latitude, mMap.cameraPosition.target.longitude)
+        }
+        mMap.setOnCameraMoveListener {
+//            locationManager.removeUpdates(this)
+//            rootElement!!.floatBtnGPS.visibility = View.VISIBLE
         }
         viewModel.getAllMarkersForMap()
         getLocation()
@@ -491,6 +496,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onMarkerClick(m: Marker): Boolean {
+//        if(!isMarkerClicked)
         listMarkers.forEach {
             if(it.key == m.tag){
                 keyMarker = it.key.toString()
