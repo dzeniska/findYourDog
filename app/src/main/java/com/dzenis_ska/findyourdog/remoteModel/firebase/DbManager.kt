@@ -60,11 +60,18 @@ class DbManager() {
         }
     }
     fun deletePhoto(url: String) {
-        Log.d("!!!deletePhotoUri", " db man ${url}")
-            val desertRef = ref
-                .child(Firebase.auth.uid!!)
-                .child(url)
-            desertRef.delete()
+
+        ref.storage
+            .getReferenceFromUrl(url)
+            .delete()
+            .addOnSuccessListener {
+                Log.d("!!!deletePhotoUri", " db man ${url}")
+            }
+
+//            val desertRef = ref
+//                .child(Firebase.auth.uid!!)
+//                .child(url)
+//            desertRef.delete()
         //ERROR ERROR
 //                .addOnSuccessListener {
 //                    Log.d("!!!deletePhotoUri", " db man ${url}")
@@ -122,45 +129,75 @@ class DbManager() {
     }
 
     //на будущее pagination
-    fun getAllAdsForAdapter(lat: Double, lng: Double, callback: (adShelterArray: ArrayList<AdShelter>) -> Unit) {
-//        Log.d("!!!lat_lng", "${lng.minus(0.5)}_${lng.plus(0.5)}")
-        val queryLat = db.orderByChild("/${FILTER_NODE}/lat")
-            .startAt("${lat.minus(1.0)}")
-            .endBefore("${lat.plus(1.0)}")
-//            .limitToFirst(100)
-        readDataFromDB(queryLat){adShLat->
-            val queryLng = db.orderByChild("/${FILTER_NODE}/lng")
-                .startAt("${lng.minus(1.0)}")
-                .endBefore("${lng.plus(1.0)}")
-            readDataFromDB(queryLng){adShLng->
-                val listSh = arrayListOf<AdShelter>()
-                adShLat.forEach { adShLatItem->
-                    adShLng.forEach adShLngItem@{ adShLngItem->
-                        if(adShLngItem == adShLatItem) {
-                            listSh.add(adShLngItem)
-                            return@adShLngItem
-                        }
-                    }
-                }
-                callback(listSh)
+    fun getAllAdsForAdapter(
+        lat: Double,
+        lng: Double,
+        isMyMarkers: Boolean,
+        callback: (adShelterArray: ArrayList<AdShelter>) -> Unit
+    ) {
+        if(isMyMarkers){
+            val myUid = mAuth.currentUser?.uid
+            val queryMyAds = db.orderByChild("/${FILTER_NODE}/uid").equalTo("$myUid")
+            readDataFromDB(queryMyAds){
+                Log.d("!!!getAllAdsForAdapterMy", "${it}")
+
+                callback(it)
+            }
+        } else {
+            val queryLat: Query = when (lat) {
+                in 1.0..85.0 -> db.orderByChild("/${FILTER_NODE}/lat")
+                    .startAt("${lat.minus(1.0)}")
+                    .endBefore("${lat.plus(1.0)}")
+                //            .limitToFirst(100)
+                in -85.0..-1.0 -> db.orderByChild("/${FILTER_NODE}/lat")
+                    .startAt("${lat.plus(1.0)}")
+                    .endBefore("${lat.minus(1.0)}")
+
+                else -> db.orderByChild("/${FILTER_NODE}/lat").equalTo("$lat")
             }
 
+            readDataFromDB(queryLat) { adShLat ->
+                val queryLng: Query = when (lng) {
+                    in 1.0..179.0 -> db.orderByChild("/${FILTER_NODE}/lng")
+                        .startAt("${lng.minus(1.0)}")
+                        .endBefore("${lng.plus(1.0)}")
+                    in -179.0..-1.0 -> db.orderByChild("/${FILTER_NODE}/lng")
+                        .startAt("${lng.plus(1.0)}")
+                        .endBefore("${lng.minus(1.0)}")
+
+                    else -> db.orderByChild("/${FILTER_NODE}/lng").equalTo("$lng")
+                }
+//            Log.d("!!!getAdsForAdapter", "${lng.minus(1.0)}_ ${lng.plus(1.0)}")
+                readDataFromDB(queryLng) { adShLng ->
+                    val listSh = arrayListOf<AdShelter>()
+                    adShLat.forEach { adShLatItem ->
+                        adShLng.forEach adShLngItem@{ adShLngItem ->
+                            Log.d("!!!getAdsForAdapter", "${adShLngItem}")
+                            if (adShLngItem == adShLatItem) {
+                                listSh.add(adShLngItem)
+                                return@adShLngItem
+                            }
+                        }
+                    }
+                    callback(listSh)
+                }
+
+            }
         }
     }
 
-    fun deleteAdShelter(adShelter: AdShelter?, listener: FinishWorkListener) {
+    fun deleteAdShelter(adShelter: AdShelter?, callback: (deleted: String) -> Unit) {
         if (adShelter?.key == null || adShelter.uid == null) return
         dbMap.child(adShelter.key).removeValue().addOnSuccessListener {
             db.child(adShelter.key).child(adShelter.uid).removeValue().addOnSuccessListener {
-                db.child(adShelter.key).child(INFO_NODE).removeValue().addOnSuccessListener{
-                    db.child(adShelter.key).child(CALLS_NODE).removeValue().addOnSuccessListener {
-                        db.child(adShelter.key).child(FAVORS_NODE).removeValue().addOnSuccessListener {
-                            db.child(adShelter.key).child(FILTER_NODE).removeValue().addOnSuccessListener {
+                db.child(adShelter.key).child(INFO_NODE).removeValue().addOnSuccessListener {
+                    db.child(adShelter.key).child(FAVORS_NODE).removeValue().addOnSuccessListener {
+                        db.child(adShelter.key).child(FILTER_NODE).removeValue().addOnSuccessListener {
                                 db.child(adShelter.key).child(VACCINE_NODE).removeValue().addOnSuccessListener {
-                                    listener.onFinish()
-                                }
+                                        Log.d("!!!deleted", "ok")
+                                        callback("ok")
+                                    }
                             }
-                        }
                     }
                 }
             }
@@ -267,11 +304,9 @@ class DbManager() {
         const val VACCINE_NODE = "ad_filter_vaccine"
         const val INFO_NODE = "info"
         const val FAVORS_NODE = "favors"
-        const val CALLS_NODE = "calls"
         const val MAIN_NODE = "main"
         const val MAIN_MAP_NODE = "main_map"
         const val STORAGE_NODE = "storage"
         const val ADS_LIMIT = 2
-
     }
 }

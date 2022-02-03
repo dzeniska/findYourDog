@@ -186,20 +186,57 @@
                     app:layout_constraintStart_toStartOf="@id/edTelNum"
                     app:layout_constraintTop_toBottomOf="@id/edTelNum" />
 
+                <TextView
+                    android:id="@+id/edBreedTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dog_breed"
+                    android:paddingTop="10dp"
+                    android:paddingStart="10dp"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="@id/edName"
+                    app:layout_constraintStart_toStartOf="@id/edName"
+                    app:layout_constraintTop_toBottomOf="@id/edName" />
+
                 <EditText
                     android:id="@+id/edBreed"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:background="@android:drawable/editbox_background"
                     android:ems="10"
-                    android:hint="@string/dog_breed"
+                    android:hint="@string/dog_breed_cosmo"
                     android:inputType="textPersonName"
                     android:padding="10dp"
                     android:textColor="@color/back_menu_add_color"
                     android:textColorHint="@color/text_hint_add"
-                    app:layout_constraintEnd_toEndOf="@id/edName"
-                    app:layout_constraintStart_toStartOf="@id/edName"
-                    app:layout_constraintTop_toBottomOf="@id/edName" />
+                    app:layout_constraintEnd_toEndOf="@id/edBreedTitle"
+                    app:layout_constraintStart_toStartOf="@id/edBreedTitle"
+                    app:layout_constraintTop_toBottomOf="@id/edBreedTitle" />
+
+
+                <TextView
+                    android:id="@+id/tvGenderTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/gender"
+                    android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toStartOf="@id/edBreed"
+                    app:layout_constraintEnd_toStartOf="@id/tvSizeTitle"
+                    app:layout_constraintTop_toBottomOf="@id/edBreed" />
+
+                <TextView
+                    android:id="@+id/tvSizeTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/size"
+                    android:gravity="center"
+                    android:paddingTop="10dp"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toEndOf="@id/edBreed"
+                    app:layout_constraintStart_toEndOf="@id/tvGenderTitle"
+                    app:layout_constraintTop_toTopOf="@+id/tvGenderTitle" />
 
                 <TextView
                     android:id="@+id/tvGender"
@@ -210,9 +247,9 @@
                     android:gravity="center"
                     android:padding="10dp"
                     android:textColor="@color/back_menu_add_color"
-                    app:layout_constraintStart_toStartOf="@id/edBreed"
+                    app:layout_constraintStart_toStartOf="@id/tvGenderTitle"
                     app:layout_constraintEnd_toStartOf="@id/tvSize"
-                    app:layout_constraintTop_toBottomOf="@id/edBreed" />
+                    app:layout_constraintTop_toBottomOf="@id/tvGenderTitle" />
 
                 <TextView
                     android:id="@+id/tvSize"

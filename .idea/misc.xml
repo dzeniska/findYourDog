@@ -25,9 +25,11 @@
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/drawable/edit_image_button.xml" value="0.26614583333333336" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/drawable/ic_broken_image.xml" value="0.26614583333333336" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/drawable/ic_calendar.xml" value="0.2703125" />
+        <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/drawable/ic_replay.xml" value="0.26614583333333336" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/drawable/paw_blue.xml" value="0.26614583333333336" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/drawable/paw_red.xml" value="0.26614583333333336" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/drawable/paw_red_2.xml" value="0.26614583333333336" />
+        <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout-v26/to_delete.xml" value="0.25" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/activity_one_photo.xml" value="0.25416666666666665" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/app_bar_main.xml" value="0.25416666666666665" />
@@ -47,10 +49,12 @@
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/item_layout_for_map_fr.xml" value="0.25" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/progress_dialog_layout.xml" value="0.2296875" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/qwerty.xml" value="0.25" />
+        <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/to_delete.xml" value="0.25" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/layout/vaccinate_dialog.xml" value="0.25416666666666665" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/menu/menu.xml" value="0.25416666666666665" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/menu/menu_drawer.xml" value="0.25416666666666665" />
         <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/menu/menu_shelter_frag.xml" value="0.25416666666666665" />
+        <entry key="..\:/android/DogTherapy/FindYourDog/app/src/main/res/menu/sample_menu.xml" value="0.25" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable-anydpi/add_photo.xml" value="0.21614583333333334" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable-anydpi/ic_my.xml" value="0.12604166666666666" />
         <entry key="..\:/lesD/kursath/FindYourDog/app/src/main/res/drawable-hdpi/background_img_item.xml" value="0.2203125" />

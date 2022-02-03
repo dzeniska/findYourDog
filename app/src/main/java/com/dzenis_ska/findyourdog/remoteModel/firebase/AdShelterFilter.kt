@@ -1,6 +1,8 @@
 package com.dzenis_ska.findyourdog.remoteModel.firebase
 
 data class AdShelterFilter(
+    val email: String? = null,
+    val uid: String? = null,
     val time: String? = null,
     val lat: String? = null,
     val lng: String? = null,

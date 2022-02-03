@@ -73,15 +73,13 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     }
 
 
-    fun deleteAdShelter(adShelter: AdShelter?, writedDataCallback: WritedDataCallback){
-        dbManager.deleteAdShelter(adShelter, object : DbManager.FinishWorkListener{
-            override fun onFinish() {
+    fun deleteAdShelter(adShelter: AdShelter?, callback: (deleted: String) -> Unit){
+        dbManager.deleteAdShelter(adShelter){
                 val updateList = liveAdsDataForMapAdapter.value
                 updateList?.remove(adShelter)
                 liveAdsDataForMapAdapter.postValue(updateList!!)
-                writedDataCallback.writedData()
-            }
-        })
+            callback(it)
+        }
     }
 
     private fun adViewed(adShelter: AdShelter, anyCounter: Int) {
@@ -133,14 +131,14 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun getAllMarkersForMap(){
+    fun getAllMarkersForMap() {
         dbManager.getAllMarkersForMap(){
             liveAdsDataAllMarkers.value = it
         }
     }
 
-    fun getAllAdsForAdapter(lat: Double, lng: Double){
-        dbManager.getAllAdsForAdapter(lat, lng){ listAdapter ->
+    fun getAllAdsForAdapter(lat: Double, lng: Double, isMyMarkers: Boolean){
+        dbManager.getAllAdsForAdapter(lat, lng, isMyMarkers){ listAdapter ->
             liveAdsDataForMapAdapter.value = listAdapter
         }
     }

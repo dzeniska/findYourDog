@@ -10,6 +10,8 @@ object FilterManager {
     }
     fun createFilter(adShelter: AdShelter): AdShelterFilter {
         return AdShelterFilter(
+            adShelter.email,
+            adShelter.uid,
             adShelter.time,
             adShelter.lat,
             adShelter.lng,

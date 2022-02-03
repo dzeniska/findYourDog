@@ -365,7 +365,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         var adShelter: AdShelter
         val breed =
-            if (rootElement!!.edBreed.text.isNotEmpty()) rootElement!!.edBreed.text.toString() else "без породы"
+            if (rootElement!!.edBreed.text.isNotEmpty()) rootElement!!.edBreed.text.toString() else resources.getString(R.string.dog_breed_cosmo)
         val time = System.currentTimeMillis().toString()
         rootElement!!.apply {
             val dbManager = viewModel.dbManager
@@ -485,16 +485,14 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
 
             fabDeleteShelter.setOnClickListener {
-                val listDel = SortListPhoto.subStringDel(viewModel.listPhoto)
+//                val listDel = SortListPhoto.subStringDel(viewModel.listPhoto)
+                val listDel = viewModel.listPhoto
                 if (listDel.size != 0) listDel.forEach { deletePhoto(it) }
-                viewModel.deleteAdShelter(
-                    adShelterToEdit,
-                    object : BreedViewModel.WritedDataCallback {
-                        override fun writedData() {
-                            navController.popBackStack(R.id.addShelterFragment, true)
-                            navController.navigate(R.id.mapsFragment)
-                        }
-                    })
+                viewModel.deleteAdShelter(adShelterToEdit){
+                    navController.popBackStack(R.id.addShelterFragment, true)
+                    navController.popBackStack(R.id.mapsFragment, true)
+                    navController.navigate(R.id.mapsFragment)
+                }
             }
 
             fabAddShelter.setOnClickListener() {

@@ -12,13 +12,10 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.*
-import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
@@ -75,6 +72,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     val cs = ConstraintSet()
 
     var badgeImage: ImageView? = null
+
+    var isMyMarkers = false
 
 
     //для определения последней локации
@@ -141,37 +140,38 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         initClick()
     }
 
-//    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-//        inflater.inflate(R.menu.sample_menu, menu)
-//        val item = menu.findItem(R.id.action_done)
-//        if(!isEmailVeryfied()) item.icon = resources.getDrawable(R.drawable.ic_replay)
-//    }
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.sample_menu, menu)
+        val item = menu.findItem(R.id.action_done)
+        if(!isEmailVeryfied()) item.icon = resources.getDrawable(R.drawable.ic_replay, context?.theme)
+    }
 //
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        Log.d("!!!onOptionsItemSelected", "${isEditing}")
-//        return when (item.itemId) {
-//            R.id.action_settings -> {
-//                // navigate to settings screen
-//                true
-//            }
-//            R.id.action_done -> {
-//                if(!isEmailVeryfied()){
-//                    showAllAds()
-//                }else{
-//                    if(!isEditing){
-//                        showMyAds()
-//                        item.icon = resources.getDrawable(R.drawable.ic_all)
-//                    }else{
-//                        showAllAds()
-//                        item.icon = resources.getDrawable(R.drawable.ic_my)
-//                    }
-//                    isEditing = !isEditing
-//                }
-//                true
-//            }
-//            else -> super.onOptionsItemSelected(item)
-//        }
-//    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        Log.d("!!!onOptionsItemSelected", "${isMyMarkers}")
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                // navigate to settings screen
+                true
+            }
+            R.id.action_done -> {
+                if(!isEmailVeryfied()){
+                    viewModel.getAllMarkersForMap()
+                }else{
+                    if(!isMyMarkers){
+                        showMyMarkers()
+                        item.icon = resources.getDrawable(R.drawable.ic_all, context?.theme)
+                    }else{
+                        viewModel.getAllMarkersForMap()
+                        viewModel.getAllAdsForAdapter(lastLat, lastLng, !isMyMarkers)
+                        item.icon = resources.getDrawable(R.drawable.ic_my, context?.theme)
+                    }
+                    isMyMarkers = !isMyMarkers
+                }
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
 //    private fun showMyAds() {
 //        val fbAuth = FBAuth()
@@ -328,11 +328,26 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    private fun showAllMarkers(list: List<AdForMap>, chose: String?){
-        if(listMarkers.isEmpty()){
-            listMarkers.clear()
-            listMarkers.addAll(list)
+    private fun showMyMarkers() {
+        if(listMarkers.isNotEmpty()){
+            val listMyMarkers = arrayListOf<AdForMap>()
+            val myUid = viewModel.dbManager.mAuth.currentUser?.uid
+            listMarkers.forEach {
+                if(it.uid == myUid) listMyMarkers.add(it)
+            }
+            showAllMarkers(listMyMarkers, null)
+            viewModel.getAllAdsForAdapter(lat, lng, !isMyMarkers)
         }
+    }
+
+    private fun showAllMarkers(list: List<AdForMap>, chose: String?){
+        if(!isMyMarkers){
+            if(listMarkers.isEmpty()){
+                listMarkers.clear()
+                listMarkers.addAll(list)
+            }
+        }
+
         mMap.clear()
         val uid = viewModel.dbManager.mAuth.uid
         for(item in list){
@@ -389,6 +404,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 delay(1500)
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 12f))
                 job2 = null
+
+                //todo delete
                 showAllMarkers(listMarkers, adShelter.key)
             }
         }
@@ -411,9 +428,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun getAdsForAdapter(lat: Double, lng: Double) {
-        Log.d("!!!fillAdapter", "${job3}")
         rootElement!!.progressBarMap.visibility = View.VISIBLE
-        if(job3 == null) viewModel.getAllAdsForAdapter(lat, lng)
+        if(job3 == null) viewModel.getAllAdsForAdapter(lat, lng, isMyMarkers)
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {

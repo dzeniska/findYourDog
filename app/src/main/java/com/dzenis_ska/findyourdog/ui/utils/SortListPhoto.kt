@@ -30,7 +30,8 @@ object SortListPhoto {
                 if (it.contains(uri.toString())) listDel.remove(it)
             }
         }
-        return subStringDel(listDel)
+//        return subStringDel(listDel)
+        return listDel
     }
     fun subStringDel(listDel: ArrayList<String>): ArrayList<String> {
         val listNameDel = arrayListOf<String>()
