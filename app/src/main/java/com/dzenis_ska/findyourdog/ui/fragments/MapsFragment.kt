@@ -73,7 +73,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     var badgeImage: ImageView? = null
 
-    var isMyMarkers = false
+
 
 
     //для определения последней локации
@@ -133,6 +133,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             Log.d("!!!on", "viewModel.liveAdsDataForMapFr _ ${list.size}")
             if(list.size == 0) CheckNetwork.check(activity as MainActivity)
             if (::mMap.isInitialized) {
+                if(listMarkers.isEmpty()){
+                    listMarkers.clear()
+                    listMarkers.addAll(list)
+                }
                 showAllMarkers(list, null)
             }
         })
@@ -144,10 +148,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         inflater.inflate(R.menu.sample_menu, menu)
         val item = menu.findItem(R.id.action_done)
         if(!isEmailVeryfied()) item.icon = resources.getDrawable(R.drawable.ic_replay, context?.theme)
+        if(viewModel.isMyMarkers) item.icon = resources.getDrawable(R.drawable.ic_all, context?.theme)
     }
 //
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d("!!!onOptionsItemSelected", "${isMyMarkers}")
+        Log.d("!!!onOptionsItemSelected", "${viewModel.isMyMarkers}")
         return when (item.itemId) {
             R.id.action_settings -> {
                 // navigate to settings screen
@@ -157,15 +162,18 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 if(!isEmailVeryfied()){
                     viewModel.getAllMarkersForMap()
                 }else{
-                    if(!isMyMarkers){
+                    viewModel.isMyMarkers = !viewModel.isMyMarkers
+                    if(viewModel.isMyMarkers){
                         showMyMarkers()
                         item.icon = resources.getDrawable(R.drawable.ic_all, context?.theme)
                     }else{
                         viewModel.getAllMarkersForMap()
-                        viewModel.getAllAdsForAdapter(lastLat, lastLng, !isMyMarkers)
+                        viewModel.getAllAdsForAdapter(lastLat, lastLng, viewModel.isMyMarkers)
+                        val target = LatLng(lastLat, lastLng)
+                        animateCamera(target, 10f)
                         item.icon = resources.getDrawable(R.drawable.ic_my, context?.theme)
                     }
-                    isMyMarkers = !isMyMarkers
+
                 }
                 true
             }
@@ -330,27 +338,26 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     private fun showMyMarkers() {
         if(listMarkers.isNotEmpty()){
-            val listMyMarkers = arrayListOf<AdForMap>()
-            val myUid = viewModel.dbManager.mAuth.currentUser?.uid
-            listMarkers.forEach {
-                if(it.uid == myUid) listMyMarkers.add(it)
-            }
-            showAllMarkers(listMyMarkers, null)
-            viewModel.getAllAdsForAdapter(lat, lng, !isMyMarkers)
+            showAllMarkers(listMarkers, null)
+            viewModel.getAllAdsForAdapter(lat, lng, viewModel.isMyMarkers)
         }
     }
 
     private fun showAllMarkers(list: List<AdForMap>, chose: String?){
-        if(!isMyMarkers){
-            if(listMarkers.isEmpty()){
-                listMarkers.clear()
-                listMarkers.addAll(list)
+        val listMyMarkers = arrayListOf<AdForMap>()
+
+        if(viewModel.isMyMarkers) {
+            val myUid = viewModel.dbManager.mAuth.currentUser?.uid
+            list.forEach {
+                if (it.uid == myUid) listMyMarkers.add(it)
             }
+        } else {
+            listMyMarkers.addAll(list)
         }
 
         mMap.clear()
         val uid = viewModel.dbManager.mAuth.uid
-        for(item in list){
+        for(item in listMyMarkers){
             val target = LatLng(item.lat!!.toDouble(), item.lng!!.toDouble())
             val marker = mMap.addMarker(
                 MarkerOptions().position(target)
@@ -394,21 +401,24 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    fun animateCamera(adShelter: AdShelter){
+    fun animateCameraFromAdapter(adShelter: AdShelter){
         if(job2 == null) {
             job2 = CoroutineScope(Dispatchers.Main).launch {
                 //todo
                 val target =
                     LatLng(adShelter.lat!!.toDouble(), adShelter.lng!!.toDouble())
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 10f))
+                animateCamera(target, 10f)
                 delay(1500)
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, 12f))
+                animateCamera(target, 12f)
                 job2 = null
 
-                //todo delete
                 showAllMarkers(listMarkers, adShelter.key)
             }
         }
+    }
+
+    private fun animateCamera(target: LatLng, zoom: Float) {
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, zoom))
     }
 
     private fun setMarker(lat: Double, lng: Double, zoom: Float) {
@@ -423,13 +433,13 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             .strokeWidth(10f)
 
         addCircle = mMap.addCircle(circleOptions)
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(target, zoom))
+        animateCamera(target, zoom)
         getAdsForAdapter(lat, lng)
     }
 
     private fun getAdsForAdapter(lat: Double, lng: Double) {
         rootElement!!.progressBarMap.visibility = View.VISIBLE
-        if(job3 == null) viewModel.getAllAdsForAdapter(lat, lng, isMyMarkers)
+        if(job3 == null) viewModel.getAllAdsForAdapter(lat, lng, viewModel.isMyMarkers)
     }
 
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
@@ -516,6 +526,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         listMarkers.forEach {
             if(it.key == m.tag){
                 keyMarker = it.key.toString()
+
+
+
                 if(it.lat != null && it.lng != null){
                     getAdsForAdapter(it.lat.toDouble(), it.lng.toDouble())
                 }

@@ -30,6 +30,8 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     var numPage: Int = 0
     var isFav: Boolean = false
 
+    var isMyMarkers = false
+
 
     val breedLive = MutableLiveData<MutableList<DogBreeds>>()
 

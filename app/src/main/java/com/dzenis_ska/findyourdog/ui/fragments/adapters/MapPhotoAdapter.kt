@@ -49,7 +49,7 @@ class MapPhotoAdapter(val mapFr: MapsFragment): RecyclerView.Adapter<MapPhotoAda
 
                 })
             imageView.setOnClickListener {
-                mapFr.animateCamera(adShelter)
+                mapFr.animateCameraFromAdapter(adShelter)
             }
         }
     }
