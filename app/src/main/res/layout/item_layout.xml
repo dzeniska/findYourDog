@@ -49,6 +49,6 @@
         android:layout_marginEnd="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_add_dog" />
+        app:srcCompat="@drawable/paw_blue" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

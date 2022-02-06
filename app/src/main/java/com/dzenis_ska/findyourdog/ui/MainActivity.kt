@@ -123,7 +123,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun init() {
-
 //        val remoteModel = RemoteModel()
 //         val localModel = LocalModel(this)
 //         val repository = Repository(remoteModel, localModel)
@@ -150,7 +149,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         viewModel.selectBreed()
 
-        viewModel.getAllMarkersForMap()
+        viewModel.getAllMarkersForMap(){}
 
         navController = findNavController(R.id.navHost)
 

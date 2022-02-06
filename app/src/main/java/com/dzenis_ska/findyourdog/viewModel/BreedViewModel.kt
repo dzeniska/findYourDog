@@ -133,8 +133,10 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun getAllMarkersForMap() {
+    fun getAllMarkersForMap(callback: (isFav: Boolean) -> Unit) {
         dbManager.getAllMarkersForMap(){
+            if(it.isNotEmpty()) callback(true)
+            else callback(false)
             liveAdsDataAllMarkers.value = it
         }
     }

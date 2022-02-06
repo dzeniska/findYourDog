@@ -103,7 +103,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     private val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
-            updatePermissionsState(it as MutableMap<String, Boolean>)
+            if(it != null) updatePermissionsState(it as MutableMap<String, Boolean>)
         }
 
     private val startForResult =
@@ -329,6 +329,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             edName.isEnabled = isEnabled
 
             Log.d("!!!breed", "${adShelter.breed}")
+
             edBreed.setText(adShelter.breed)
             edBreed.isEnabled = isEnabled
 

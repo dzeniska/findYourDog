@@ -131,6 +131,7 @@ class LoginFragment : Fragment(){
                 groupForgot.visibility = View.GONE
                 uiUpdateMain(null)
                 showElements(false)
+                if(viewModel.isMyMarkers) viewModel.isMyMarkers = false
                 viewModel.uiUpdateMain(null)
             }
             imgButtonForgot.setOnClickListener() {

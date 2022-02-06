@@ -15,6 +15,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -29,7 +30,6 @@ import com.dzenis_ska.findyourdog.remoteModel.firebase.AdShelter
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.MapPhotoAdapter
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
-import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.*
@@ -74,6 +74,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var badgeImage: ImageView? = null
 
 
+    var currentItem = R.id.action_done
+
+
 
 
     //для определения последней локации
@@ -91,7 +94,17 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!on", "onViewCreatedMF")
         navController = findNavController()
-        InitBackStack.initBackStack(navController)
+//
+//        InitBackStack.initBackStack(navController)
+//        (activity as AppCompatActivity).setSupportActionBar(rootElement!!.toolbar)
+
+        (activity as AppCompatActivity)
+            .supportActionBar?.title =
+            if (!viewModel.isMyMarkers)
+                resources.getString(R.string.map)
+            else
+                resources.getString(R.string.my_ads)
+
         mapFragment = childFragmentManager.findFragmentById(R.id.mapFr) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
         //инициализация переменной для получения последней локации
@@ -100,8 +113,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             dialogF = dialog
         })
 
-
-        //todo
         viewModel.liveAdsDataForMapAdapter.observe(viewLifecycleOwner,{listAS ->
             Log.d("!!!on", "viewModel.liveAdsDataForMapAdapter - ${listAS.size}")
             updateAdapter(listAS)
@@ -147,55 +158,52 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.sample_menu, menu)
         val item = menu.findItem(R.id.action_done)
-        if(!isEmailVeryfied()) item.icon = resources.getDrawable(R.drawable.ic_replay, context?.theme)
-        if(viewModel.isMyMarkers) item.icon = resources.getDrawable(R.drawable.ic_all, context?.theme)
+//        if(!isEmailVeryfied()) item.icon = resources.getDrawable(R.drawable.ic_replay, context?.theme)
+//        if(viewModel.isMyMarkers) item.icon = resources.getDrawable(R.drawable.ic_all, context?.theme)
+        if(!isEmailVeryfied()) {
+            menu.clear()
+//            item.title = resources.getString(R.string.update_ads)
+            return@onCreateOptionsMenu
+        }
+        if(viewModel.isMyMarkers) item.title = resources.getString(R.string.all_ads)
+        else item.title = resources.getString(R.string.my_ads)
     }
 //
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        Log.d("!!!onOptionsItemSelected", "${viewModel.isMyMarkers}")
         return when (item.itemId) {
-            R.id.action_settings -> {
-                // navigate to settings screen
-                true
-            }
             R.id.action_done -> {
                 if(!isEmailVeryfied()){
-                    viewModel.getAllMarkersForMap()
+                    viewModel.getAllMarkersForMap(){
+//                        item.title = resources.getString(R.string.update_ads)
+                    }
                 }else{
                     viewModel.isMyMarkers = !viewModel.isMyMarkers
+                    val map = resources.getString(R.string.map)
+                    val myAds = resources.getString(R.string.my_ads)
                     if(viewModel.isMyMarkers){
                         showMyMarkers()
-                        item.icon = resources.getDrawable(R.drawable.ic_all, context?.theme)
-                    }else{
-                        viewModel.getAllMarkersForMap()
-                        viewModel.getAllAdsForAdapter(lastLat, lastLng, viewModel.isMyMarkers)
-                        val target = LatLng(lastLat, lastLng)
-                        animateCamera(target, 10f)
-                        item.icon = resources.getDrawable(R.drawable.ic_my, context?.theme)
-                    }
+                        item.title = map
+                        (activity as AppCompatActivity).supportActionBar?.title = myAds
 
+//                        item.icon = resources.getDrawable(R.drawable.ic_all, context?.theme)
+                    }else{
+                        viewModel.getAllMarkersForMap(){
+                            if(it){
+//                                item.icon = resources.getDrawable(R.drawable.ic_my, context?.theme)
+                                item.title = myAds
+                                (activity as AppCompatActivity).supportActionBar?.title = map
+                                viewModel.getAllAdsForAdapter(lastLat, lastLng, viewModel.isMyMarkers)
+                                val target = LatLng(lastLat, lastLng)
+                                animateCamera(target, 10f)
+                            }
+                        }
+                    }
                 }
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-//    private fun showMyAds() {
-//        val fbAuth = FBAuth()
-//        val listAll = arrayListOf<AdShelter>()
-//        listAdShelterForAllSh.clear()
-//        listAdShelterForAllSh.addAll(listAdShelter)
-//        listAdShelter.forEach {
-//            if(fbAuth.mAuth.uid == it.uid) listAll.add(it)
-//        }
-//        if(listAll.size != 0) {
-//            listAdShelter.clear()
-//            listAdShelter.addAll(listAll)
-//            //todo
-////            getAllMarkers(listAll, null)
-//        }
-//    }
 
     private fun initClick() = with(rootElement!!){
         floatBtnGPS.setOnClickListener() {
@@ -263,17 +271,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mMap.setOnInfoWindowClickListener(this)
         mMap.setOnMarkerClickListener(this)
 //        mMap.setMinZoomPreference(6.0f)
-        mMap.setOnCameraIdleListener {
-//            Log.d("!!!setOnCameraIdleListener", "setOnCameraIdleListener ${mMap.cameraPosition.zoom}")
-            Log.d("!!!setOnCameraIdleListener", "latitude ${mMap.cameraPosition.target.latitude}")
-            Log.d("!!!setOnCameraIdleListener", "longitude ${mMap.cameraPosition.target.longitude}")
-//            getAdsForAdapter(mMap.cameraPosition.target.latitude, mMap.cameraPosition.target.longitude)
-        }
-        mMap.setOnCameraMoveListener {
-//            locationManager.removeUpdates(this)
-//            rootElement!!.floatBtnGPS.visibility = View.VISIBLE
-        }
-        viewModel.getAllMarkersForMap()
+        mMap.setOnCameraIdleListener {}
+        mMap.setOnCameraMoveListener {}
+        viewModel.getAllMarkersForMap(){}
         getLocation()
     }
 

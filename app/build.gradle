@@ -28,8 +28,8 @@ android {
         applicationId "com.dzenis_ska.findyourdog"
         minSdkVersion 24
         targetSdkVersion 31
-        versionCode 144
-        versionName "1.4.4"
+        versionCode 146
+        versionName "1.4.6"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -105,7 +105,7 @@ dependencies {
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
-//    implementation  'io.ak1.pix:piximagepicker:1.6.2'
+//    implementation  'io.ak1.pix:piximagepicker:1.6.3'
 
 //    implementation 'com.github.dhaval2404:imagepicker:2.1'
 
