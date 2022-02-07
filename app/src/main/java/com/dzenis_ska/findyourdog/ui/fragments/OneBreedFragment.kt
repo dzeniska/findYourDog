@@ -128,10 +128,10 @@ class OneBreedFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 }
                 val breedDescription = """
                 |${note}
-                |${description}
                 |temperament: ${post.temperament}
                 |weight: ${post.weight.metric} 
                 |height: ${post.height.metric}
+                |${description}
                 |${origin}
                 |
                 |""".trimMargin()

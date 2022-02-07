@@ -16,6 +16,8 @@
     <string name="output">Выход</string>
     <string name="lost">Потеряшки</string>
     <string name="develop">В разработке…</string>
+    <string name="editing">редактирование…</string>
+    <string name="created">Добавьте объявление…</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -90,7 +92,7 @@
 
     <!--isMyAds-->
     <string name="my_ads">Мои объявления</string>
-    <string name="all_ads">Все объявлния</string>
+    <string name="all_ads">Все объявления</string>
     <string name="update_ads">обновить</string>
 
     <!-- Intro fragment-->

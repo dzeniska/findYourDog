@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/apptool"
     android:alpha="1.0"
     tools:context=".ui.MainActivity">
@@ -16,6 +16,9 @@
         >
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
+                app:titleTextColor="@color/nav_bar_color"
+                android:theme="@style/ThemeToolBar"
+
                 android:layout_height="?attr/actionBarSize"
                 android:layout_width="match_parent"/>
     </com.google.android.material.appbar.AppBarLayout>

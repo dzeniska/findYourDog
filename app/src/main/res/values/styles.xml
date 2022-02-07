@@ -48,6 +48,14 @@
         <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
 
+
+    <style name="ThemeToolBar" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/nav_bar_color</item>
+        <item name="fontFamily">@font/t_bold</item>
+    </style>
+
+
+
     <style name="AppThemeLol" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>

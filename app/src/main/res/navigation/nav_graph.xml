@@ -37,7 +37,7 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.LoginFragment"
-        android:label="LoginFragment"
+        android:label="@string/authFirst"
         tools:layout="@layout/fragment_login"/>
 
     <fragment
@@ -50,7 +50,7 @@
     <fragment
         android:id="@+id/addShelterFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.AddShelterFragment"
-        android:label="AddShelterFragment"
+        android:label=""
         tools:layout="@layout/fragment_add_shelter"/>
 
 </navigation>

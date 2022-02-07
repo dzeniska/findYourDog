@@ -269,10 +269,15 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         fillFrag(adShelter, true)
                         boolEditOrNew = true
                         fabDeleteShelter.isVisible = true
+                        (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.editing)
+
                         ibGetLocation.isVisible = true
                     } else {
                         fillFrag(adShelter, false)
+                        (activity as AppCompatActivity).supportActionBar?.title = adShelter.name
                     }
+                } else {
+                    (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.created)
                 }
             }
         })
@@ -305,7 +310,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     vpAdapter.updateAdapter(listUri, true)
                 }
             }
-            (activity as AppCompatActivity).supportActionBar?.title = adShelter.name
+
 
             val pl = adShelter.vaccination?.get(DialogCalendar.PLAGUE)
             val rab = adShelter.vaccination?.get(DialogCalendar.RABIES)

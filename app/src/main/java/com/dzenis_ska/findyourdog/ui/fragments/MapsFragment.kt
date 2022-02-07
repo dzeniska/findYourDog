@@ -178,11 +178,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     }
                 }else{
                     viewModel.isMyMarkers = !viewModel.isMyMarkers
-                    val map = resources.getString(R.string.map)
+                    val allAds = resources.getString(R.string.all_ads)
                     val myAds = resources.getString(R.string.my_ads)
                     if(viewModel.isMyMarkers){
                         showMyMarkers()
-                        item.title = map
+                        item.title = allAds
                         (activity as AppCompatActivity).supportActionBar?.title = myAds
 
 //                        item.icon = resources.getDrawable(R.drawable.ic_all, context?.theme)
@@ -191,7 +191,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                             if(it){
 //                                item.icon = resources.getDrawable(R.drawable.ic_my, context?.theme)
                                 item.title = myAds
-                                (activity as AppCompatActivity).supportActionBar?.title = map
+                                (activity as AppCompatActivity).supportActionBar?.title = allAds
                                 viewModel.getAllAdsForAdapter(lastLat, lastLng, viewModel.isMyMarkers)
                                 val target = LatLng(lastLat, lastLng)
                                 animateCamera(target, 10f)
