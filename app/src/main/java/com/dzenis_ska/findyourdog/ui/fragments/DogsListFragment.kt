@@ -30,6 +30,7 @@ class DogsListFragment : Fragment() {
     var adapter: AdapterBreeds? = null
     private val breeds = mutableListOf<DogBreeds>()
     private var job: Job? = null
+    private var job2: Job? = null
 
     //    private val check: CheckNetwork = CheckNetwork()
     //    override fun onCreate(savedInstanceState: Bundle?) {
@@ -52,6 +53,8 @@ class DogsListFragment : Fragment() {
     @SuppressLint("StringFormatInvalid")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+            CheckNetwork.check(context!!)
+
         initAdapter()
         isFavRecycler(viewModel.isFav)
         navController = findNavController()
@@ -63,7 +66,7 @@ class DogsListFragment : Fragment() {
 
 
         viewModel.breedLive.observe(viewLifecycleOwner, {
-            if (it.size == 0) CheckNetwork.check(activity as MainActivity)
+
             breeds.clear()
             breeds.addAll(it)
             adapter?.updateAdapterBreeds(it)
@@ -136,6 +139,7 @@ class DogsListFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        job2 = null
         super.onDestroyView()
         rootElement = null
     }

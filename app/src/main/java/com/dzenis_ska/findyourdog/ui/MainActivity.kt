@@ -33,6 +33,7 @@ import com.dzenis_ska.findyourdog.viewModel.BreedViewModelFactory
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.*
 import javax.inject.Inject
 
 
@@ -43,6 +44,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     var navController: NavController? = null
     var menuBreedItem: TextView? = null
     var menuMapItem: TextView? = null
+    private var job: Job? = null
 
     private val fbAuth = FBAuth()
     var rootElement: ActivityMainBinding? = null
@@ -216,7 +218,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     navigateTo(R.id.mapsFragment)
                     closeDrawer()
                 } else {
-                    CheckNetwork.check(this)
+                    CheckNetwork.check(this@MainActivity)
                 }
                 Toast.makeText(this, messAnonSign, Toast.LENGTH_LONG).show()
             }
@@ -237,18 +239,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             Log.d("!!!navController", "${it.destination.label}")
 //            if(it.destination.id != id)
             when(it.destination.label) {
-                "Список пород" -> {
+                "" -> {
                     idToBack = R.id.dogsListFragment
                     t = "Список пород"
                     return@forEach
                 }
-                "LoginFragment" -> {
+                resources.getString(R.string.authFirst) -> {
                     idToBack = R.id.loginFragment
                     t = "LoginFragment"
                     return@forEach
-
                 }
-                "MapsFragment" -> {
+                resources.getString(R.string.map) -> {
                     idToBack = R.id.mapsFragment
                     t = "MapsFragment"
                     return@forEach
@@ -263,6 +264,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 popUpTo(idToBack!!) { inclusive = true }
             }
         })
+    }
+
+    override fun onDestroy() {
+        job = null
+        super.onDestroy()
     }
 
     companion object {

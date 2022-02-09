@@ -43,7 +43,7 @@
     <fragment
         android:id="@+id/mapsFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.MapsFragment"
-        android:label=""
+        android:label="@string/map"
         tools:layout="@layout/fragment_maps">
 
     </fragment>

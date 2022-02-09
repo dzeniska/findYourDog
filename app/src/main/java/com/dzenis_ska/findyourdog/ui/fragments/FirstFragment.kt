@@ -24,12 +24,18 @@ import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.FirstFrAdapter
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 
 class FirstFragment : Fragment() {
     var rootElement: FragIntroBinding? = null
     var navController: NavController? = null
     private val fbAuth = FBAuth()
     var adapter: FirstFrAdapter? = null
+
+    private var job2: Job? = null
 
     private val requestPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -74,7 +80,8 @@ class FirstFragment : Fragment() {
                 if(isSignAnon == true) {
                     navController?.navigate(R.id.mapsFragment)
                 } else {
-                    CheckNetwork.check(activity as MainActivity)
+                        CheckNetwork.check(context!!)
+
                 }
                 Toast.makeText(context, messAnonSign, Toast.LENGTH_LONG).show()
             }
@@ -192,6 +199,7 @@ class FirstFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        job2 = null
         rootElement = null
         super.onDestroyView()
         Log.d("!!!on", "onDestroyView")

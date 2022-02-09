@@ -145,29 +145,29 @@ class DbManager() {
             }
         } else {
             val queryLat: Query = when (lat) {
-                in 1.0..85.0 -> db.orderByChild("/${FILTER_NODE}/lat")
-                    .startAt("${lat.minus(1.0)}")
-                    .endBefore("${lat.plus(1.0)}")
+                in LOCATION_LIMIT..85.0 -> db.orderByChild("/${FILTER_NODE}/lat")
+                    .startAt("${lat.minus(LOCATION_LIMIT)}")
+                    .endBefore("${lat.plus(LOCATION_LIMIT)}")
                 //            .limitToFirst(100)
-                in -85.0..-1.0 -> db.orderByChild("/${FILTER_NODE}/lat")
-                    .startAt("${lat.plus(1.0)}")
-                    .endBefore("${lat.minus(1.0)}")
+                in -85.0..-LOCATION_LIMIT -> db.orderByChild("/${FILTER_NODE}/lat")
+                    .startAt("${lat.plus(LOCATION_LIMIT)}")
+                    .endBefore("${lat.minus(LOCATION_LIMIT)}")
 
                 else -> db.orderByChild("/${FILTER_NODE}/lat").equalTo("$lat")
             }
 
             readDataFromDB(queryLat) { adShLat ->
                 val queryLng: Query = when (lng) {
-                    in 1.0..179.0 -> db.orderByChild("/${FILTER_NODE}/lng")
-                        .startAt("${lng.minus(1.0)}")
-                        .endBefore("${lng.plus(1.0)}")
-                    in -179.0..-1.0 -> db.orderByChild("/${FILTER_NODE}/lng")
-                        .startAt("${lng.plus(1.0)}")
-                        .endBefore("${lng.minus(1.0)}")
+                    in LOCATION_LIMIT..179.0 -> db.orderByChild("/${FILTER_NODE}/lng")
+                        .startAt("${lng.minus(LOCATION_LIMIT)}")
+                        .endBefore("${lng.plus(LOCATION_LIMIT)}")
+                    in -179.0..-LOCATION_LIMIT -> db.orderByChild("/${FILTER_NODE}/lng")
+                        .startAt("${lng.plus(LOCATION_LIMIT)}")
+                        .endBefore("${lng.minus(LOCATION_LIMIT)}")
 
                     else -> db.orderByChild("/${FILTER_NODE}/lng").equalTo("$lng")
                 }
-//            Log.d("!!!getAdsForAdapter", "${lng.minus(1.0)}_ ${lng.plus(1.0)}")
+//            Log.d("!!!getAdsForAdapter", "${lng.minus(LOCATION_LIMIT)}_ ${lng.plus(LOCATION_LIMIT)}")
                 readDataFromDB(queryLng) { adShLng ->
                     val listSh = arrayListOf<AdShelter>()
                     adShLat.forEach { adShLatItem ->
@@ -307,6 +307,6 @@ class DbManager() {
         const val MAIN_NODE = "main"
         const val MAIN_MAP_NODE = "main_map"
         const val STORAGE_NODE = "storage"
-        const val ADS_LIMIT = 2
+        const val LOCATION_LIMIT = 1.0
     }
 }

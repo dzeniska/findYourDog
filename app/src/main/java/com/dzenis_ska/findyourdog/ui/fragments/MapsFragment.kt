@@ -69,6 +69,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     val listAdShelterMainPhoto = mutableListOf<String>()
     var job2: Job? = null
     var job3: Job? = null
+    var job4: Job? = null
     val cs = ConstraintSet()
 
     var badgeImage: ImageView? = null
@@ -93,17 +94,17 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!on", "onViewCreatedMF")
-        navController = findNavController()
-//
-//        InitBackStack.initBackStack(navController)
-//        (activity as AppCompatActivity).setSupportActionBar(rootElement!!.toolbar)
+            CheckNetwork.check(context!!)
 
-        (activity as AppCompatActivity)
-            .supportActionBar?.title =
-            if (!viewModel.isMyMarkers)
-                resources.getString(R.string.map)
-            else
+        navController = findNavController()
+        locationManager =
+            activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        if (viewModel.isMyMarkers){
+            (activity as AppCompatActivity)
+                .supportActionBar?.title =
                 resources.getString(R.string.my_ads)
+        }
 
         mapFragment = childFragmentManager.findFragmentById(R.id.mapFr) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
@@ -142,7 +143,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         viewModel.liveAdsDataAllMarkers.observe(viewLifecycleOwner,{ list ->
             Log.d("!!!on", "viewModel.liveAdsDataForMapFr _ ${list.size}")
-            if(list.size == 0) CheckNetwork.check(activity as MainActivity)
+//            if(list.size == 0) CheckNetwork.check(activity as MainActivity)
             if (::mMap.isInitialized) {
                 if(listMarkers.isEmpty()){
                     listMarkers.clear()
@@ -245,8 +246,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         fusedLocationClient?.lastLocation
                 ?.addOnSuccessListener { location : Location? ->
                     if(location != null) {
-                        Log.d("!!!loc", "${location.longitude} ${location.latitude}")
-//                        Toast.makeText(context, "Find your last location!", Toast.LENGTH_LONG).show()
+//                        Log.d("!!!loc", "${location.longitude} ${location.latitude}")
+                        Toast.makeText(context, "Your last location!", Toast.LENGTH_LONG).show()
                         setMarker(location.latitude, location.longitude, 6f)
                         lastLat = location.latitude
                         lastLng = location.longitude
@@ -254,12 +255,20 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         // Got last known location. In some rare situations this can be null.
                     }else{
                         Toast.makeText(context, "No last location!", Toast.LENGTH_LONG).show()
+                        if(locationManager.isLocationEnabled) {
+                            locationManager.requestLocationUpdates(
+                                LocationManager.GPS_PROVIDER,
+                                5000,
+                                5f,
+                                this
+                            )
+                            Toast.makeText(context, "Location search...", Toast.LENGTH_LONG).show()
+                        } else {
+                            Toast.makeText(context, "gps is not enabled!", Toast.LENGTH_LONG).show()
+                            setMarker(53.9303802, 27.5054665, 9f)
+                        }
                     }
                 }
-
-        locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-//        viewModel.locationManagerBoolMF = true
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -465,7 +474,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mapFragment?.onStop()
         super.onStop()
         Log.d("!!!on", "onStopMF")
-        locationManager.removeUpdates(this)
     }
 
     override fun onMyLocationButtonClick(): Boolean {
@@ -494,7 +502,10 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         Log.d("!!!on", "onDestroyView")
         job2 = null
         job3 = null
+        job4 = null
         rootElement = null
+
+        locationManager.removeUpdates(this)
         super.onDestroyView()
     }
 

@@ -18,7 +18,7 @@
                     android:id="@+id/goToMapFr"
                     android:icon="@drawable/ic_map"
                     app:actionViewClass="android.widget.TextView"
-                    android:title="@string/dog_map" />
+                    android:title="@string/map" />
             </menu>
         </item>
         <item android:title="@string/enter_please">

@@ -10,12 +10,14 @@ import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -139,11 +141,14 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         Log.d("!!!onSaveInstanceState", "AddShelterFragment")
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!onViewCreated", "AddShelterFragment")
         navController = findNavController()
         setHasOptionsMenu(true)
+        locationManager =
+            activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
 
         val mapViewBundle = savedInstanceState?.getBundle(MAPVIEW_BUNDLE_KEY)
@@ -250,6 +255,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     private fun initViewModel() {
         Log.d("!!!setMarker", "${viewModel.mapFragToAddShelterFragId}")
         when (viewModel.mapFragToAddShelterFragId) {
@@ -401,6 +407,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         return adShelter
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         Log.d("!!!getLocation", "getLoc")
@@ -409,20 +416,29 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             .addOnSuccessListener { location: Location? ->
                 if (location != null) {
 //                    Log.d("!!!loc", "${location.longitude} ${location.latitude}")
-                    Toast.makeText(context, "Find your last location!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Your last location!", Toast.LENGTH_LONG).show()
                     setMarker(location.latitude, location.longitude, 10f)
                     lastLat = location.latitude
                     lastLng = location.longitude
                     // Got last known location. In some rare situations this can be null.
                 } else {
-//                    setMarker(53.9303802, 27.5054665, 10f)
                     Toast.makeText(context, "No last location!", Toast.LENGTH_LONG).show()
+                    if(locationManager.isLocationEnabled) {
+                        locationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER,
+                            5000,
+                            5f,
+                            this
+                        )
+                        Toast.makeText(context, "Location search...", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(context, "gps is not enabled!", Toast.LENGTH_LONG).show()
+                        setMarker(53.9303802, 27.5054665, 9f)
+                    }
                 }
             }
 
-        locationManager = activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        viewModel.locationManagerBool = true
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5f, this)
+
     }
 
     private fun setMarker(lat: Double, lng: Double, zoom: Float) {
@@ -433,8 +449,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         val circleOptions = CircleOptions()
             .center(LatLng(lat, lng))
             .radius(50.0)
-            .fillColor(resources.getColor(R.color.fill_color))
-            .strokeColor(resources.getColor(R.color.main_background))
+            .fillColor(resources.getColor(R.color.fill_color, context?.theme))
+            .strokeColor(resources.getColor(R.color.main_background, context?.theme))
             .strokeWidth(10f)
 
         mMap.addCircle(circleOptions)
@@ -457,6 +473,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     @SuppressLint("RestrictedApi")
     private fun onClick(dialog: AlertDialog) {
 
