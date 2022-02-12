@@ -141,7 +141,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         Log.d("!!!onSaveInstanceState", "AddShelterFragment")
     }
 
-    @RequiresApi(Build.VERSION_CODES.P)
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!onViewCreated", "AddShelterFragment")
@@ -227,7 +227,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     количество просмотров: ${dogS?.viewsCounter}
                     избранное: ${dogS?.favCounter}
                 """.trimIndent()
-                Toast.makeText(context, info, Toast.LENGTH_LONG).show()
+                Toast.makeText(activity as MainActivity, info, Toast.LENGTH_LONG).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -255,7 +255,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.P)
+
     private fun initViewModel() {
         Log.d("!!!setMarker", "${viewModel.mapFragToAddShelterFragId}")
         when (viewModel.mapFragToAddShelterFragId) {
@@ -407,7 +407,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         return adShelter
     }
 
-    @RequiresApi(Build.VERSION_CODES.P)
+
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         Log.d("!!!getLocation", "getLoc")
@@ -416,29 +416,36 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             .addOnSuccessListener { location: Location? ->
                 if (location != null) {
 //                    Log.d("!!!loc", "${location.longitude} ${location.latitude}")
-                    Toast.makeText(context, "Your last location!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity as MainActivity, "Your last location!", Toast.LENGTH_LONG).show()
                     setMarker(location.latitude, location.longitude, 10f)
                     lastLat = location.latitude
                     lastLng = location.longitude
+                    rootElement!!.ibGetLocation.visibility = View.VISIBLE
                     // Got last known location. In some rare situations this can be null.
                 } else {
-                    Toast.makeText(context, "No last location!", Toast.LENGTH_LONG).show()
-                    if(locationManager.isLocationEnabled) {
-                        locationManager.requestLocationUpdates(
-                            LocationManager.GPS_PROVIDER,
-                            5000,
-                            5f,
-                            this
-                        )
-                        Toast.makeText(context, "Location search...", Toast.LENGTH_LONG).show()
-                    } else {
-                        Toast.makeText(context, "gps is not enabled!", Toast.LENGTH_LONG).show()
-                        setMarker(53.9303802, 27.5054665, 9f)
-                    }
+                    Toast.makeText(activity as MainActivity, "No last location!", Toast.LENGTH_LONG).show()
+                    isLocEnabled()
                 }
             }
+    }
 
-
+//    @RequiresApi(Build.VERSION_CODES.P)
+    @SuppressLint("MissingPermission")
+    private fun isLocEnabled(){
+//    Log.d("!!!isLocEnabled", "${locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)}")
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                5000,
+                5f,
+                this
+            )
+            Toast.makeText(activity as MainActivity, "Location search...", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(activity as MainActivity, "gps is not enabled!", Toast.LENGTH_LONG).show()
+            setMarker(53.9303802, 27.5054665, 9f)
+            rootElement!!.ibGetLocation.visibility = View.VISIBLE
+        }
     }
 
     private fun setMarker(lat: Double, lng: Double, zoom: Float) {
@@ -473,7 +480,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.P)
+
     @SuppressLint("RestrictedApi")
     private fun onClick(dialog: AlertDialog) {
 
@@ -530,8 +537,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
             ibGetLocation.setOnClickListener {
                 ltlng = false
-                getLocation()
+//                getLocation()
                 ibGetLocation.visibility = View.GONE
+                isLocEnabled()
             }
             tvGender.setOnClickListener {
                 if (tvGender.text == resources.getString(R.string.gendMan))
@@ -655,7 +663,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     }
 //                    photoArrayList.add("https://firebasestorage.googleapis.com/v0/b/findyourdog-6fa93.appspot.com/o/storage%2FdnUUHb4of0WAoF4xuDlV0J95hBy1%2Fimage_1631654334261?alt=media&token=d66cffec-f403-498c-b2e6-30afa473db41")
                     Toast.makeText(
-                        context,
+                        activity as MainActivity,
                         "Не удалось загрузить фото, возможно они повреждены",
                         Toast.LENGTH_LONG
                     ).show()
@@ -664,7 +672,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
                         if (uri != null) {
                             photoArrayList.add(uri.toString())
-                            Log.d("!!!transpImageNew3", "${uri.toString()}")
+                            Log.d("!!!transpImageNew3", "${uri}")
                             imageIndex++
                             if (vpAdapter.arrayPhoto.size == imageIndex) {
                                 addPhoto(null, dialog)
@@ -780,10 +788,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onDestroyView() {
         Log.d("!!!onDestroyView", "AddShelterFragment")
         super.onDestroyView()
-        if (viewModel.locationManagerBool) {
-            locationManager.removeUpdates(this)
-            viewModel.locationManagerBool = false
-        }
+        locationManager.removeUpdates(this)
         rootElement = null
     }
 
@@ -812,10 +817,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onPause() {
         Log.d("!!!onPause", "AddShelterFragment")
         mapView.onPause()
-        if (viewModel.locationManagerBool) {
-            locationManager.removeUpdates(this)
-            viewModel.locationManagerBool = false
-        }
+        locationManager.removeUpdates(this)
         super.onPause()
     }
 
@@ -832,7 +834,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         setMarker(lat, lng, 17f)
         if (lat != lastLat && lng != lastLng) {
             locationManager.removeUpdates(this)
-            viewModel.locationManagerBool = false
             rootElement!!.ibGetLocation.visibility = View.VISIBLE
         }
     }
@@ -918,7 +919,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             imagePicker?.selectImage()
         }
         else Toast.makeText(
-            context as MainActivity,
+            activity as MainActivity,
             "Необходимы разрешения для использования фоток!",
             Toast.LENGTH_LONG
         ).show()

@@ -53,7 +53,7 @@ class DogsListFragment : Fragment() {
     @SuppressLint("StringFormatInvalid")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-            CheckNetwork.check(context!!)
+            CheckNetwork.check(activity as MainActivity)
 
         initAdapter()
         isFavRecycler(viewModel.isFav)

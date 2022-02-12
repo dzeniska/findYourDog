@@ -80,7 +80,7 @@ class FirstFragment : Fragment() {
                 if(isSignAnon == true) {
                     navController?.navigate(R.id.mapsFragment)
                 } else {
-                        CheckNetwork.check(context!!)
+                        CheckNetwork.check(activity as MainActivity)
 
                 }
                 Toast.makeText(context, messAnonSign, Toast.LENGTH_LONG).show()

@@ -210,6 +210,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
+    override fun onBackPressed() {
+        closeDrawer()
+        super.onBackPressed()
+    }
+
     private fun isAuth() {
         val currUser = fbAuth.mAuth.currentUser
         if (currUser == null) {

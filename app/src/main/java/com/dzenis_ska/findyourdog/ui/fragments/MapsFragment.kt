@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -15,6 +16,7 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
@@ -94,7 +96,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("!!!on", "onViewCreatedMF")
-            CheckNetwork.check(context!!)
+            CheckNetwork.check(activity as MainActivity)
 
         navController = findNavController()
         locationManager =
@@ -210,7 +212,8 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         floatBtnGPS.setOnClickListener() {
             //todo ???
             floatBtnGPS.visibility = View.GONE
-            getLocation()
+//            getLocation()
+            isLocEnabled()
         }
 
         floatBtnAddShelter.setOnClickListener() {
@@ -237,7 +240,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
     }
     private fun isEmailVeryfied() = viewModel.dbManager.mAuth.currentUser!!.isEmailVerified
-
+//    @RequiresApi(Build.VERSION_CODES.P)
     @SuppressLint("MissingPermission")
     private fun getLocation() {
         Log.d("!!!", "getLoc")
@@ -247,30 +250,36 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 ?.addOnSuccessListener { location : Location? ->
                     if(location != null) {
 //                        Log.d("!!!loc", "${location.longitude} ${location.latitude}")
-                        Toast.makeText(context, "Your last location!", Toast.LENGTH_LONG).show()
+                        Toast.makeText(activity as MainActivity, "Your last location!", Toast.LENGTH_LONG).show()
                         setMarker(location.latitude, location.longitude, 6f)
                         lastLat = location.latitude
                         lastLng = location.longitude
-
+                        rootElement!!.floatBtnGPS.visibility = View.VISIBLE
                         // Got last known location. In some rare situations this can be null.
                     }else{
-                        Toast.makeText(context, "No last location!", Toast.LENGTH_LONG).show()
-                        if(locationManager.isLocationEnabled) {
-                            locationManager.requestLocationUpdates(
-                                LocationManager.GPS_PROVIDER,
-                                5000,
-                                5f,
-                                this
-                            )
-                            Toast.makeText(context, "Location search...", Toast.LENGTH_LONG).show()
-                        } else {
-                            Toast.makeText(context, "gps is not enabled!", Toast.LENGTH_LONG).show()
-                            setMarker(53.9303802, 27.5054665, 9f)
-                        }
+                        Toast.makeText(activity as MainActivity, "No last location!", Toast.LENGTH_LONG).show()
+                        isLocEnabled()
                     }
                 }
     }
 
+    private fun isLocEnabled(){
+//        Log.d("!!!isLocEnabled", "${locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)}")
+        if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            locationManager.requestLocationUpdates(
+                LocationManager.GPS_PROVIDER,
+                5000,
+                5f,
+                this
+            )
+            Toast.makeText(activity as MainActivity, "Location search...", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(activity as MainActivity, "gps is not enabled!", Toast.LENGTH_LONG).show()
+            setMarker(53.9303802, 27.5054665, 9f)
+            rootElement!!.floatBtnGPS.visibility = View.VISIBLE
+        }
+    }
+//    @RequiresApi(Build.VERSION_CODES.P)
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d("!!!on", "onMapReadyMF")
         mMap = googleMap
@@ -482,7 +491,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onMyLocationClick(location: Location) {
-        Toast.makeText(context as MainActivity, "Current location:\n$location", Toast.LENGTH_LONG).show()
+        Toast.makeText(activity as MainActivity, "Current location:\n$location", Toast.LENGTH_LONG).show()
     }
 
     override fun onResume() {
@@ -504,7 +513,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         job3 = null
         job4 = null
         rootElement = null
-
         locationManager.removeUpdates(this)
         super.onDestroyView()
     }
@@ -512,9 +520,11 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onPause() {
         Log.d("!!!on", "onPauseMF")
         keyMarker = ""
+        locationManager.removeUpdates(this)
         mapFragment?.onPause()
         super.onPause()
     }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
