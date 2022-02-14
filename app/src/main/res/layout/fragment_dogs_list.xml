@@ -32,6 +32,7 @@
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:contentDescription="recyclerView"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -43,7 +44,7 @@
             android:id="@+id/searchView"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
-
+            android:contentDescription="searchView"
             android:layout_marginEnd="8dp"
             android:background="@drawable/background_img_item"
             app:layout_constraintBottom_toBottomOf="@+id/recyclerView"
@@ -55,10 +56,11 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             app:fabSize="mini"
+            android:contentDescription="fabLike"
             app:layout_constraintBottom_toBottomOf="@+id/searchView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/searchView"
-            app:layout_constraintVertical_bias="0.0"
+
             app:srcCompat="@drawable/paw_blue"
             tools:ignore="SpeakableTextPresentCheck" />
 

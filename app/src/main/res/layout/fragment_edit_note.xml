@@ -20,30 +20,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <ScrollView
-        android:id="@+id/sw"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:orientation="vertical"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline5">
+
 
         <EditText
             android:id="@+id/edNoteEdit"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:background="@android:drawable/editbox_background"
+            android:contentDescription="edNoteEdit"
             android:ems="10"
-            android:gravity="top|left"
             android:hint="@string/note"
             android:padding="10dp"
+            android:gravity="left"
             android:textColor="@color/text_hint_add"
             android:textColorHint="@color/text_hint_add"
-            android:textSize="18sp" />
-    </ScrollView>
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline5"/>
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline5"

@@ -44,6 +44,7 @@
                 android:id="@+id/imageButton1"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
+                android:contentDescription="imageButton1"
                 android:background="@drawable/intro_but_back"
                 android:elevation="16dp"
                 android:padding="8dp"
@@ -122,6 +123,8 @@
                 android:id="@+id/imBtnMap"
                 android:layout_width="0dp"
                 android:layout_height="200dp"
+                android:contentDescription="imBtnMap"
+
                 android:layout_marginTop="16dp"
                 android:background="@drawable/intro_but_back"
                 android:elevation="16dp"
@@ -168,6 +171,8 @@
                 android:id="@+id/imBtnAuth"
                 android:layout_width="0dp"
                 android:layout_height="100dp"
+                android:contentDescription="imBtnAuth"
+
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="160dp"
                 android:background="@drawable/intro_but_back"

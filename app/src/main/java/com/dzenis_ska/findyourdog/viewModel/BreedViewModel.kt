@@ -162,7 +162,7 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun selectBreed() {
+    fun     selectBreed() {
         scope.launch {
             val s = repository.getBreeds()
             val mapsBreed = s.message

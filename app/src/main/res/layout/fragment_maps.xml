@@ -25,6 +25,8 @@
         android:id="@+id/floatBtnGPS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="floatBtnGPS"
+
         android:layout_marginStart="12dp"
         android:layout_marginBottom="168dp"
         android:backgroundTint="@color/main_background"
@@ -40,6 +42,8 @@
         android:id="@+id/floatBtnAddShelter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:contentDescription="floatBtnAddShelter"
+
         android:layout_marginStart="12dp"
         android:layout_marginBottom="44dp"
         android:backgroundTint="@color/main_background"
@@ -56,6 +60,8 @@
         android:id="@+id/rcViewMapPhoto"
         android:layout_width="0dp"
         android:layout_height="126dp"
+        android:contentDescription="rcViewMapPhoto"
+
         android:layout_marginStart="0dp"
         map:layout_goneMarginStart="0dp"
         android:layout_marginBottom="64dp"

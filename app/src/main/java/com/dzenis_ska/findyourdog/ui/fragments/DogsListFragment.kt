@@ -62,6 +62,8 @@ class DogsListFragment : Fragment() {
         initSwipeRefresh()
         initClick()
         initBackStack()
+
+        viewModel.selectBreed()
 //        rootElement!!.tvDogList.text = getString(R.string.hi, "${getCounterValue()}")
 
 

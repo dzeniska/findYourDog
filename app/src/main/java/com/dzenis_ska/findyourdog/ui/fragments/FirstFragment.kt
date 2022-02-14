@@ -18,6 +18,7 @@ import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.SnapHelper
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.FragIntroBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
@@ -112,6 +113,7 @@ class FirstFragment : Fragment() {
 
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(rootElement!!.rcFF)
+        rootElement!!.rcFF.scrollToPosition(1)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -188,8 +190,6 @@ class FirstFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        //todo
-//        currentUser()
         Log.d("!!!on", "onResume")
     }
 

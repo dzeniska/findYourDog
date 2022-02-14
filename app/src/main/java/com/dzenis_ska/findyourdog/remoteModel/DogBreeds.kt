@@ -6,7 +6,7 @@ import androidx.room.*
 data class DogBreeds(
     @Embedded val weight: Weight,
     @Embedded val height: Height,
-    @PrimaryKey val id: Long,
+    @PrimaryKey(autoGenerate = true) val id: Long,
     val name: String?,
     var isFavorite:Int = 0,
     var ind:Int = 0,

@@ -84,11 +84,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
+    @SuppressLint("SetTextI18n")
     private fun uiUpdateMain(user: FirebaseUser?) {
         if (user?.email != null) {
-            tvHeaderAcc.text = """Рады видеть Вас
+            tvHeaderAcc.text =
+                """Рады видеть Вас
                 |${user.email}
-            """.trimMargin()
+                """.trimMargin()
         } else {
             tvHeaderAcc.text = "Рады видеть Вас"
         }
@@ -149,9 +151,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
         viewModel.countFavorites()
 
-        viewModel.selectBreed()
+//        viewModel.selectBreed()
 
-        viewModel.getAllMarkersForMap(){}
+//        viewModel.getAllMarkersForMap(){}
 
         navController = findNavController(R.id.navHost)
 
