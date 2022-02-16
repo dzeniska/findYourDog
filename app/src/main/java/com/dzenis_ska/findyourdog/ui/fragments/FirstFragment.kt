@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Interpolator
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -113,8 +114,10 @@ class FirstFragment : Fragment() {
 
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(rootElement!!.rcFF)
-        rootElement!!.rcFF.scrollToPosition(1)
+//        rootElement!!.rcFF.scrollToPosition(4)
+        rootElement!!.rcFF.smoothScrollBy(300,0)
     }
+
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initClick() {
