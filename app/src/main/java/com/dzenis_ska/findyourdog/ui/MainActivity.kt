@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTheme(R.style.AppThemeNoActionBar)
+//        setTheme(R.style.AppThemeNoActionBar)
         rootElement = ActivityMainBinding.inflate(layoutInflater)
         setContentView(rootElement!!.root)
 

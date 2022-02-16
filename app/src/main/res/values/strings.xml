@@ -32,7 +32,7 @@
     <string name="go_to_add_dog">Добавить нового</string>
     <string name="mastDog">Порода собаки</string>
     <string name="descriptionDog">Описание</string>
-    <string name="note">note:</string>
+    <string name="note">Блокнот</string>
     <string name="temperament">temperament:<font color='#01C6DB'>Login</font></string>
     <string name="like">Любимчики</string>
     <string name="intro"> Приложение для просмотра фотографий различных пород собак! При составном названии породы, например \"Bearded Collie\" может быть только односовпадение по фотографии! Кликайте по ножницам, чтоб сформировать запрос на \"Bearded\" или \"Collie\". Но при выборке \"Collie\" покажет все фотки по данному запросу даже \"Border Collie\"</string>

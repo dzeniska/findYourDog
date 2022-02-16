@@ -5,6 +5,7 @@
     <color name="colorAccent">#29FF22</color>
     <color name="colorBackgroundStatusBar">#41FF9800</color>
     <color name="nav_bar_color">#663d00</color>
+    <color name="transparent">#00663D00</color>
     <color name="main_background">#FFD54F</color>
     <color name="intro_back_button_pressed">#F4D77E</color>
     <color name="intro_back_button">#FFEEB8</color>
