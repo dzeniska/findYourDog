@@ -15,7 +15,6 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="12dp"
         android:layout_marginBottom="12dp"
-        android:clickable="true"
         android:src="@android:drawable/ic_menu_save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -29,7 +28,7 @@
             android:background="@android:drawable/editbox_background"
             android:contentDescription="edNoteEdit"
             android:ems="10"
-            android:hint="@string/note"
+            android:hint="@string/block_note"
             android:padding="10dp"
             android:gravity="left"
             android:textColor="@color/text_hint_add"
@@ -38,7 +37,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline5"/>
+            app:layout_constraintTop_toTopOf="@+id/guideline5"
+            tools:ignore="RtlHardcoded" />
 
 
     <androidx.constraintlayout.widget.Guideline

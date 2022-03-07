@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuItemCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
@@ -36,7 +37,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import javax.inject.Inject
 
-
+@SuppressLint("SetTextI18n")
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -62,7 +63,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             ) {
                 Toast.makeText(
                     this,
-                    "Необходимо разрешение на геолокацию",
+                    resources.getString(R.string.need_permission_for_geolocation),
                     Toast.LENGTH_LONG
                 ).show()
             } else {
@@ -84,15 +85,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
-    @SuppressLint("SetTextI18n")
+
     private fun uiUpdateMain(user: FirebaseUser?) {
         if (user?.email != null) {
             tvHeaderAcc.text =
-                """Рады видеть Вас
+                """${resources.getString(R.string.nice_to_meet_you)}
                 |${user.email}
                 """.trimMargin()
         } else {
-            tvHeaderAcc.text = "Рады видеть Вас"
+            tvHeaderAcc.text = resources.getString(R.string.nice_to_meet_you)
         }
 
     }
@@ -173,14 +174,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         menuBreedItem?.gravity = Gravity.CENTER_VERTICAL
         menuBreedItem?.setTypeface(null, Typeface.BOLD)
         menuBreedItem?.setTextColor(ContextCompat.getColor(this, R.color.white))
-        menuBreedItem?.text = "+$count"
+        menuBreedItem?.text = "${resources.getString(R.string.plus)}${count}"
     }
 
     private fun mapCounter(count: Int) {
         menuMapItem?.gravity = Gravity.CENTER_VERTICAL
         menuMapItem?.setTypeface(null, Typeface.BOLD)
         menuMapItem?.setTextColor(ContextCompat.getColor(this, R.color.back_menu_one_breed_color))
-        menuMapItem?.text = "+${count}"
+        menuMapItem?.text = "${resources.getString(R.string.plus)}${count}"
     }
 
 
@@ -191,7 +192,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.show_fav -> {
                 navigateTo(R.id.dogsListFragment)
                 closeDrawer()
-                Toast.makeText(applicationContext, "Любимчики", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, resources.getString(R.string.lovers), Toast.LENGTH_SHORT).show()
             }
             R.id.goToMapFr -> {
                 if (ContextCompat.checkSelfPermission(
@@ -241,32 +242,25 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun navigateTo(id: Int) {
         var idToBack: Int? = null
-        var t: String? = null
         navController?.backQueue?.forEach {
             Log.d("!!!navController", "${it.destination.label}")
-//            if(it.destination.id != id)
             when(it.destination.label) {
-                "" -> {
+                resources.getString(R.string.dogs_list) -> {
                     idToBack = R.id.dogsListFragment
-                    t = "Список пород"
                     return@forEach
                 }
                 resources.getString(R.string.authFirst) -> {
                     idToBack = R.id.loginFragment
-                    t = "LoginFragment"
                     return@forEach
                 }
                 resources.getString(R.string.map) -> {
                     idToBack = R.id.mapsFragment
-                    t = "MapsFragment"
                     return@forEach
                 }
             }
         }
-        Log.d("!!!navControllerT", "${t}")
 
         navController!!.navigate(id, null, navOptions {
-
             if(idToBack != null){
                 popUpTo(idToBack!!) { inclusive = true }
             }

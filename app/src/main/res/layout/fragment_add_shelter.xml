@@ -42,11 +42,11 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/main_background"
-                android:clickable="true"
                 android:foregroundGravity="center"
                 android:src="@drawable/ic_add_image"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:contentDescription="@string/fab_add_image" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabDeleteImage"
@@ -58,7 +58,8 @@
                 android:foregroundGravity="center"
                 android:src="@drawable/ic_delete_photo"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fabAddImage" />
+                app:layout_constraintTop_toBottomOf="@id/fabAddImage"
+                android:contentDescription="@string/fab_delete_image" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabReplaceImage"
@@ -67,11 +68,11 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:backgroundTint="@color/main_background"
-                android:clickable="true"
                 android:foregroundGravity="center"
                 android:src="@drawable/ic_replace_photo"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/fabDeleteImage" />
+                app:layout_constraintTop_toBottomOf="@id/fabDeleteImage"
+                android:contentDescription="@string/fab_replace_image" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -115,7 +116,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:contentDescription="@string/image" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -149,7 +151,6 @@
                     android:layout_marginEnd="16dp"
                     android:background="@android:drawable/editbox_background"
                     android:clickable="false"
-                    android:ems="10"
                     android:hint="@string/tel_num_shelter"
                     android:inputType="phone"
                     android:padding="10dp"
@@ -158,7 +159,8 @@
                     android:textColorHint="@color/text_hint_add"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="Deprecated" />
 
                 <ImageView
                     android:id="@+id/ivTel"
@@ -169,7 +171,8 @@
                     android:visibility="gone"
                     app:layout_constraintBottom_toBottomOf="@+id/edTelNum"
                     app:layout_constraintEnd_toEndOf="@+id/edTelNum"
-                    app:layout_constraintTop_toTopOf="@+id/edTelNum" />
+                    app:layout_constraintTop_toTopOf="@+id/edTelNum"
+                    android:contentDescription="@string/call" />
 
                 <EditText
                     android:id="@+id/edName"
@@ -288,7 +291,8 @@
                     app:layout_constraintStart_toStartOf="@+id/mapView"
                     app:layout_constraintTop_toTopOf="@+id/mapView"
                     app:layout_constraintVertical_bias="1.0"
-                    app:srcCompat="@drawable/ic_open_in_full" />
+                    app:srcCompat="@drawable/ic_open_in_full"
+                    android:contentDescription="@string/full_screen" />
 
                 <ImageButton
                     android:id="@+id/ibGetLocation"
@@ -303,7 +307,8 @@
                     app:layout_constraintEnd_toEndOf="@+id/mapView"
                     app:layout_constraintTop_toTopOf="@+id/mapView"
                     app:layout_constraintVertical_bias="1.0"
-                    app:srcCompat="@drawable/ic_baseline_gps_fixed_24" />
+                    app:srcCompat="@drawable/ic_baseline_gps_fixed_24"
+                    android:contentDescription="@string/get_location" />
 
 
                 <EditText
@@ -378,8 +383,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="@string/plague"
-                    android:textSize="18dp"
+                    android:text="@string/plague_no"
+                    android:textSize="18sp"
                     android:textColor="@color/vaccine_1"
                     app:layout_constraintBottom_toBottomOf="@+id/ibPlague"
                     app:layout_constraintStart_toStartOf="@+id/ibPlague"
@@ -405,8 +410,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:text="@string/rabies"
-                    android:textSize="18dp"
+                    android:text="@string/rabies_no"
+                    android:textSize="18sp"
                     android:textColor="@color/vaccine_2"
                     app:layout_constraintBottom_toBottomOf="@+id/ibRabies"
                     app:layout_constraintStart_toStartOf="@+id/ibRabies"
@@ -440,10 +445,10 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:background="@color/background_drawer"
-        android:clickable="true"
         android:src="@android:drawable/ic_menu_save"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/fab_add_add" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabDeleteShelter"
@@ -452,11 +457,11 @@
         android:layout_marginStart="16dp"
         android:layout_marginBottom="16dp"
         android:background="@color/background_drawer"
-        android:clickable="true"
         android:visibility="gone"
         android:src="@drawable/ic_delete_photo"
         app:tint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        android:contentDescription="@string/fab_delete_add" />
     <!-- android:src="@drawable/ic_add_dog"-->
 </androidx.constraintlayout.widget.ConstraintLayout>

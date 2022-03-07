@@ -46,11 +46,7 @@ class FirstFragment : Fragment() {
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
             ){
-                Toast.makeText(
-                    context,
-                    "Необходимо разрешение на геолокацию",
-                    Toast.LENGTH_LONG
-                ).show()
+                toastLong(R.string.need_permission_for_geolocation)
             }else{
                 isAuth()
             }
@@ -101,11 +97,11 @@ class FirstFragment : Fragment() {
             R.drawable.sobaka_ulibaka_escho_1
         )
         val listTitle = arrayListOf(
-            "Улыбыка",
-            "Подозревака",
-            "Испугака",
-            "Капитака",
-            "Улыбыка есчо"
+            res(R.string.smile),
+            res(R.string.suspect),
+            res(R.string.fright),
+            res(R.string.capitan),
+            res(R.string.smile_else)
         )
         adapter = FirstFrAdapter()
         rootElement!!.rcFF.adapter = adapter
@@ -138,6 +134,8 @@ class FirstFragment : Fragment() {
                 }
                 false
             }
+
+            //todo without map
 
             imBtnMap.setOnTouchListener { v, event ->
                 Log.d("!!!click", "click")
@@ -193,6 +191,7 @@ class FirstFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+//        adapter?.notifyDataSetChanged()
         Log.d("!!!on", "onResume")
     }
 

@@ -100,32 +100,34 @@ class OneBreedFragment : Fragment()/*, AdapterView.OnItemSelectedListener*/ {
                 }
 
 
-                var origin = "origin: ${post.origin}"
-                if (post.origin == null) {
-                    origin = ""
-                }
-                var description = "description: ${post.description}"
-                if (post.description == null) {
-                    description = ""
-                }
-                var note = "note: ${post.note}"
-                if (post.note == null) {
-                    note = ""
-                }
+                val origin = if (post.origin.isNullOrBlank()) "" else
+                    "${res(R.string.origin)} ${post.origin}"
+
+                val description = if (post.description.isNullOrBlank()) "" else
+                    "${res(R.string.description)} ${post.description}"
+
+
+                val note = if (post.note == null) "" else
+                    "${res(R.string.note)} ${post.note}"
+
                 val breedDescription = """
                 |${note}
-                |temperament: ${post.temperament}
-                |weight: ${post.weight.metric} 
-                |height: ${post.height.metric}
-                |${description}
+                |   
+                |${res(R.string.temperament)} ${post.temperament}
+                |
+                |${res(R.string.weight)} ${post.weight.metric}${res(R.string.kg)} 
+                |${res(R.string.height)} ${post.height.metric}${res(R.string.sm)}
+                |
                 |${origin}
+                |
+                |${description}
                 |
                 |""".trimMargin()
 
                 breedName = post.name.toString()
 
                 tvBreedDog.text = breedName
-                spinner.setPrompt(breedName)
+                spinner.prompt = breedName
 
                 textName = post.name.toString()
                 if (!textName.contains(" ")) {
@@ -134,7 +136,7 @@ class OneBreedFragment : Fragment()/*, AdapterView.OnItemSelectedListener*/ {
 
                 viewModel.selectBreed.let {
                     listBreed.clear()
-                    listBreed.add("more photos")
+                    listBreed.add(res(R.string.more_photos))
                     listBreed.addAll(it)
                     initSpinner()
                 }

@@ -1,15 +1,120 @@
 <resources>
-    <string name="app_name">Дог терапия</string>
+    <string name="app_name">Найди себе собаку</string>
+
     <!--Drawer menu-->
-    <string name="add_dog_string">Добавить нового друга</string>
-    <string name="add_shelter_string">Волонтёры</string>
-    <string name="shelters">Передержка</string>
+
+    <string name="nice_to_meet_you">Рады видеть Вас</string>
     <string name="fav_breeds">Породы собакенов</string>
-    <string name="dogs_list_string">Список пород собакенов</string>
-    <string name="auth">Регистрация</string>
-
-
+    <string name="find_home">Ищут дом</string>
+    <string name="map">Карта</string>
     <string name="enter_please">Ну!.. Ты это… Заходи, если что</string>
+    <string name="auth">Регистрация</string>
+    <string name="plus">+</string>
+
+
+    <!--Dog List Fragment-->
+
+    <!--One Breed Fragment-->
+    <string name="note">заметка:</string>
+    <string name="temperament">темперамент:</string>
+    <string name="weight">вес:</string>
+    <string name="kg">кг.</string>
+    <string name="height">высота в холке:</string>
+    <string name="sm">см.</string>
+    <string name="origin">происхождение:</string>
+    <string name="description">описание:</string>
+    <string name="more_photos">больше фото</string>
+
+    <!-- Maps fragment-->
+    <string name="state_badge_label">State badge</string>
+    <string name="wait_download_photo">Дождитесь окончания загрузки</string>
+    <string name="wait_download_photoeooooooo">Please wait for Ad uploaded</string>
+
+    <!-- Add Shelter Fragment-->
+    <string name="fab_add_image">Кнопка добавления картинки</string>
+    <string name="fab_delete_image">Кнопка удаления картинки</string>
+    <string name="fab_replace_image">Кнопка замены картинки</string>
+    <string name="fab_add_add">Кнопка публикации объявления</string>
+    <string name="fab_delete_add">Кнопка удаления объявления</string>
+    <string name="image">картинка</string>
+
+    <string name="call">Звонок</string>
+    <string name="name_shelter">Название</string>
+    <string name="tel_num_shelter">Номер телефона</string>
+    <string name="dog_name">Кличка пёселя</string>
+    <string name="dog_breed">Порода</string>
+    <string name="dog_breed_cosmo">космо-Пёс</string>
+    <string name="full_screen">Развернуть свернуть карту</string>
+    <string name="get_location">Начать поиск локации</string>
+
+    <string name="gender">Пол</string>
+    <string name="gendMan">Мальчик</string>
+    <string name="vaccine"> Прививки: </string>
+    <string name="plague_no">От чумы: НЕТ</string>
+    <string name="rabies_no">От бешенства: НЕТ</string>
+    <string name="gendWoMan">Девочка</string>
+    <string name="size">Размер</string>
+    <string name="sizeS">Маленький(ая)</string>
+    <string name="sizeM">Средний(ая)</string>
+    <string name="sizeL">Большой(ая)</string>
+
+
+    <string name="name">имя:</string>
+    <string name="count_call">количество звонков:</string>
+    <string name="count_views">количество просмотров:</string>
+    <string name="favorite">избранное:</string>
+
+    <string name="plague_yes">От чумы привита</string>
+    <string name="rabies_yes">От бешенства привита</string>
+
+
+    <string name="did_not_load_photos">Не удалось загрузить фото, возможно они повреждены</string>
+    <string name="need_permissions_for_use_photo">Необходимы разрешения для использования фоток!</string>
+
+
+
+    <!--isMyAds-->
+    <string name="my_ads">Мои объявления</string>
+    <string name="all_ads">Все объявления</string>
+    <string name="update_ads">обновить</string>
+
+
+    <!--Toasts-->
+    <string name="lovers">Любимчики</string>
+    <string name="bad_internet_connection">Плохое соединение с интернетом!</string>
+    <string name="your_last_location">Предыдущая локация!</string>
+    <string name="your_last_locationnnnn">Your last location!</string>
+    <string name="no_last_location">Последняя локация не зафиксированна!</string>
+    <string name="no_last_locationnnnn">No last location!</string>
+    <string name="location_search">Поиск локации…</string>
+    <string name="location_searchhhhhh">Location searching…</string>
+    <string name="gps_is_not_enabled">GPS отключён</string>
+    <string name="gps_is_not_enableddddd">gps is not enabled!</string>
+    <string name="need_permission_for_geolocation">Необходимо разрешение на геолокацию</string>
+    <!--Check Network-->
+    <string name="network_available">Сеть доступна</string>
+    <string name="network_availableeeeee">Network available</string>
+    <string name="wifi_available">WIFI доступен</string>
+    <string name="wifi_availableeeeee">WIFI available</string>
+    <string name="no_network">Нет сети</string>
+    <string name="no_networkkkkkkkkkkk">NO Network!!!</string>
+
+
+
+    <!--Navigation graph-->
+    <string name="first">Привет всем!</string>
+    <string name="dogs_list">Список пород</string>
+    <string name="one_breed">Вот такой пёсель</string>
+    <string name="fragment_one_photo">Просмотр фото</string>
+    <string name="note_edit">Редактор заметки</string>
+    <string name="auth_nav">Регистрация</string>
+    <string name="map_nav">Карта</string>
+    <string name="empty"/>
+
+
+
+
+
     <string name="entrance">Вход</string>
     <string name="output">Выход</string>
     <string name="lost">Потеряшки</string>
@@ -18,100 +123,58 @@
     <string name="created">Добавьте объявление…</string>
 
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="dogs_list">Список пород</string>
-    <string name="add_dog">Добавить пёселя</string>
-    <string name="first">Привет всем!</string>
-    <string name="favorites">Самые прикольные</string>
-    <string name="note_edit">Редактор заметки</string>
-    <string name="one_breed">Вот такой пёсель</string>
-    <string name="login">Регистрация</string>
-    <string name="go_to_dogs_list">Перейти к списку \n
-    пород</string>
-    <string name="go_to_add_dog">Добавить нового</string>
-    <string name="mastDog">Порода собаки</string>
-    <string name="descriptionDog">Описание</string>
-    <string name="note">Блокнот</string>
-    <string name="temperament">temperament:<font color='#01C6DB'>Login</font></string>
-    <string name="like">Любимчики</string>
-    <string name="intro"> Приложение для просмотра фотографий различных пород собак! При составном названии породы, например \"Bearded Collie\" может быть только односовпадение по фотографии! Кликайте по ножницам, чтоб сформировать запрос на \"Bearded\" или \"Collie\". Но при выборке \"Collie\" покажет все фотки по данному запросу даже \"Border Collie\"</string>
-    <string name="intro3">by dzenis_ska</string>
-    <string name="intro2"> Это приложение (на стадии разработки…) предназначено для облегчения поиска потерявшихся собак! \n
-        Ну а пока можно просматривать краткое описание пород и фоточки пород Ваших любимчиков!) \n
-        Ипользуются разные интернет-ресурсы: dog.ceo и api.thedogapi.com, \n
-        поэтому для улучшения поиска фотографий жмите \"more photo\"
-    </string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
-    <string name="not_reg">Зарегестрируйтесь</string>
-    <string name="hello">Привет ;)</string>
+
+    <string name="block_note">Блокнот</string>
+
     <string name="exit">Выход</string>
-    <string name="reg_up_is_successful">Удачная регистрация, человек!</string>
-    <string name="error_reg">Ошибка регистрации!</string>
-    <string name="error_enter">Ошибка входа!</string>
     <string name="email">Email</string>
-    <string name="email_add">Подтвердите регистрацию по Email и нажмите \"войти\"</string>
-    <string name="email_no_add">Ошибка отправки подтверждения регистрации по Email!</string>
 
     <!-- Login fragment-->
     <string name="auth_ic">Войдите или \n
         Зарегистрируйтесь</string>
-    <string name="entrance_ic">Войдите</string>
-    <string name="exit_ic">Выход</string>
     <string name="forgot_password">Забыли пороль?</string>
-    <string name="email_reset_password_was_send">Check Your Email!</string>
-    <string name="email_reset_password_was_not_send">Сheck the correctness of your Email!</string>
-    <string name="fill_the_email">Fill the Email!</string>
+    <string name="email_reset_password_was_send">Проверьте почту!</string>
+    <string name="email_reset_password_was_sendddddddddddddd">Check Your Email!</string>
+    <string name="email_reset_password_was_not_send">Проверьте правильность вашего Email!</string>
+    <string name="email_reset_password_was_not_senddddddddddddddd">Сheck the correctness of your Email!</string>
+    <string name="fill_the_email">Заполните поле /"почта/"!</string>
+    <string name="fill_the_emaillllllllllllll">Fill the Email!</string>
     <string name="password">Password</string>
+    <string name="dog_a">Собачка</string>
+    <string name="hi_man">Привет, чел!)</string>
+    <string name="hi">Привет</string>
+    <string name="password_error">не менее 6 символов</string>
+    <string name="include_symbols">Поле Email должно включать символы \'@\' и \'.\'</string>
+    <string name="more_than_6_symbols">Пароль должен содержать не менее 6 символов</string>
+    <string name="forgot_enter_email_or_password">Вы забыли ввести Email или Password</string>
 
-    <!-- Add Shelter fragment-->
-    <string name="name_shelter">Название</string>
-    <string name="tel_num_shelter_enter">+375()</string>
-    <string name="tel_num_shelter">Номер телефона</string>
-    <string name="dog_name">Кличка пёселя</string>
-    <string name="dog_breed">Порода</string>
-    <string name="dog_breed_cosmo">космо-Пёс</string>
-    <string name="description">Описание</string>
-    <string name="gender">Пол</string>
-    <string name="gendMan">Мальчик</string>
-    <string name="vaccine"> Прививки: </string>
-    <string name="plague">От чумы: НЕТ</string>
-    <string name="rabies">От бешенства: НЕТ</string>
-    <string name="gendWoMan">Девочка</string>
-    <string name="size">Размер</string>
-    <string name="sizeS">Маленький(ая)</string>
-    <string name="sizeM">Средний(ая)</string>
-    <string name="sizeL">Большой(ая)</string>
 
-    <!-- Maps fragment-->
-    <string name="state_badge_label">State badge</string>
-    <string name="wait_download_photo">Please wait for Ad uploaded</string>
 
-    <!--isMyAds-->
-    <string name="my_ads">Мои объявления</string>
-    <string name="all_ads">Все объявления</string>
-    <string name="update_ads">обновить</string>
+
 
     <!-- Intro fragment-->
     <string name="content_description">Intro Fragment</string>
-    <string name="title_1"> DogTherapy расскажет Вам, какие собаки бывают разные!
+    <string name="title_1"> \"Дог терапия\" расскажет Вам, какие собаки бывают разные!
         \n Чёрные, белые, грязные!!)
         </string>
-    <string name="title_2"> Вам  очень нравятся собаки!? \n Но нет возможности завести свою? \n Тогда собакены ждут Вас в гости!! </string>
-    <string name="title_3">Если Вы хотите, чтобы к Вашему питомцу пришли в гости \n То необходимо зарегиться \n и подтвердить Email</string>
-    <string name="title_4">*** \n Собакены приветствуют вкусняшки </string>
+    <string name="title_2"> Вам  нужен собакен!? \n Тогда Вам сюда \n Тут собаки ищут себе настоящего хозяйна!! </string>
+    <string name="title_3">Если Вы волонтёр  \n То необходимо зарегиться по Email </string>
+    <string name="title_4">*** \n Эта площадка для волонтёров и для пунктов передержек  \n не для торговли собаками</string>
     <string name="more_photo">Больше фото</string>
-    <string name="map">Карта</string>
+
     <string name="authFirst">Регистрация</string>
     <string name="first_photo">Собак много не бывает</string>
 
+    <string name="smile">Улыбыка</string>
+    <string name="suspect">Подозревака</string>
+    <string name="fright">Испугака</string>
+    <string name="capitan">Капитака</string>
+    <string name="smile_else">Улыбыка есчо</string>
+
     <!-- Progress Dialog-->
     <string name="no_network_q">Для приложения необходимо подключение к сети Internet</string>
-    <string name="hi">Добро пожаловать!</string>
     <string name="remove_user">Для смены пользователя \n нажмите \"Выход\"</string>
-    <string name="fragment_one_photo">Просмотр</string>
-    <string name="save">Сохранить</string>
+
     <string name="ok">OK</string>
 
     <!--Open-close drawer menu-->
@@ -125,7 +188,6 @@
 
     <string name="enter_as_anon">гостем будешь!</string>
     <string name="check_email">Проверьте почтовый ящик!</string>
-    <string name="check_email_else">Проверьте почтовый ящик, говорю!</string>
     <string name="created_account">Аккаунт создан</string>
 
 

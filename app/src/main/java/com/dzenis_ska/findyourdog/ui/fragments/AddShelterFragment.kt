@@ -5,23 +5,18 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
-import android.content.res.Resources
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import androidx.core.net.toFile
 import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -42,7 +37,6 @@ import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
@@ -222,12 +216,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             R.id.dialogInfo -> {
                 val dogS = viewModel.adShelteAfterPhotoViewed
                 val info = """
-                    имя: ${dogS?.name} 
-                    количество звонков: ${dogS?.callsCounter}
-                    количество просмотров: ${dogS?.viewsCounter}
-                    избранное: ${dogS?.favCounter}
+                    |${res(R.string.name)} ${dogS?.name} 
+                    |${res(R.string.count_call)} ${dogS?.callsCounter}
+                    |${res(R.string.count_views)} ${dogS?.viewsCounter}
+                    |${res(R.string.favorite)} ${dogS?.favCounter}
                 """.trimIndent()
-                Toast.makeText(activity as MainActivity, info, Toast.LENGTH_LONG).show()
+                toastL(info)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -393,11 +387,11 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 breed,
                 mAuth.currentUser?.email,
                 mapOf(
-                    "plague" to (plague?.toString() ?: ""),
-                    "rabies" to (rabies?.toString() ?: "")
+                    PLAGUE to (plague?.toString() ?: ""),
+                    RABIES to (rabies?.toString() ?: "")
                 ),
                 photoUrlList,
-                "empty",
+                EMPTY,
                 dbManager.db.push().key,
                 mAuth.uid,
                 (Random.nextInt(0, 360)).toFloat(),
@@ -416,14 +410,14 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             .addOnSuccessListener { location: Location? ->
                 if (location != null) {
 //                    Log.d("!!!loc", "${location.longitude} ${location.latitude}")
-                    Toast.makeText(activity as MainActivity, "Your last location!", Toast.LENGTH_LONG).show()
+                    toastLong(R.string.your_last_location)
                     setMarker(location.latitude, location.longitude, 10f)
                     lastLat = location.latitude
                     lastLng = location.longitude
                     rootElement!!.ibGetLocation.visibility = View.VISIBLE
                     // Got last known location. In some rare situations this can be null.
                 } else {
-                    Toast.makeText(activity as MainActivity, "No last location!", Toast.LENGTH_LONG).show()
+                    toastLong(R.string.no_last_location)
                     isLocEnabled()
                 }
             }
@@ -440,9 +434,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 5f,
                 this
             )
-            Toast.makeText(activity as MainActivity, "Location search...", Toast.LENGTH_LONG).show()
+            toastLong(R.string.location_search)
         } else {
-            Toast.makeText(activity as MainActivity, "gps is not enabled!", Toast.LENGTH_LONG).show()
+            toastLong(R.string.gps_is_not_enabled)
             setMarker(53.9303802, 27.5054665, 9f)
             rootElement!!.ibGetLocation.visibility = View.VISIBLE
         }
@@ -493,7 +487,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     requestPermissionsForMediaStore()
                 }
             }
-
 
             fabAddImage.setOnClickListener() {
                 fullScreen(250, 0.50f)
@@ -661,12 +654,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     } else {
                         addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
                     }
-//                    photoArrayList.add("https://firebasestorage.googleapis.com/v0/b/findyourdog-6fa93.appspot.com/o/storage%2FdnUUHb4of0WAoF4xuDlV0J95hBy1%2Fimage_1631654334261?alt=media&token=d66cffec-f403-498c-b2e6-30afa473db41")
-                    Toast.makeText(
-                        activity as MainActivity,
-                        "Не удалось загрузить фото, возможно они повреждены",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    toastL(res(R.string.did_not_load_photos))
                 } else {
                     viewModel.publishPhoto(arrayListByteArray[0]) { uri ->
 
@@ -861,6 +849,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         // nop
     }
 
+    @SuppressLint("SetTextI18n")
     fun vaccineDataEdit(
         vaccine: String,
         timeInMillis: Long,
@@ -892,8 +881,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             size = tvSize.text.toString(),
             description = edDescription.text.toString(),
             vaccination = mapOf(
-                "plague" to (plague?.toString() ?: ""),
-                "rabies" to (rabies?.toString() ?: "")
+                PLAGUE to (plague?.toString() ?: ""),
+                RABIES to (rabies?.toString() ?: "")
             )
         )
         viewModel.adShelteAfterPhotoViewed = instState
@@ -918,13 +907,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 //            viewModel.mapFragToAddShelterFragId = CHOOSE_PHOTO
             imagePicker?.selectImage()
         }
-        else Toast.makeText(
-            activity as MainActivity,
-            "Необходимы разрешения для использования фоток!",
-            Toast.LENGTH_LONG
-        ).show()
+        else
+            toastLong(R.string.need_permissions_for_use_photo)
 //                return@updatePermissionsState
-
     }
 
     private fun requestPermissionsForMediaStore() {
@@ -941,6 +926,11 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         const val ADD_DOG = 101
         const val SHOW_DOG = 102
         const val CHOOSE_PHOTO = 103
+
+
+        const val PLAGUE = "plague"
+        const val RABIES = "rabies"
+        const val EMPTY = "empty"
 
         private val permissions = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,

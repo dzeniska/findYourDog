@@ -7,7 +7,7 @@
     android:layout_margin="8dp"
     android:id="@+id/fragOneBreed"
     android:background="@drawable/background_one_breed"
-    tools:context=".ui.fragments.OnePhotoFragment">
+    tools:context=".ui.fragments.OneBreedFragment">
 
 
     <ImageView
@@ -119,7 +119,6 @@
         android:layout_marginEnd="8dp"
         android:background="@android:drawable/editbox_background"
         android:ems="10"
-        android:hint="@string/mastDog"
         android:inputType="textPersonName"
         android:padding="10dp"
         android:textColor="@color/text_hint_add"
@@ -157,11 +156,9 @@
         <TextView
             android:id="@+id/tvBreedDescription"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:background="@android:drawable/editbox_background"
             android:ems="10"
-            android:gravity="top|left"
-            android:hint="@string/descriptionDog"
             android:padding="10dp"
             android:textColor="@color/text_hint_add"
             android:textColorHint="@color/text_hint_add"

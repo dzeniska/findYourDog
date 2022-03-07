@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -15,8 +14,6 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
@@ -43,7 +40,7 @@ import kotlin.collections.ArrayList
 
 class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     GoogleMap.OnMyLocationButtonClickListener,
-    GoogleMap.OnMyLocationClickListener,
+//    GoogleMap.OnMyLocationClickListener,
     GoogleMap.OnInfoWindowClickListener,
     GoogleMap.OnMarkerClickListener
 {
@@ -250,14 +247,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 ?.addOnSuccessListener { location : Location? ->
                     if(location != null) {
 //                        Log.d("!!!loc", "${location.longitude} ${location.latitude}")
-                        Toast.makeText(activity as MainActivity, "Your last location!", Toast.LENGTH_LONG).show()
+                        toastS(res(R.string.your_last_location))
                         setMarker(location.latitude, location.longitude, 6f)
                         lastLat = location.latitude
                         lastLng = location.longitude
                         rootElement!!.floatBtnGPS.visibility = View.VISIBLE
                         // Got last known location. In some rare situations this can be null.
                     }else{
-                        Toast.makeText(activity as MainActivity, "No last location!", Toast.LENGTH_LONG).show()
+                        toastS(res(R.string.no_last_location))
                         isLocEnabled()
                     }
                 }
@@ -272,9 +269,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 5f,
                 this
             )
-            Toast.makeText(activity as MainActivity, "Location search...", Toast.LENGTH_LONG).show()
+            toastL(res(R.string.location_search))
         } else {
-            Toast.makeText(activity as MainActivity, "gps is not enabled!", Toast.LENGTH_LONG).show()
+            toastL(res(R.string.gps_is_not_enabled))
             setMarker(53.9303802, 27.5054665, 9f)
             rootElement!!.floatBtnGPS.visibility = View.VISIBLE
         }
@@ -284,7 +281,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         Log.d("!!!on", "onMapReadyMF")
         mMap = googleMap
         mMap.setOnMyLocationButtonClickListener(this)
-        mMap.setOnMyLocationClickListener(this)
+//        mMap.setOnMyLocationClickListener(this)
         mMap.setInfoWindowAdapter(CustomInfoWindowAdapter())
         mMap.setOnInfoWindowClickListener(this)
         mMap.setOnMarkerClickListener(this)
@@ -490,9 +487,9 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         return false
     }
 
-    override fun onMyLocationClick(location: Location) {
-        Toast.makeText(activity as MainActivity, "Current location:\n$location", Toast.LENGTH_LONG).show()
-    }
+//    override fun onMyLocationClick(location: Location) {
+//        Toast.makeText(activity as MainActivity, "Current location:\n$location", Toast.LENGTH_LONG).show()
+//    }
 
     override fun onResume() {
         Log.d("!!!on", "onResumeMF")
@@ -567,16 +564,4 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
             cs.constrainWidth(R.id.rcViewMapPhoto, i)
             cs.applyTo(rootElement!!.clFM)
     }
-
-    companion object {
-        private const val LOCATION_PERMISSION_REQUEST_CODE = 1
-//        private val permissions = arrayOf(
-//            Manifest.permission.CAMERA,
-//            Manifest.permission.RECORD_AUDIO,
-//            Manifest.permission.READ_PHONE_STATE
-//        )
-    }
-
-
-
 }

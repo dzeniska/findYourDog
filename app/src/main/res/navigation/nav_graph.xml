@@ -37,20 +37,20 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.LoginFragment"
-        android:label="@string/authFirst"
+        android:label="@string/auth_nav"
         tools:layout="@layout/fragment_login"/>
 
     <fragment
         android:id="@+id/mapsFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.MapsFragment"
-        android:label="@string/map"
+        android:label="@string/map_nav"
         tools:layout="@layout/fragment_maps">
 
     </fragment>
     <fragment
         android:id="@+id/addShelterFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.AddShelterFragment"
-        android:label=""
+        android:label="@string/empty"
         tools:layout="@layout/fragment_add_shelter"/>
 
 </navigation>

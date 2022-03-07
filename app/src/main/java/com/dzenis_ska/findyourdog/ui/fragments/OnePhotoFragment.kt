@@ -7,8 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -17,7 +15,6 @@ import com.davemorrissey.labs.subscaleview.ImageSource
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.FragmentOnePhotoBinding
-import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import java.io.File
@@ -52,7 +49,7 @@ class OnePhotoFragment : Fragment() {
 
     private fun initViewModel(){
         viewModel.onePhoto.observe(viewLifecycleOwner, Observer {byteArray ->
-            Log.d("!!!onviewModel.onePhoto.observe", "OnePhotoFragment ${byteArray}")
+//            Log.d("!!!onviewModel.onePhoto.observe", "OnePhotoFragment ${byteArray}")
             if(byteArray != null) {
                 val stream = String(byteArray)
                 if (stream.isNotEmpty()) {
@@ -82,11 +79,7 @@ class OnePhotoFragment : Fragment() {
                         imgBrokenPhoto.visibility = View.VISIBLE
                         progressBarLine.visibility = View.GONE
                     }
-                    Toast.makeText(
-                        activity as MainActivity,
-                        "Плохое соединение с интернетом!",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    toastS(res(R.string.bad_internet_connection))
                 }
             }
         })
@@ -129,7 +122,6 @@ class OnePhotoFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-
         Log.d("!!!onDestroyView", "OnePhotoFragment")
         rootElement = null
         super.onDestroyView()
