@@ -107,10 +107,20 @@
                 android:background="@drawable/forgot_back"
                 android:textColor="@color/white"
                 app:layout_constraintEnd_toEndOf="@+id/edPassword"
-                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="@+id/edPassword"
                 app:layout_constraintTop_toBottomOf="@+id/textView2"
                 android:contentDescription="@string/forgot_password" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_margin="16dp"
+                android:paddingBottom="16dp"
+                android:text="@string/attention"
+                app:layout_constraintTop_toBottomOf="@id/imgButtonForgot"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/groupForgot"

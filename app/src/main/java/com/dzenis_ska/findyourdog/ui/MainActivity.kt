@@ -113,12 +113,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.string.open,
             R.string.close
         ) {
+
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 super.onDrawerSlide(drawerView, slideOffset)
                 val slideX = drawerView.width * slideOffset
                 rootElement!!.appBar.apptool.alpha = (1 - slideOffset)
-                rootElement!!.appBar.introMain.constraintLayout.setTranslationX(slideX)
-                rootElement!!.appBar.introMain.constraintLayout.setScaleX(1 - slideOffset)
+                rootElement!!.appBar.introMain.constraintLayout.translationX = slideX
+                rootElement!!.appBar.introMain.constraintLayout.scaleX = 1 - slideOffset
                 // constraintLayout.setScaleY(1 - slideOffset)
             }
         }

@@ -319,7 +319,7 @@
                     android:layout_marginEnd="16dp"
                     android:background="@android:drawable/editbox_background"
                     android:ems="10"
-                    android:gravity="top|left"
+                    android:gravity="top"
                     android:hint="@string/description"
                     android:padding="10dp"
                     android:textColor="@color/back_menu_add_color"
