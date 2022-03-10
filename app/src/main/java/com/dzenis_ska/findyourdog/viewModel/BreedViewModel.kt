@@ -29,6 +29,7 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     var numPage: Int = 0
     var isFav: Boolean = false
 
+
     var isMyMarkers = false
 
 
@@ -42,6 +43,9 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
 
     private val _onePhoto = MutableLiveData<ByteArray>()
     val onePhoto: LiveData<ByteArray> = _onePhoto
+
+    private val _showAd = MutableLiveData<Int>()
+    val showAd: LiveData<Int> = _showAd
 
 
 
@@ -246,6 +250,7 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
             callback(it)
         }
     }
+
 
     interface WritedDataCallback {
         fun writedData()

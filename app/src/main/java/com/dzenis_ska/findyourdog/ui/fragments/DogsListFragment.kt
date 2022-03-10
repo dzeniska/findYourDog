@@ -20,6 +20,12 @@ import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
 import com.dzenis_ska.findyourdog.ui.utils.InitBackStack
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
+import com.google.android.gms.ads.AdError
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.FullScreenContentCallback
+import com.google.android.gms.ads.LoadAdError
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import kotlinx.coroutines.*
 import java.util.*
 
@@ -31,6 +37,9 @@ class DogsListFragment : Fragment() {
     private val breeds = mutableListOf<DogBreeds>()
     private var job: Job? = null
     private var job2: Job? = null
+
+    var interAd: InterstitialAd? = null
+    private var countToShowInterstitialAd = 0
 
     //    private val check: CheckNetwork = CheckNetwork()
     //    override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,10 +59,19 @@ class DogsListFragment : Fragment() {
         return rootElement!!.root
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        Log.d("!!!countToShowInterstitialAd", "onSaveInstanceState")
+        outState.putInt(COUNT, countToShowInterstitialAd)
+    }
+
     @SuppressLint("StringFormatInvalid")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
             CheckNetwork.check(activity as MainActivity)
+        Log.d("!!!countToShowInterstitialAd", "onViewCreated")
+//        countToShowInterstitialAd = savedInstanceState?.getInt(COUNT) ?: 1
+
 
         initAdapter()
         isFavRecycler(viewModel.isFav)
@@ -61,7 +79,7 @@ class DogsListFragment : Fragment() {
         initSearchView()
         initSwipeRefresh()
         initClick()
-        initBackStack()
+        loadInterAd()
 
         viewModel.selectBreed()
 //        rootElement!!.tvDogList.text = getString(R.string.hi, "${getCounterValue()}")
@@ -135,9 +153,55 @@ class DogsListFragment : Fragment() {
     }
 
     fun onBreedSelect(position: Int) {
+        isShowInterstitialAd()
         viewModel.selectedBreed = breeds[position]
         viewModel.getItemImg(breeds[position].name?.lowercase(Locale.ROOT).toString())
         navController?.navigate(R.id.oneBreedFragment)
+    }
+
+    private fun isShowInterstitialAd() {
+        countToShowInterstitialAd++
+        if(countToShowInterstitialAd%11 == 0) showInterAd()
+    }
+
+    private fun loadInterAd() {
+        val adRequest = AdRequest.Builder().build()
+        InterstitialAd.load(
+            context as MainActivity,
+            resources.getString(R.string.ad_inter_id),
+            adRequest,
+            object : InterstitialAdLoadCallback() {
+                override fun onAdFailedToLoad(adError: LoadAdError) {
+                    interAd = null
+                }
+
+                override fun onAdLoaded(ad: InterstitialAd) {
+                    interAd = ad
+                }
+            }
+        )
+    }
+
+    fun showInterAd() {
+        if (interAd != null) {
+            interAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+                override fun onAdDismissedFullScreenContent() {
+                    interAd = null
+                    loadInterAd()
+                }
+                override fun onAdFailedToShowFullScreenContent(ad: AdError) {
+                    interAd = null
+                    loadInterAd()
+                }
+                override fun onAdShowedFullScreenContent() {
+                    interAd = null
+                }
+            }
+            interAd?.show(context as MainActivity)
+        } else {
+            interAd = null
+            loadInterAd()
+        }
     }
 
     override fun onDestroyView() {
@@ -146,8 +210,7 @@ class DogsListFragment : Fragment() {
         rootElement = null
     }
 
-    @SuppressLint("RestrictedApi")
-    private fun initBackStack() {
-        navController?.let { InitBackStack.initBackStack(it) }
+    companion object {
+        const val COUNT = "COUNT"
     }
 }

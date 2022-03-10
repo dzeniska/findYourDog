@@ -80,7 +80,7 @@
     <!--Toasts-->
     <string name="lovers">Любимчики</string>
     <string name="bad_internet_connection">Плохое соединение с интернетом!</string>
-    <string name="your_last_location">Предыдущая локация!</string>
+    <string name="your_last_location"> показана последняя зафиксированная локация!</string>
     <string name="no_last_location">Последняя локация не зафиксированна!</string>
     <string name="location_search">Поиск локации…</string>
     <string name="gps_is_not_enabled">GPS отключён</string>
@@ -185,7 +185,7 @@
     <!-- Реклама -->
     <!--<string name="ad_id">ca-app-pub-3940256099942544/6300978111</string>-->
     <string name="ad_id">ca-app-pub-8644370805049292/7689542316</string>
-    <!--    <string name="ad_inter_id">ca-app-pub-3940256099942544/1033173712</string>-->
-    <!--    <string name="ad_inter_id">ca-app-pub-8644370805049292/4056959965</string>-->
+        <!--<string name="ad_inter_id">ca-app-pub-3940256099942544/1033173712</string>-->
+        <string name="ad_inter_id">ca-app-pub-8644370805049292/9308061536</string>
 
 </resources>
