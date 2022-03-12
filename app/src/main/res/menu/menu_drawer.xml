@@ -42,6 +42,17 @@
                     android:icon="@drawable/ic_reg"
                     app:actionViewClass="android.widget.TextView"
                     android:title="@string/auth" />
+
+            </menu>
+        </item>
+        <item android:title="@string/feedback">
+            <menu>
+                <item
+                    android:id="@+id/developerPage"
+
+                    android:icon="@drawable/ic_developer_page"
+                    app:actionViewClass="android.widget.TextView"
+                    android:title="@string/developerPage" />
             </menu>
         </item>
     </group>

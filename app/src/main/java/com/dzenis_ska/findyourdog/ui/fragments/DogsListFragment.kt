@@ -51,6 +51,12 @@ class DogsListFragment : Fragment() {
 //            }
 //        })
 //    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        CheckNetwork.check(activity as MainActivity)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -68,7 +74,7 @@ class DogsListFragment : Fragment() {
     @SuppressLint("StringFormatInvalid")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-            CheckNetwork.check(activity as MainActivity)
+
         Log.d("!!!countToShowInterstitialAd", "onViewCreated")
 //        countToShowInterstitialAd = savedInstanceState?.getInt(COUNT) ?: 1
 
@@ -182,7 +188,7 @@ class DogsListFragment : Fragment() {
         )
     }
 
-    fun showInterAd() {
+    private fun showInterAd() {
         if (interAd != null) {
             interAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
                 override fun onAdDismissedFullScreenContent() {

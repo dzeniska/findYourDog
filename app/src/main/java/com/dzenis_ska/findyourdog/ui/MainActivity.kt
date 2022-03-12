@@ -2,9 +2,11 @@ package com.dzenis_ska.findyourdog.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -102,6 +104,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onResume()
         uiUpdateMain(fbAuth.mAuth.currentUser)
     }
+
 
     private fun openCloseDrawer() {
         //работа при откр-закр drawer
@@ -210,6 +213,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 navigateTo(R.id.loginFragment)
                 closeDrawer()
             }
+
+            R.id.developerPage -> {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse(resources.getString(R.string.link_page))
+                startActivity(intent)
+            }
+
         }
         return true
     }

@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SnapHelper
 import com.dzenis_ska.findyourdog.R
-import com.dzenis_ska.findyourdog.databinding.FragIntroBinding
+import com.dzenis_ska.findyourdog.databinding.FragmentIntroBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.FirstFrAdapter
@@ -32,7 +32,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class FirstFragment : Fragment() {
-    var rootElement: FragIntroBinding? = null
+    var rootElement: FragmentIntroBinding? = null
     var navController: NavController? = null
     private val fbAuth = FBAuth()
     var adapter: FirstFrAdapter? = null
@@ -57,7 +57,7 @@ class FirstFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         Log.d("!!!on", "onCreateView")
-        val rootElement = FragIntroBinding.inflate(inflater)
+        val rootElement = FragmentIntroBinding.inflate(inflater)
         this.rootElement = rootElement
         return rootElement.root
     }
@@ -92,6 +92,8 @@ class FirstFragment : Fragment() {
         val listPhoto = arrayListOf(
             R.drawable.sobaka_ulibaka_1,
             R.drawable.sobaka_podozrevaka_1,
+            R.drawable.jessika,
+            R.drawable.cezar,
             R.drawable.sobaka_ispugaka_1,
             R.drawable.sobaka_plavaka_1,
             R.drawable.sobaka_ulibaka_escho_1
@@ -99,6 +101,8 @@ class FirstFragment : Fragment() {
         val listTitle = arrayListOf(
             res(R.string.smile),
             res(R.string.suspect),
+            res(R.string.bully),
+            res(R.string.sweet_vata),
             res(R.string.fright),
             res(R.string.capitan),
             res(R.string.smile_else)

@@ -9,7 +9,10 @@
     <string name="map">Карта</string>
     <string name="enter_please">Ну!.. Ты это… Заходи, если что</string>
     <string name="auth">Регистрация</string>
+    <string name="developerPage">Страница разработчика</string>
     <string name="plus">+</string>
+    <string name="feedback">Ваш отзыв нам очень важен</string>
+    <string name="link_page">https://play.google.com/store/apps/details?id=com.dzenis_ska.findyourdog</string>
 
     <!--Dog List Fragment-->
 
@@ -150,14 +153,16 @@
         </string>
     <string name="title_2"> Вам  нужен собакен!? \n Тогда Вам сюда \n Тут собаки ищут себе настоящего хозяйна!! </string>
     <string name="title_3">Кто хочет помоч найти собачкам дом,  \n зарегистрируйтесь по Email *** </string>
-    <string name="title_4">*** \n не для торговли собаками \n </string>
+    <string name="title_4">*** \n здесь мы помогаем собачкам найти дом \n не продаём их и не покупаем </string>
     <string name="more_photo">Больше фото</string>
 
     <string name="authFirst">Регистрация</string>
     <string name="first_photo">Собак много не бывает</string>
 
-    <string name="smile">Улыбыка</string>
+    <string name="smile">Улыбака</string>
     <string name="suspect">Подозревака</string>
+    <string name="bully">Забияка</string>
+    <string name="sweet_vata">Сладка-вата</string>
     <string name="fright">Испугака</string>
     <string name="capitan">Капитака</string>
     <string name="smile_else">Улыбыка есчо</string>
