@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
@@ -224,6 +225,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun init(){
         if(viewModel.dbManager.mAuth.currentUser?.isAnonymous == false && viewModel.dbManager.mAuth.currentUser != null ){
             if(isEmailVeryfied()) {
+                toastL(resources.getString(R.string.press_plus))
                 rootElement?.floatBtnAddShelter?.visibility = View.VISIBLE
             }
         }
@@ -247,14 +249,14 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 ?.addOnSuccessListener { location : Location? ->
                     if(location != null) {
 //                        Log.d("!!!loc", "${location.longitude} ${location.latitude}")
-                        toastS(res(R.string.your_last_location))
+//                        toastS(res(R.string.your_last_location))
                         setMarker(location.latitude, location.longitude, 6f)
                         lastLat = location.latitude
                         lastLng = location.longitude
                         rootElement!!.floatBtnGPS.visibility = View.VISIBLE
                         // Got last known location. In some rare situations this can be null.
                     }else{
-                        toastS(res(R.string.no_last_location))
+//                        toastS(res(R.string.no_last_location))
                         isLocEnabled()
                     }
                 }
@@ -404,7 +406,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 bool = true
                 viewModel.openFragShelter(info)
                 navController.navigate(R.id.addShelterFragment)
-//                Toast.makeText(context as MainActivity, "${info.key}", Toast.LENGTH_LONG).show()
                 return@forInfo
             }
         }
@@ -486,10 +487,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         Log.d("!!!", "onMyLocationButtonClick")
         return false
     }
-
-//    override fun onMyLocationClick(location: Location) {
-//        Toast.makeText(activity as MainActivity, "Current location:\n$location", Toast.LENGTH_LONG).show()
-//    }
 
     override fun onResume() {
         Log.d("!!!on", "onResumeMF")

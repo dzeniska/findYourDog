@@ -31,6 +31,8 @@
     <!-- Maps fragment-->
     <string name="state_badge_label">State badge</string>
     <string name="wait_download_photo">Дождитесь окончания загрузки</string>
+    <string name="press_plus">Для добавления объявления нажмите \"+\"</string>
+
 
     <!-- Add Shelter Fragment-->
     <string name="fab_add_image">Кнопка добавления картинки</string>

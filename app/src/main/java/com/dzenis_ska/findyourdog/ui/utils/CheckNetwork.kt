@@ -21,10 +21,10 @@ object CheckNetwork {
             return false
         } else {
             if (info.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                Toast.makeText(act, act.resources.getString(R.string.network_available), Toast.LENGTH_SHORT).show()
+//                Toast.makeText(act, act.resources.getString(R.string.network_available), Toast.LENGTH_SHORT).show()
                 return true
             } else if(info.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)){
-                Toast.makeText(act, act.resources.getString(R.string.wifi_available), Toast.LENGTH_SHORT).show()
+//                Toast.makeText(act, act.resources.getString(R.string.wifi_available), Toast.LENGTH_SHORT).show()
                 return true
             } else {
                 Toast.makeText(act, act.resources.getString(R.string.no_network), Toast.LENGTH_SHORT).show()

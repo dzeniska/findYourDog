@@ -410,14 +410,14 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             .addOnSuccessListener { location: Location? ->
                 if (location != null) {
 //                    Log.d("!!!loc", "${location.longitude} ${location.latitude}")
-                    toastLong(R.string.your_last_location)
+//                    toastLong(R.string.your_last_location)
                     setMarker(location.latitude, location.longitude, 10f)
                     lastLat = location.latitude
                     lastLng = location.longitude
                     rootElement!!.ibGetLocation.visibility = View.VISIBLE
                     // Got last known location. In some rare situations this can be null.
                 } else {
-                    toastLong(R.string.no_last_location)
+//                    toastLong(R.string.no_last_location)
                     isLocEnabled()
                 }
             }
