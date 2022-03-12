@@ -11,7 +11,13 @@
         android:id="@+id/firstFragment"
         android:name="com.dzenis_ska.findyourdog.ui.fragments.FirstFragment"
         android:label="@string/first"
-        tools:layout="@layout/fragment_intro" />
+        tools:layout="@layout/fragment_intro">
+
+        <action
+            android:id="@+id/action_firstFragment_to_dogsListFragment"
+            app:destination="@id/dogsListFragment"
+            />
+    </fragment>
 
     <fragment
         android:id="@+id/dogsListFragment"

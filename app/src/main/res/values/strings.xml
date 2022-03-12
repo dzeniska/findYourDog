@@ -11,7 +11,7 @@
     <string name="auth">Регистрация</string>
     <string name="developerPage">Страница разработчика</string>
     <string name="plus">+</string>
-    <string name="feedback">Ваш отзыв нам очень важен</string>
+    <string name="feedback">Ваш отзыв нам очень важен *****</string>
     <string name="link_page">https://play.google.com/store/apps/details?id=com.dzenis_ska.findyourdog</string>
 
     <!--Dog List Fragment-->
@@ -148,7 +148,7 @@
     <!-- Intro fragment-->
     <string name="content_description">Intro Fragment</string>
     <string name="title_1"> \"Dog therapy\" поможет Вам найти своего верного друга!
-        \n Друзья бываю разные -
+        \n Друзья бывают разные -
         \n Чёрные, белые, грязные!!)
         </string>
     <string name="title_2"> Вам  нужен собакен!? \n Тогда Вам сюда \n Тут собаки ищут себе настоящего хозяйна!! </string>
@@ -162,7 +162,7 @@
     <string name="smile">Улыбака</string>
     <string name="suspect">Подозревака</string>
     <string name="bully">Забияка</string>
-    <string name="sweet_vata">Сладка-вата</string>
+    <string name="sweet_cotton_wool">Сахарна-вата</string>
     <string name="fright">Испугака</string>
     <string name="capitan">Капитака</string>
     <string name="smile_else">Улыбыка есчо</string>

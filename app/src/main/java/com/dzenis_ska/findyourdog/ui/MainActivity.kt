@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         init()
         rootElement!!.navView.setNavigationItemSelectedListener(this)
-        openCloseDrawer()
+//        openCloseDrawer()
         viewModel.userUpdate.observe(this, {
             uiUpdateMain(it)
         })
@@ -105,30 +105,20 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         uiUpdateMain(fbAuth.mAuth.currentUser)
     }
 
+    override fun onSupportNavigateUp(): Boolean {
+        val back = navController!!.backQueue
+        Log.d("!!!fragments", "${back.size}")
 
-    private fun openCloseDrawer() {
-        //работа при откр-закр drawer
-
-        val toggle: ActionBarDrawerToggle = object : ActionBarDrawerToggle(
-            this,
-            rootElement!!.drawerLayout,
-            rootElement!!.appBar.toolbar,
-            R.string.open,
-            R.string.close
-        ) {
-
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
-                super.onDrawerSlide(drawerView, slideOffset)
-                val slideX = drawerView.width * slideOffset
-                rootElement!!.appBar.apptool.alpha = (1 - slideOffset)
-                rootElement!!.appBar.introMain.constraintLayout.translationX = slideX
-                rootElement!!.appBar.introMain.constraintLayout.scaleX = 1 - slideOffset
-                // constraintLayout.setScaleY(1 - slideOffset)
-            }
+        navController!!.backQueue.forEach {
+            Log.d("!!!fragments", "${it.destination.label}")
         }
-        rootElement!!.drawerLayout.addDrawerListener(toggle)
-        toggle.syncState()
 
+        if(navController!!.backQueue.size > 2){
+            onBackPressed()
+        } else {
+            openDrawer()
+        }
+        return true
     }
 
     private fun init() {
@@ -167,7 +157,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             setSupportActionBar(appBar.toolbar)
 
             //убираем затемнение
-            drawerLayout.setScrimColor(Color.TRANSPARENT)
+//            drawerLayout.setScrimColor(Color.TRANSPARENT)
 
             tvHeaderAcc = navView.getHeaderView(0).findViewById(R.id.tvHeaderAcc)
         }
@@ -225,7 +215,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
+        if(rootElement!!.drawerLayout.isOpen)
         closeDrawer()
+        else
         super.onBackPressed()
     }
 
@@ -249,6 +241,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun closeDrawer() {
         rootElement!!.drawerLayout.closeDrawer(GravityCompat.START)
+    }
+    private fun openDrawer() {
+        rootElement!!.drawerLayout.openDrawer(GravityCompat.START)
     }
 
     private fun navigateTo(id: Int) {

@@ -16,7 +16,7 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
 
-        classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.0"
+        classpath "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
 
         // todo: include dependency for safe-args plugin here: androidx.navigation:navigation-safe-args-gradle-plugin
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$nav_version"

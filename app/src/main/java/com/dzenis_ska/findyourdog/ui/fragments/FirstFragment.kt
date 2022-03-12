@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.SnapHelper
@@ -102,7 +103,7 @@ class FirstFragment : Fragment() {
             res(R.string.smile),
             res(R.string.suspect),
             res(R.string.bully),
-            res(R.string.sweet_vata),
+            res(R.string.sweet_cotton_wool),
             res(R.string.fright),
             res(R.string.capitan),
             res(R.string.smile_else)
@@ -115,7 +116,7 @@ class FirstFragment : Fragment() {
         val snapHelper = LinearSnapHelper()
         snapHelper.attachToRecyclerView(rootElement!!.rcFF)
 //        rootElement!!.rcFF.scrollToPosition(4)
-        rootElement!!.rcFF.smoothScrollBy(300,0)
+//        rootElement!!.rcFF.smoothScrollBy(300,0)
     }
 
 
@@ -129,7 +130,17 @@ class FirstFragment : Fragment() {
                 }else if (event.action == MotionEvent.ACTION_UP){
                     v.isPressed = false
                     imageButton1.elevation = 26f
-                    navController?.navigate(R.id.dogsListFragment)
+                    val direction = FirstFragmentDirections.actionFirstFragmentToDogsListFragment()
+                    navController?.navigate(direction,
+                    navOptions {
+                        anim {
+                            enter = R.anim.enter
+                            exit = R.anim.exit
+                            popEnter = R.anim.pop_enter
+                            popExit = R.anim.pop_exit
+                        }
+                    }
+                        )
 
 
                 }else if (event.action == MotionEvent.ACTION_CANCEL){
