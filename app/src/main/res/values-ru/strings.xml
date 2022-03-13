@@ -1,7 +1,9 @@
 <resources>
-    <string name="app_name">Найди себе собаку</string>
+    <string name="app_name">Dog therapy</string>
+    <string name="app_name_second">Найди себе собаку</string>
 
     <!--Drawer menu-->
+
 
     <string name="nice_to_meet_you">Рады видеть Вас</string>
     <string name="fav_breeds">Породы собакенов</string>

@@ -27,7 +27,7 @@
         android:fontFamily="@font/t_bold"
         android:layout_marginBottom="16dp"
         android:gravity="center"
-        android:text="@string/app_name"
+        android:text="@string/app_name_second"
         android:textAllCaps="false"
         android:textColor="@color/nav_bar_color"
         android:textSize="24sp"

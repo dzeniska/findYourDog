@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Interpolator
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -20,17 +19,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.navOptions
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
-import androidx.recyclerview.widget.SnapHelper
 import com.dzenis_ska.findyourdog.R
 import com.dzenis_ska.findyourdog.databinding.FragmentIntroBinding
 import com.dzenis_ska.findyourdog.remoteModel.firebase.FBAuth
 import com.dzenis_ska.findyourdog.ui.MainActivity
 import com.dzenis_ska.findyourdog.ui.fragments.adapters.FirstFrAdapter
 import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 class FirstFragment : Fragment() {
     var rootElement: FragmentIntroBinding? = null
@@ -91,13 +86,13 @@ class FirstFragment : Fragment() {
 
     private fun init(){
         val listPhoto = arrayListOf(
-            R.drawable.sobaka_ulibaka_1,
-            R.drawable.sobaka_podozrevaka_1,
-            R.drawable.jessika,
-            R.drawable.cezar,
-            R.drawable.sobaka_ispugaka_1,
-            R.drawable.sobaka_plavaka_1,
-            R.drawable.sobaka_ulibaka_escho_1
+            R.drawable.sobaka_ulibaka,
+            R.drawable.sobaka_podozrevaka,
+            R.drawable.sobaka_zabiyaka,
+            R.drawable.sobaka_sugar_wool,
+            R.drawable.sobaka_ispugaka,
+            R.drawable.sobaka_plavaka,
+            R.drawable.sobaka_ulibaka_escho
         )
         val listTitle = arrayListOf(
             res(R.string.smile),

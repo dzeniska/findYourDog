@@ -167,7 +167,10 @@ class DogsListFragment : Fragment() {
 
     private fun isShowInterstitialAd() {
         countToShowInterstitialAd++
-        if(countToShowInterstitialAd%11 == 0) showInterAd()
+        if(countToShowInterstitialAd%10 == 0)
+            loadInterAd()
+        else if (countToShowInterstitialAd%11 == 0)
+            showInterAd()
     }
 
     private fun loadInterAd() {

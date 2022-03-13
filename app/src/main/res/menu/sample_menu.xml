@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_done"
-        android:icon="@drawable/ic_my"
         android:title="@string/update_ads"
         />
 </menu>
