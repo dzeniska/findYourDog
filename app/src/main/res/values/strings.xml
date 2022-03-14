@@ -25,12 +25,13 @@
     <string name="height">высота в холке:</string>
     <string name="sm">см.</string>
     <string name="origin">происхождение:</string>
-    <string name="description">описание:</string>
+    <string name="description">описание: \n \n</string>
     <string name="more_photos">больше фото</string>
 
     <!-- Maps fragment-->
     <string name="state_badge_label">State badge</string>
     <string name="wait_download_photo">Дождитесь окончания загрузки</string>
+    <string name="wait_deleted_add">Идёт процесс удаления…</string>
     <string name="press_plus">Для добавления объявления нажмите \"+\"</string>
 
     <!-- Add Shelter Fragment-->

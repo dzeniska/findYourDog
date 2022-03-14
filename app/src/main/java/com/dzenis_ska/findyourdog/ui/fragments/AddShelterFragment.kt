@@ -57,6 +57,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     lateinit var breed: DogBreeds
     lateinit var vpAdapter: VpAdapter
 
+
+
     var rootElement: FragmentAddShelterBinding? = null
 
     var tlm: TabLayoutMediator? = null
@@ -83,6 +85,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var adapterArraySize = 0
     var sizeDog: Int = 1
     var ltlng: Boolean = true
+
+    var pushKey = ""
 
     var countTempPhoto = 0
 
@@ -155,13 +159,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
 //        getLocation()
-        val dialog = ProgressDialog.createProgressDialog(
-            activity as MainActivity,
-            ProgressDialog.ADD_SHELTER_FRAGMENT
-        )
+
         initViewModel()
         initRecyclerView()
-        onClick(dialog)
+        onClick()
 
 
         imagePicker =
@@ -248,7 +249,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
         }
     }
-
 
     private fun initViewModel() {
         Log.d("!!!setMarker", "${viewModel.mapFragToAddShelterFragId}")
@@ -392,7 +392,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 ),
                 photoUrlList,
                 EMPTY,
-                dbManager.db.push().key,
+//                dbManager.db.push().key,
+                pushKey,
                 mAuth.uid,
                 (Random.nextInt(0, 360)).toFloat(),
                 time
@@ -476,7 +477,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
 
     @SuppressLint("RestrictedApi")
-    private fun onClick(dialog: AlertDialog) {
+    private fun onClick() {
 
         rootElement!!.apply {
 
@@ -509,9 +510,14 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
             fabDeleteShelter.setOnClickListener {
 //                val listDel = SortListPhoto.subStringDel(viewModel.listPhoto)
+                val dialogDelete = ProgressDialog.createProgressDialog(
+                    activity as MainActivity,
+                    ProgressDialog.DELETE_ADD_SHELTER
+                )
+                dialogDelete.show()
                 val listDel = viewModel.listPhoto
                 if (listDel.size != 0) listDel.forEach { deletePhoto(it) }
-                viewModel.deleteAdShelter(adShelterToEdit){
+                viewModel.deleteAdShelter(adShelterToEdit, dialogDelete){
                     navController.popBackStack(R.id.addShelterFragment, true)
                     navController.popBackStack(R.id.mapsFragment, true)
                     navController.navigate(R.id.mapsFragment)
@@ -519,6 +525,11 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             }
 
             fabAddShelter.setOnClickListener() {
+                val dialog = ProgressDialog.createProgressDialog(
+                    activity as MainActivity,
+                    ProgressDialog.ADD_SHELTER_FRAGMENT
+                )
+                pushKey = viewModel.dbManager.db.push().key.toString()
                 publishImagesAd(dialog)
             }
             vp2.setOnClickListener {
@@ -614,6 +625,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         dialog.show()
         val vpArray = vpAdapter.arrayPhoto
         val listPhotoForDel = SortListPhoto.listPhotoForDel(viewModel.listPhoto, vpArray)
+//        toastL("${listPhotoForDel.size} photos removed")
         if (listPhotoForDel.size != 0) listPhotoForDel.forEach {
             deletePhoto(it)
         }
@@ -632,10 +644,10 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             return
         }
 
-        if (uri != null) oldOrNew(uri, dialog)
+        if (uri != null) oldOrNew(uri, dialog, pushKey)
     }
 
-    private fun oldOrNew(it: Uri, dialog: AlertDialog) {
+    private fun oldOrNew(it: Uri, dialog: AlertDialog, key: String?) {
 
         if (!it.toString().contains("https:")) {
             val arrayListUri = arrayListOf<Uri>()
@@ -646,17 +658,17 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                     ImageManager.imageResize(arrayListUri, activity as MainActivity)
                 Log.d("!!!transpImageNew2", "jopa")
 
-                if (arrayListByteArray.size == 0) {
-                    Log.d("!!!transpImageNew2", "jopa ${arrayListByteArray.size}")
-                    imageIndex++
-                    if (vpAdapter.arrayPhoto.size == imageIndex) {
-                        addPhoto(null, dialog)
-                    } else {
-                        addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
-                    }
-                    toastL(res(R.string.did_not_load_photos))
-                } else {
-                    viewModel.publishPhoto(arrayListByteArray[0]) { uri ->
+//                if (arrayListByteArray.size == 0) {
+//                    Log.d("!!!transpImageNew2", "jopa ${arrayListByteArray.size}")
+//                    imageIndex++
+//                    if (vpAdapter.arrayPhoto.size == imageIndex) {
+//                        addPhoto(null, dialog)
+//                    } else {
+//                        addPhoto(vpAdapter.arrayPhoto[imageIndex], dialog)
+//                    }
+//                    toastL(res(R.string.did_not_load_photos))
+//                } else {
+                    viewModel.publishPhoto(arrayListByteArray[0], key) { uri ->
 
                         if (uri != null) {
                             photoArrayList.add(uri.toString())
@@ -670,7 +682,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                             Log.d("!!!transpImageNew3", "3")
                         }
                     }
-                }
+//                }
             }
         } else {
             photoArrayList.add(it.toString())
@@ -706,7 +718,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         lat = lt,
                         lng = lg,
                         time = adShelterToEdit?.time.toString()
-                    ), dialog
+                    ),
+                dialog
             ) {
                 navController.popBackStack(R.id.addShelterFragment, true)
                 navController.popBackStack(R.id.mapsFragment, true)

@@ -24,33 +24,37 @@ class DbManager() {
 
     fun publishAdShelter(adTemp: AdShelter, callback: (text: String) -> Unit) {
         if (mAuth.uid != null) {
-            db.child(adTemp.key ?: "empty").child(mAuth.uid!!).child(AD_SHELTER_NODE)
+            val childFirst = "${adTemp.email?.substringBefore('.')}_${adTemp.key}"
+            db.child(childFirst)
+                .child(mAuth.uid!!).child(AD_SHELTER_NODE)
                 .setValue(adTemp)
                 .addOnCompleteListener { task1 ->
                     if (task1.isSuccessful) {
-                        db.child(adTemp.key ?: "empty")
+                        db.child(childFirst)
                             .child(VACCINE_NODE)
                             .setValue(FilterManager.createFilterVaccine(adTemp))
                             .addOnCompleteListener { task2 ->
                                 if (task2.isSuccessful) {
-                                    db.child(adTemp.key ?: "empty")
+                                    db.child(childFirst)
                                         .child(FILTER_NODE)
                                         .setValue(FilterManager.createFilter(adTemp))
                                         .addOnCompleteListener {
                                             Log.d("!!!publishAdShelterDBtask", "${adTemp}")
-                                            dbMap.child(adTemp.key ?: "empty")
-                                                .setValue(AdForMap(
-                                                    name = adTemp.name,
-                                                    gender = adTemp.gender,
-                                                    lat = adTemp.lat,
-                                                    lng = adTemp.lng,
-                                                    markerColor = adTemp.markerColor,
-                                                    key = adTemp.key,
-                                                    uid = adTemp.uid,
-                                                    email = adTemp.email
-                                                )).addOnCompleteListener {
-                                                callback("task")
-                                            }
+                                            dbMap.child(childFirst)
+                                                .setValue(
+                                                    AdForMap(
+                                                        name = adTemp.name,
+                                                        gender = adTemp.gender,
+                                                        lat = adTemp.lat,
+                                                        lng = adTemp.lng,
+                                                        markerColor = adTemp.markerColor,
+                                                        key = adTemp.key,
+                                                        uid = adTemp.uid,
+                                                        email = adTemp.email
+                                                    )
+                                                ).addOnCompleteListener {
+                                                    callback("task")
+                                                }
 
                                         }
                                 }
@@ -59,6 +63,7 @@ class DbManager() {
                 }
         }
     }
+
     fun deletePhoto(url: String) {
 
         ref.storage
@@ -67,40 +72,26 @@ class DbManager() {
             .addOnSuccessListener {
                 Log.d("!!!deletePhotoUri", " db man ${url}")
             }
-
-//            val desertRef = ref
-//                .child(Firebase.auth.uid!!)
-//                .child(url)
-//            desertRef.delete()
-        //ERROR ERROR
-//                .addOnSuccessListener {
-//                    Log.d("!!!deletePhotoUri", " db man ${url}")
-//                    callback(true)
-//                }
-//                .addOnFailureListener {
-//                    Log.d("!!!deleteException", "${it.message}")
-//                    callback(false)
-//                }
     }
 
 
-
-    fun addPhotoToStorage(adTemp: ByteArray, listener: OnCompleteListener<Uri>) {
+    fun addPhotoToStorage(adTemp: ByteArray, key: String?, listener: OnCompleteListener<Uri>) {
         Log.d("!!!itTaskJopa", "${adTemp}")
-        val imStorageRef =  ref
+        val imStorageRef = ref
             .child(mAuth.currentUser?.email + "_" + mAuth.uid!!)
-            .child("image_${System.currentTimeMillis()}")
+            .child(key ?: "key")
+            .child("${System.currentTimeMillis().toString().substring(5)}_image")
 
 
         val upTask = imStorageRef.putBytes(adTemp)
-        upTask
-            .continueWithTask { task ->
+        upTask.continueWithTask { task ->
             if (!task.isSuccessful) {
                 task.exception?.let {
                     throw it
                 }
+            } else {
+                imStorageRef.downloadUrl
             }
-            imStorageRef.downloadUrl
         }.addOnCompleteListener(listener)
     }
 
@@ -108,7 +99,7 @@ class DbManager() {
         dbMap.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val adShelterArray = ArrayList<AdForMap>()
-                snapshot.children.forEach {item->
+                snapshot.children.forEach { item ->
                     item.getValue(AdForMap::class.java)?.let { adShelterArray.add(it) }
                 }
                 callback(adShelterArray)
@@ -125,7 +116,7 @@ class DbManager() {
         val query = db.orderByChild("/${FILTER_NODE}/time")
 //            .startAt("1635430194000")
             .limitToFirst(100)
-        readDataFromDB(query){callback(it)}
+        readDataFromDB(query) { callback(it) }
     }
 
     //на будущее pagination
@@ -135,10 +126,10 @@ class DbManager() {
         isMyMarkers: Boolean,
         callback: (adShelterArray: ArrayList<AdShelter>) -> Unit
     ) {
-        if(isMyMarkers){
+        if (isMyMarkers) {
             val myUid = mAuth.currentUser?.uid
             val queryMyAds = db.orderByChild("/${FILTER_NODE}/uid").equalTo("$myUid")
-            readDataFromDB(queryMyAds){
+            readDataFromDB(queryMyAds) {
                 Log.d("!!!getAllAdsForAdapterMy", "${it}")
 
                 callback(it)
@@ -188,12 +179,15 @@ class DbManager() {
 
     fun deleteAdShelter(adShelter: AdShelter?, callback: (deleted: String) -> Unit) {
         if (adShelter?.key == null || adShelter.uid == null) return
-        dbMap.child(adShelter.key).removeValue().addOnSuccessListener {
-            db.child(adShelter.key).child(adShelter.uid).removeValue().addOnSuccessListener {
-                db.child(adShelter.key).child(INFO_NODE).removeValue().addOnSuccessListener {
-                    db.child(adShelter.key).child(FAVORS_NODE).removeValue().addOnSuccessListener {
-                        db.child(adShelter.key).child(FILTER_NODE).removeValue().addOnSuccessListener {
-                                db.child(adShelter.key).child(VACCINE_NODE).removeValue().addOnSuccessListener {
+        val childFirst = "${adShelter.email?.substringBefore('.')}_${adShelter.key}"
+        dbMap.child(childFirst).removeValue().addOnSuccessListener {
+            db.child(childFirst).child(adShelter.uid).removeValue().addOnSuccessListener {
+                db.child(childFirst).child(INFO_NODE).removeValue().addOnSuccessListener {
+                    db.child(childFirst).child(FAVORS_NODE).removeValue().addOnSuccessListener {
+                        db.child(childFirst).child(FILTER_NODE).removeValue()
+                            .addOnSuccessListener {
+                                db.child(childFirst).child(VACCINE_NODE).removeValue()
+                                    .addOnSuccessListener {
                                         Log.d("!!!deleted", "ok")
                                         callback("ok")
                                     }
@@ -207,11 +201,12 @@ class DbManager() {
     fun adViewed(adShelter: AdShelter, anyCounter: Int, listener: FinishWorkListener) {
         val counterV = adShelter.viewsCounter.toInt()
         val counterC = adShelter.callsCounter.toInt()
+        val childFirst = "${adShelter.email?.substringBefore('.')}_${adShelter.key}"
         when (anyCounter) {
             BreedViewModel.VIEWS_COUNTER -> {
                 if (mAuth.uid != null)
                     Log.d("!!!counterVC", "${counterV} ${counterC}")
-                db.child(adShelter.key ?: "empty").child(INFO_NODE)
+                db.child(childFirst).child(INFO_NODE)
                     .setValue(InfoItem(counterV.plus(1).toString(), counterC.toString()))
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) listener.onFinish()
@@ -220,7 +215,7 @@ class DbManager() {
             BreedViewModel.CALLS_COUNTER -> {
                 if (mAuth.uid != null)
                     Log.d("!!!counterCV", "${counterV} ${counterC}")
-                db.child(adShelter.key ?: "empty").child(INFO_NODE)
+                db.child(childFirst).child(INFO_NODE)
                     .setValue(InfoItem(counterV.toString(), counterC.plus(1).toString()))
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) listener.onFinish()
@@ -229,7 +224,10 @@ class DbManager() {
         }
     }
 
-    private fun readDataFromDB(query: Query, callback: (adShelterArray: ArrayList<AdShelter>) -> Unit) {
+    private fun readDataFromDB(
+        query: Query,
+        callback: (adShelterArray: ArrayList<AdShelter>) -> Unit
+    ) {
         query.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val adShelterArray = ArrayList<AdShelter>()
@@ -244,7 +242,9 @@ class DbManager() {
 
 
                     val infoItem = item.child(INFO_NODE).getValue(InfoItem::class.java)
-                    val isFav = mAuth.uid?.let { item.child(FAVORS_NODE).child(it).getValue(String::class.java) }
+                    val isFav = mAuth.uid?.let {
+                        item.child(FAVORS_NODE).child(it).getValue(String::class.java)
+                    }
                     adShelter?.isFav = isFav != null
                     val favCounter = item.child(FAVORS_NODE).childrenCount
                     adShelter?.viewsCounter = infoItem?.viewsCounter ?: "0"
@@ -256,39 +256,43 @@ class DbManager() {
 
                 callback(adShelterArray)
             }
+
             override fun onCancelled(error: DatabaseError) {
             }
         })
     }
 
     fun onFavClicked(dog: AdShelter, callback: (isFav: Boolean) -> Unit) {
-        if(dog.isFav){
-            removeFromFavs(dog){
+        if (dog.isFav) {
+            removeFromFavs(dog) {
                 callback(it)
             }
         } else {
-            addToFavs(dog){
+            addToFavs(dog) {
                 callback(it)
             }
         }
     }
 
-    private fun removeFromFavs(dog: AdShelter, callback: (isFav: Boolean) -> Unit){
-        dog.key?.let {key ->
+    private fun removeFromFavs(dog: AdShelter, callback: (isFav: Boolean) -> Unit) {
+        val childFirst = "${dog.email?.substringBefore('.')}_${dog.key}"
+        childFirst.let { key ->
             mAuth.uid?.let { uid ->
                 db.child(key).child(FAVORS_NODE).child(uid).removeValue()
-                    .addOnCompleteListener { task->
-                        if(task.isSuccessful) callback(false)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) callback(false)
                     }
             }
         }
     }
-    private fun addToFavs(dog: AdShelter, callback: (isFav: Boolean) -> Unit){
-        dog.key?.let {key ->
+
+    private fun addToFavs(dog: AdShelter, callback: (isFav: Boolean) -> Unit) {
+        val childFirst = "${dog.email?.substringBefore('.')}_${dog.key}"
+        childFirst.let { key ->
             mAuth.uid?.let { uid ->
                 db.child(key).child(FAVORS_NODE).child(uid).setValue(uid)
-                    .addOnCompleteListener { task->
-                        if(task.isSuccessful) callback(true)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) callback(true)
                     }
             }
         }
@@ -307,6 +311,16 @@ class DbManager() {
         const val MAIN_NODE = "main"
         const val MAIN_MAP_NODE = "main_map"
         const val STORAGE_NODE = "storage"
-        const val LOCATION_LIMIT = 1.0
+        const val LOCATION_LIMIT = 10.0
     }
 }
+
+
+//rules_version = '2';
+//service firebase.storage {
+//    match /b/{bucket}/o {
+//        match /{allPaths=**} {
+//            allow read, write, delete: if request.auth != null;
+//        }
+//    }
+//}

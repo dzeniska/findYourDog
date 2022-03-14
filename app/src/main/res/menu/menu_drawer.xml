@@ -45,16 +45,19 @@
 
             </menu>
         </item>
-        <item android:title="@string/feedback">
-            <menu>
-                <item
-                    android:id="@+id/developerPage"
 
-                    android:icon="@drawable/ic_developer_page"
-                    app:actionViewClass="android.widget.TextView"
-                    android:title="@string/developerPage" />
-            </menu>
-        </item>
     </group>
 
 </menu>
+
+<!--
+<item android:title="@string/feedback">
+<menu>
+    <item
+        android:id="@+id/developerPage"
+
+        android:icon="@drawable/ic_developer_page"
+        app:actionViewClass="android.widget.TextView"
+        android:title="@string/developerPage" />
+</menu>
+</item>-->

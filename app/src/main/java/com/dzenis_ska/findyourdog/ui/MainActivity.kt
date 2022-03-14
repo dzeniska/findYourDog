@@ -204,11 +204,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 closeDrawer()
             }
 
-            R.id.developerPage -> {
-                val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(resources.getString(R.string.link_page))
-                startActivity(intent)
-            }
+//            R.id.developerPage -> {
+//                val intent = Intent(Intent.ACTION_VIEW)
+//                intent.data = Uri.parse(resources.getString(R.string.link_page))
+//                startActivity(intent)
+//            }
 
         }
         return true

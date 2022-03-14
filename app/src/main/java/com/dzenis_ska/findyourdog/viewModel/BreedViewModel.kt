@@ -32,6 +32,8 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
 
     var isMyMarkers = false
 
+    var isFirstLaunchMapsFragment = true
+
 
     val breedLive = MutableLiveData<MutableList<DogBreeds>>()
 
@@ -55,7 +57,7 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     val liveAdsDataAllMarkers = MutableLiveData<ArrayList<AdForMap>>()
     val liveAdsDataAddShelter = MutableLiveData<AdShelter?>()
     val listPhoto = arrayListOf<String>()
-    val dialog = MutableLiveData<AlertDialog>()
+    val dialogMutableLiveData = MutableLiveData<AlertDialog>()
     var adShelteAfterPhotoViewed: AdShelter? = null
 
     var mapFragToAddShelterFragId = 0
@@ -78,7 +80,9 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     }
 
 
-    fun deleteAdShelter(adShelter: AdShelter?, callback: (deleted: String) -> Unit){
+    fun deleteAdShelter(adShelter: AdShelter?, dialog: AlertDialog, callback: (deleted: String) -> Unit){
+
+        dialogMutableLiveData.value = dialog
         dbManager.deleteAdShelter(adShelter){
                 val updateList = liveAdsDataForMapAdapter.value
                 updateList?.remove(adShelter)
@@ -116,9 +120,9 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     fun deletePhoto(url: String){
         dbManager.deletePhoto(url)
     }
-    fun publishPhoto(adTemp: ByteArray, callback: (imageUri: Uri?)-> Unit) {
+    fun publishPhoto(adTemp: ByteArray, key: String?, callback: (imageUri: Uri?)-> Unit) {
         Log.d("!!!itTask", "${adTemp}")
-            dbManager.addPhotoToStorage(adTemp) { task ->
+            dbManager.addPhotoToStorage(adTemp, key) { task ->
                 if (task.isSuccessful) {
                     callback(task.result)
                     Log.d("!!!itTaskSuccessful2", "${task.result}")
@@ -128,10 +132,10 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
             }
         }
 
-    fun publishAdShelter(adTemp: AdShelter, dialogq: AlertDialog, callback: (text: String) -> Unit) {
+    fun publishAdShelter(adTemp: AdShelter, dialog: AlertDialog, callback: (text: String) -> Unit) {
         dbManager.publishAdShelter(adTemp){
 //            getAllAds()
-            dialog.value = dialogq
+            dialogMutableLiveData.value = dialog
             callback("task")
         }
     }

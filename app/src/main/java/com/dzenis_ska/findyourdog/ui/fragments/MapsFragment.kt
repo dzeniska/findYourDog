@@ -14,7 +14,6 @@ import android.util.Log
 import android.view.*
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.fragment.app.Fragment
@@ -78,8 +77,6 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     var currentItem = R.id.action_done
 
 
-
-
     //для определения последней локации
     private var fusedLocationClient: FusedLocationProviderClient? = null
 
@@ -110,7 +107,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         mapFragment?.getMapAsync(this)
         //инициализация переменной для получения последней локации
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context as Context)
-        viewModel.dialog.observe(viewLifecycleOwner, {dialog->
+        viewModel.dialogMutableLiveData.observe(viewLifecycleOwner, { dialog->
             dialogF = dialog
         })
 
@@ -225,8 +222,12 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun init(){
         if(viewModel.dbManager.mAuth.currentUser?.isAnonymous == false && viewModel.dbManager.mAuth.currentUser != null ){
             if(isEmailVeryfied()) {
-                toastL(resources.getString(R.string.press_plus))
                 rootElement?.floatBtnAddShelter?.visibility = View.VISIBLE
+            }
+
+            if(isEmailVeryfied() && viewModel.isFirstLaunchMapsFragment == true) {
+                toastL(resources.getString(R.string.press_plus))
+                viewModel.isFirstLaunchMapsFragment = false
             }
         }
 
@@ -238,6 +239,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
         snapHelper.attachToRecyclerView(rootElement!!.rcViewMapPhoto)
 
     }
+
     private fun isEmailVeryfied() = viewModel.dbManager.mAuth.currentUser!!.isEmailVerified
 //    @RequiresApi(Build.VERSION_CODES.P)
     @SuppressLint("MissingPermission")

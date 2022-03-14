@@ -9,6 +9,7 @@ import com.dzenis_ska.findyourdog.databinding.ProgressDialogLayoutBinding
 object ProgressDialog {
     const val MAIN_ACTIVITY = 0
     const val ADD_SHELTER_FRAGMENT = 1
+    const val DELETE_ADD_SHELTER = 2
     fun createProgressDialog(act: Activity, const: Int): AlertDialog{
         val builder = AlertDialog.Builder(act)
         val rootDialogElement = ProgressDialogLayoutBinding.inflate(act.layoutInflater)
@@ -28,6 +29,11 @@ object ProgressDialog {
         rootDialogElement.apply {
             when(const){
                 ADD_SHELTER_FRAGMENT -> {
+                    textView.text = act.resources.getString(R.string.wait_download_photo)
+                    dialog.setCancelable(false)
+                }
+                DELETE_ADD_SHELTER -> {
+                    textView.text = act.resources.getString(R.string.wait_deleted_add)
                     dialog.setCancelable(false)
                 }
                 MAIN_ACTIVITY -> {
@@ -39,3 +45,4 @@ object ProgressDialog {
         }
     }
 }
+

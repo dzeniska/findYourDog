@@ -84,6 +84,7 @@ class LoginFragment : Fragment(){
         rootElement?.apply {
             if (bool) {
                 imgButtonEnter.setImageResource(R.drawable.world_map_mini)
+                attention.text = resources.getString(R.string.attention)
                 tvEnter.text = res(R.string.map)
             } else {
                 imgButtonEnter.setImageResource(R.drawable.ic_in_white)
@@ -242,8 +243,8 @@ class LoginFragment : Fragment(){
                     tvRegIn.animation =
                         AnimationUtils.loadAnimation(context, R.anim.alpha_replace_user_down)
                     tvRegIn.visibility = View.INVISIBLE
-                    val email = edEmail.text.toString()
-                    val pass = edPassword.text.toString()
+                    val email = edEmail.text.replace("\\s".toRegex(), "").toString()
+                    val pass = edPassword.text.replace("\\s".toRegex(), "").toString()
                     if (email.isNotEmpty() && pass.isNotEmpty()) {
                         if (!email.contains('@') || !email.contains('.')) {
                             toastLong(R.string.include_symbols)
@@ -265,7 +266,10 @@ class LoginFragment : Fragment(){
         fbAuth.signInWithEmail(email, pass){isSign, messSign, fbUser ->
             uiUpdateMain(fbUser)
             val isEmailVer = fbAuth.isEmailVerified(fbUser) ?: false
-            if(isSign == true && !isEmailVer) Toast.makeText(context, resources.getString(R.string.check_email), Toast.LENGTH_LONG).show()
+            if(isSign == true && !isEmailVer) {
+                Toast.makeText(context, resources.getString(R.string.check_email), Toast.LENGTH_LONG).show()
+                rootElement!!.attention.text = resources.getString(R.string.check_email)
+            }
             showElements(isEmailVer)
             when (messSign){
                 FirebaseAuthConstants.ERROR_WRONG_PASSWORD -> uiReplacePassword()
