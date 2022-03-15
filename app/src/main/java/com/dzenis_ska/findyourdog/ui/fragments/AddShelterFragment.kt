@@ -57,6 +57,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     lateinit var breed: DogBreeds
     lateinit var vpAdapter: VpAdapter
 
+    private lateinit var preferences: SharedPreferences
 
 
     var rootElement: FragmentAddShelterBinding? = null
@@ -145,6 +146,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         Log.d("!!!onViewCreated", "AddShelterFragment")
         navController = findNavController()
         setHasOptionsMenu(true)
+
+        preferences = requireActivity().getSharedPreferences(COUNT_PHOTO, Context.MODE_PRIVATE)
+
         locationManager =
             activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
@@ -647,6 +651,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         if (uri != null) oldOrNew(uri, dialog, pushKey)
     }
 
+    @SuppressLint("CommitPrefEdits")
     private fun oldOrNew(it: Uri, dialog: AlertDialog, key: String?) {
 
         if (!it.toString().contains("https:")) {
@@ -668,8 +673,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 //                    }
 //                    toastL(res(R.string.did_not_load_photos))
 //                } else {
-                    viewModel.publishPhoto(arrayListByteArray[0], key) { uri ->
+                var photoNumber = preferences.getInt("photoNumber", 1)
+                photoNumber++
 
+                preferences.edit().putInt("photoNumber", photoNumber)
+
+                    viewModel.publishPhoto(arrayListByteArray[0], key, photoNumber) { uri ->
                         if (uri != null) {
                             photoArrayList.add(uri.toString())
                             Log.d("!!!transpImageNew3", "${uri}")
@@ -944,6 +953,9 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         const val PLAGUE = "plague"
         const val RABIES = "rabies"
         const val EMPTY = "empty"
+
+
+        const val COUNT_PHOTO = "COUNT_PHOTO"
 
         private val permissions = arrayOf(
             Manifest.permission.READ_EXTERNAL_STORAGE,

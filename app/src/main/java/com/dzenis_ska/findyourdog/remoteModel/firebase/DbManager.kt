@@ -75,12 +75,14 @@ class DbManager() {
     }
 
 
-    fun addPhotoToStorage(adTemp: ByteArray, key: String?, listener: OnCompleteListener<Uri>) {
+    fun addPhotoToStorage(adTemp: ByteArray, key: String?, num: Int, listener: OnCompleteListener<Uri>) {
         Log.d("!!!itTaskJopa", "${adTemp}")
+        val currUserEmail =  mAuth.currentUser?.email
+
         val imStorageRef = ref
-            .child(mAuth.currentUser?.email + "_" + mAuth.uid!!)
-            .child(key ?: "key")
-            .child("${System.currentTimeMillis().toString().substring(5)}_image")
+            .child(currUserEmail.toString())
+            .child(key!!)
+            .child("${System.currentTimeMillis().toString().substring(5)}_${num}_image")
 
 
         val upTask = imStorageRef.putBytes(adTemp)
@@ -310,7 +312,7 @@ class DbManager() {
         const val FAVORS_NODE = "favors"
         const val MAIN_NODE = "main"
         const val MAIN_MAP_NODE = "main_map"
-        const val STORAGE_NODE = "storage"
+        const val STORAGE_NODE = "main"
         const val LOCATION_LIMIT = 10.0
     }
 }
