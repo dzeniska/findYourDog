@@ -213,6 +213,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
 
         floatBtnAddShelter.setOnClickListener() {
             //todo no uses? mapFragToAddShelterFragId
+            viewModel.listPhotoClear()
             viewModel.mapFragToAddShelterFragId = AddShelterFragment.ADD_DOG
             viewModel.openFragShelter(null)
             navController.navigate(R.id.addShelterFragment)

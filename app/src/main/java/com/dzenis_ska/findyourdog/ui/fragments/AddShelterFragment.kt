@@ -12,6 +12,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -707,6 +708,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun deletePhoto(s: String) {
+        Toast.makeText(requireActivity(), s, Toast.LENGTH_LONG).show()
         viewModel.deletePhoto(s)
     }
 

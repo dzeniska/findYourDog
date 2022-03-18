@@ -69,6 +69,10 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
         listPhoto.addAll(listP)
     }
 
+    fun listPhotoClear(){
+        listPhoto.clear()
+    }
+
     fun uiUpdateMain(user: FirebaseUser?) {
         userUpdate.postValue(user)
     }

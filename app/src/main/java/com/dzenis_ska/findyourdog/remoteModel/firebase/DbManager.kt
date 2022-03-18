@@ -3,6 +3,7 @@ package com.dzenis_ska.findyourdog.remoteModel.firebase
 
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import com.dzenis_ska.findyourdog.ui.utils.FilterManager
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.tasks.OnCompleteListener
