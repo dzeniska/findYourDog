@@ -124,9 +124,9 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     fun deletePhoto(url: String){
         dbManager.deletePhoto(url)
     }
-    fun publishPhoto(adTemp: ByteArray, key: String?, num: Int, callback: (imageUri: Uri?)-> Unit) {
+    fun publishPhoto(adTemp: ByteArray, key: String?, callback: (imageUri: Uri?)-> Unit) {
         Log.d("!!!itTask", "${adTemp}")
-            dbManager.addPhotoToStorage(adTemp, key, num) { task ->
+            dbManager.addPhotoToStorage(adTemp, key) { task ->
                 if (task.isSuccessful) {
                     callback(task.result)
                     Log.d("!!!itTaskSuccessful2", "${task.result}")

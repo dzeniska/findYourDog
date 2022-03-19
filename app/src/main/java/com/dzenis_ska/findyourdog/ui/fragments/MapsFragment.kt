@@ -402,6 +402,7 @@ class MapsFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onInfoWindowClick(markerInfo: Marker) {
+        viewModel.listPhotoClear()
         viewModel.mapFragToAddShelterFragId = AddShelterFragment.SHOW_DOG
         var bool = false
         viewModel.liveAdsDataForMapAdapter.value!!.forEach forInfo@{ info->

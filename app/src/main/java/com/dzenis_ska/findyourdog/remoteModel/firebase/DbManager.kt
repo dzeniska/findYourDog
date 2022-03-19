@@ -66,7 +66,6 @@ class DbManager() {
     }
 
     fun deletePhoto(url: String) {
-
         ref.storage
             .getReferenceFromUrl(url)
             .delete()
@@ -76,14 +75,14 @@ class DbManager() {
     }
 
 
-    fun addPhotoToStorage(adTemp: ByteArray, key: String?, num: Int, listener: OnCompleteListener<Uri>) {
+    fun addPhotoToStorage(adTemp: ByteArray, key: String?, listener: OnCompleteListener<Uri>) {
         Log.d("!!!itTaskJopa", "${adTemp}")
         val currUserEmail =  mAuth.currentUser?.email
 
         val imStorageRef = ref
             .child(currUserEmail.toString())
             .child(key!!)
-            .child("${System.currentTimeMillis().toString().substring(5)}_${num}_image")
+            .child("${System.currentTimeMillis().toString().substring(5)}_@_image")
 
 
         val upTask = imStorageRef.putBytes(adTemp)

@@ -17,6 +17,9 @@
 
     <!--Dog List Fragment-->
 
+    <string name="load_add">Загрузка рекламы</string>
+
+
     <!--One Breed Fragment-->
     <string name="note">заметка:</string>
     <string name="temperament">темперамент:</string>

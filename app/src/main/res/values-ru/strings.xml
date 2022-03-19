@@ -4,7 +4,6 @@
 
     <!--Drawer menu-->
 
-
     <string name="nice_to_meet_you">Рады видеть Вас</string>
     <string name="fav_breeds">Породы собакенов</string>
     <string name="find_home">Ищут дом</string>
@@ -16,8 +15,10 @@
     <string name="feedback">Ваш отзыв нам очень важен *****</string>
     <string name="link_page">https://play.google.com/store/apps/details?id=com.dzenis_ska.findyourdog</string>
 
-
     <!--Dog List Fragment-->
+
+    <string name="load_add">Загрузка рекламы</string>
+
 
     <!--One Breed Fragment-->
     <string name="note">заметка:</string>
@@ -35,7 +36,6 @@
     <string name="wait_download_photo">Дождитесь окончания загрузки</string>
     <string name="wait_deleted_add">Идёт процесс удаления…</string>
     <string name="press_plus">Для добавления объявления нажмите \"+\"</string>
-
 
     <!-- Add Shelter Fragment-->
     <string name="fab_add_image">Кнопка добавления картинки</string>

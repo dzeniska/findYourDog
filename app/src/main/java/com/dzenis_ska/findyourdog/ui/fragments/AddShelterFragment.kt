@@ -58,8 +58,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     lateinit var breed: DogBreeds
     lateinit var vpAdapter: VpAdapter
 
-    private lateinit var preferences: SharedPreferences
-
 
     var rootElement: FragmentAddShelterBinding? = null
 
@@ -147,8 +145,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         Log.d("!!!onViewCreated", "AddShelterFragment")
         navController = findNavController()
         setHasOptionsMenu(true)
-
-        preferences = requireActivity().getSharedPreferences(COUNT_PHOTO, Context.MODE_PRIVATE)
 
         locationManager =
             activity?.getSystemService(Context.LOCATION_SERVICE) as LocationManager
@@ -649,7 +645,12 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             return
         }
 
-        if (uri != null) oldOrNew(uri, dialog, pushKey)
+        if (uri != null) {
+            if (boolEditOrNew == true)
+                oldOrNew(uri, dialog, adShelterToEdit?.key)
+            else
+                oldOrNew(uri, dialog, pushKey)
+        }
     }
 
     @SuppressLint("CommitPrefEdits")
@@ -674,12 +675,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
 //                    }
 //                    toastL(res(R.string.did_not_load_photos))
 //                } else {
-                var photoNumber = preferences.getInt("photoNumber", 1)
-                photoNumber++
 
-                preferences.edit().putInt("photoNumber", photoNumber)
-
-                    viewModel.publishPhoto(arrayListByteArray[0], key, photoNumber) { uri ->
+                    viewModel.publishPhoto(arrayListByteArray[0], key) { uri ->
                         if (uri != null) {
                             photoArrayList.add(uri.toString())
                             Log.d("!!!transpImageNew3", "${uri}")
@@ -708,7 +705,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     }
 
     private fun deletePhoto(s: String) {
-        Toast.makeText(requireActivity(), s, Toast.LENGTH_LONG).show()
+        Toast.makeText(requireActivity(), s.substring(1, 47), Toast.LENGTH_LONG).show()
         viewModel.deletePhoto(s)
     }
 
