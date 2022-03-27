@@ -1,0 +1,198 @@
+<resources>
+    <string name="app_name">Dog therapy</string>
+    <string name="app_name_second">find yourself a dog</string>
+
+    <!--Drawer menu-->
+
+    <string name="nice_to_meet_you">We\'re glad to see you</string>
+    <string name="fav_breeds">dog breeds</string>
+    <string name="find_home">looking for a home</string>
+    <string name="map">map</string>
+    <string name="enter_please">Well!.. You are … Come in, if anything</string>
+    <string name="auth">Registration</string>
+    <string name="developerPage">Developer Page</string>
+    <string name="plus">+</string>
+    <string name="feedback">Your feedback is very important to us *****</string>
+    <string name="link_page">https://play.google.com/store/apps/details?id=com.dzenis_ska.findyourdog</string>
+
+    <!--Dog List Fragment-->
+
+    <string name="load_add">Loading ads</string>
+
+
+    <!--One Breed Fragment-->
+    <string name="note">the note:</string>
+    <string name="temperament">temperament:</string>
+    <string name="weight">weight:</string>
+    <string name="kg">kg.</string>
+    <string name="height">height at withers:</string>
+    <string name="sm">cm.</string>
+    <string name="origin">origin:</string>
+    <string name="description">description: \n \n</string>
+    <string name="more_photos">more photos</string>
+
+    <!-- Maps fragment-->
+    <string name="state_badge_label">State badge</string>
+    <string name="wait_download_photo">Wait for the download to finish…</string>
+    <string name="wait_deleted_add">Deletion in progress…</string>
+    <string name="press_plus">Click to add an ad \"+\"</string>
+
+    <!-- Add Shelter Fragment-->
+    <string name="fab_add_image">Add image button</string>
+    <string name="fab_delete_image">Image delete button</string>
+    <string name="fab_replace_image">Image replacement button</string>
+    <string name="fab_add_add">Post ad button</string>
+    <string name="fab_delete_add">Delete ad button</string>
+    <string name="image">picture</string>
+
+    <string name="call">call</string>
+    <string name="name_shelter">Name</string>
+    <string name="tel_num_shelter">Phone number</string>
+    <string name="dog_name">Nickname of the dog</string>
+    <string name="dog_breed">Breed</string>
+    <string name="dog_breed_cosmo">space-dog</string>
+    <string name="full_screen">Expand collapse map</string>
+    <string name="get_location">Start searching for a location</string>
+
+    <string name="gender">Gender</string>
+    <string name="gendMan">Boy</string>
+    <string name="vaccine"> Vaccinations: </string>
+    <string name="plague_no">Plague vaccination: No</string>
+    <string name="rabies_no">Rabies vaccination: No</string>
+    <string name="gendWoMan">Girl</string>
+    <string name="size">Size</string>
+    <string name="sizeS">Small</string>
+    <string name="sizeM">Medium</string>
+    <string name="sizeL">Big</string>
+
+
+    <string name="name">name:</string>
+    <string name="count_call">number of calls:</string>
+    <string name="count_views">number of views:</string>
+    <string name="favorite">favorites:</string>
+
+    <string name="plague_yes">vaccinated against the plague</string>
+    <string name="rabies_yes">vaccinated against the rabies</string>
+
+
+    <string name="did_not_load_photos">Failed to upload photos, they may be damaged</string>
+    <string name="need_permissions_for_use_photo">Permissions required to use photos!</string>
+
+
+
+    <!--isMyAds-->
+    <string name="my_ads">my announcements</string>
+    <string name="all_ads">all announcements</string>
+    <string name="update_ads">update</string>
+
+
+    <!--Toasts-->
+    <string name="lovers">Pets</string>
+    <string name="bad_internet_connection">Bad internet connection!</string>
+    <string name="your_last_location"> the last fixed location is shown!</string>
+    <string name="no_last_location">The last location is not fixed!</string>
+    <string name="location_search">Finding a location…</string>
+    <string name="gps_is_not_enabled">GPS disabled</string>
+    <string name="need_permission_for_geolocation">Geolocation permission required</string>
+    <!--Check Network-->
+    <string name="network_available">Network available</string>
+    <string name="wifi_available">WIFI available</string>
+    <string name="no_network">No network</string>
+
+
+
+    <!--Navigation graph-->
+    <string name="first">Hi all!</string>
+    <string name="dogs_list">List of breeds</string>
+    <string name="one_breed">Here is such a dog</string>
+    <string name="fragment_one_photo">View photo</string>
+    <string name="note_edit">Note editor</string>
+    <string name="auth_nav">Registration</string>
+    <string name="map_nav">Map</string>
+    <string name="empty"/>
+
+
+
+
+
+    <string name="entrance">Entrance</string>
+    <string name="output">Exit</string>
+    <string name="lost">Lost</string>
+    <string name="develop">In developing…</string>
+    <string name="editing">editing…</string>
+    <string name="created">Add ad…</string>
+
+
+
+    <string name="block_note">Notebook</string>
+
+    <string name="exit">Exit</string>
+    <string name="email">Email</string>
+
+    <!-- Login fragment-->
+    <string name="auth_ic">Enter or \n
+        Register</string>
+    <string name="forgot_password">Forgot your password?</string>
+    <string name="email_reset_password_was_send">Check your mail!</string>
+    <string name="email_reset_password_was_not_send">Проверьте правильность вашего Email!</string>
+    <string name="fill_the_email">Fill in the field /"mail/"!</string>
+    <string name="password">Password</string>
+    <string name="dog_a">doggy</string>
+    <string name="hi_man">Hey man!)</string>
+    <string name="hi">Hi</string>
+    <string name="password_error">at least 6 characters</string>
+    <string name="include_symbols">The Email field must include the characters \'@\' and \'.\'</string>
+    <string name="more_than_6_symbols">Password must contain at least 6 characters</string>
+    <string name="forgot_enter_email_or_password">You forgot to enter your Email or Password</string>
+    <string name="attention">*** Warning, it is forbidden to place commercial ads here
+     \n Friends don't buy!!!)</string>
+
+
+
+
+
+    <!-- Intro fragment-->
+    <string name="content_description">Intro Fragment</string>
+    <string name="title_1"> \"Dog therapy\" will help you find your true friend!
+        \n Friends are different -
+        \n Black, white, dirty!!)
+        </string>
+    <string name="title_2"> Do you need a dog!? \n Then this is the place for you \n Here the dogs are looking for a real owner!! </string>
+    <string name="title_3">If you want to help find a home for dogs, \n register by Email ***</string>
+    <string name="title_4">*** \n here we help dogs find a home \n we don't sell or buy them</string>
+    <string name="more_photo">More photos</string>
+
+    <string name="authFirst">Registration</string>
+    <string name="first_photo">There are not many dogs</string>
+
+    <string name="smile">Улыбака</string>
+    <string name="suspect">Подозревака</string>
+    <string name="bully">Забияка</string>
+    <string name="sweet_cotton_wool">Сахарна-вата</string>
+    <string name="fright">Испугака</string>
+    <string name="capitan">Капитака</string>
+    <string name="smile_else">Улыбыка есчо</string>
+
+    <!-- Progress Dialog-->
+    <string name="no_network_q">The application requires an Internet connection</string>
+    <string name="remove_user">To change user \n press \"Exit\"</string>
+
+    <string name="ok">OK</string>
+
+    <!--Open-close drawer menu-->
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+
+
+    <string name="enter_as_anon">you will be a guest!</string>
+    <string name="check_email">Check your mailbox!</string>
+    <string name="created_account">Account created</string>
+
+
+    <!-- Реклама -->
+    <!--<string name="ad_id">ca-app-pub-3940256099942544/6300978111</string>-->
+    <string name="ad_id">ca-app-pub-8644370805049292/7689542316</string>
+    <!--<string name="ad_inter_id">ca-app-pub-3940256099942544/1033173712</string>-->
+    <string name="ad_inter_id">ca-app-pub-8644370805049292/9308061536</string>
+
+</resources>

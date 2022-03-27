@@ -39,7 +39,7 @@ class DogsListFragment : Fragment() {
     private var job2: Job? = null
 
     var interAd: InterstitialAd? = null
-    private var countToShowInterstitialAd = 0
+    private var countToShowInterstitialAd = 1
 
     //    private val check: CheckNetwork = CheckNetwork()
     //    override fun onCreate(savedInstanceState: Bundle?) {
@@ -167,12 +167,16 @@ class DogsListFragment : Fragment() {
 
     private fun isShowInterstitialAd() {
         countToShowInterstitialAd++
-        if(countToShowInterstitialAd%5 == 0)
+        if(countToShowInterstitialAd%5 == 0){
             loadInterAd()
-        else if (countToShowInterstitialAd%6 == 0) toastLong(R.string.load_add)
-        else if (countToShowInterstitialAd%7 == 0)
-            countToShowInterstitialAd = 0
+        }
+        else if (countToShowInterstitialAd%6 == 0) {
+//            toastLong(R.string.load_add)
+        }
+        else if (countToShowInterstitialAd%7 == 0) {
+            countToShowInterstitialAd = 1
             showInterAd()
+        }
     }
 
     private fun loadInterAd() {
@@ -208,6 +212,7 @@ class DogsListFragment : Fragment() {
                     interAd = null
                 }
             }
+
             interAd?.show(context as MainActivity)
         } else {
             interAd = null
