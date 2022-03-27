@@ -1,14 +1,14 @@
 <resources>
     <string name="app_name">Dog therapy</string>
-    <string name="app_name_second">find yourself a dog</string>
+    <string name="app_name_second">Find  a dog </string>
 
     <!--Drawer menu-->
 
-    <string name="nice_to_meet_you">We\'re glad to see you</string>
+    <string name="nice_to_meet_you">We are glad to see you</string>
     <string name="fav_breeds">dog breeds</string>
     <string name="find_home">looking for a home</string>
     <string name="map">map</string>
-    <string name="enter_please">Well!.. You are … Come in, if anything</string>
+    <string name="enter_please">Well!.. You are here… Come in</string>
     <string name="auth">Registration</string>
     <string name="developerPage">Developer Page</string>
     <string name="plus">+</string>
@@ -63,7 +63,7 @@
     <string name="size">Size</string>
     <string name="sizeS">Small</string>
     <string name="sizeM">Medium</string>
-    <string name="sizeL">Big</string>
+    <string name="sizeL">Large</string>
 
 
     <string name="name">name:</string>
@@ -143,9 +143,9 @@
     <string name="password_error">at least 6 characters</string>
     <string name="include_symbols">The Email field must include the characters \'@\' and \'.\'</string>
     <string name="more_than_6_symbols">Password must contain at least 6 characters</string>
-    <string name="forgot_enter_email_or_password">You forgot to enter your Email or Password</string>
+    <string name="forgot_enter_email_or_password">You forgot to enter your Email or password</string>
     <string name="attention">*** Warning, it is forbidden to place commercial ads here
-     \n Friends don't buy!!!)</string>
+     \n Friends don\'t buy!!!)</string>
 
 
 
@@ -153,25 +153,25 @@
 
     <!-- Intro fragment-->
     <string name="content_description">Intro Fragment</string>
-    <string name="title_1"> \"Dog therapy\" will help you find your true friend!
-        \n Friends are different -
+    <string name="title_1"> \"Dog therapy\" will help you to find your true dog-friend!
+        \n Friends can be different -
         \n Black, white, dirty!!)
         </string>
-    <string name="title_2"> Do you need a dog!? \n Then this is the place for you \n Here the dogs are looking for a real owner!! </string>
-    <string name="title_3">If you want to help find a home for dogs, \n register by Email ***</string>
-    <string name="title_4">*** \n here we help dogs find a home \n we don't sell or buy them</string>
+    <string name="title_2"> Are you looking for a dog-friend!? \n Well, this is the place for you \n Here the dogs are looking for a real owner!! </string>
+    <string name="title_3">If you want to help to find a home for dogs, \n register by Email ***</string>
+    <string name="title_4">*** \n here we help dogs to  find a home \n we don\'t sell or buy them</string>
     <string name="more_photo">More photos</string>
 
     <string name="authFirst">Registration</string>
-    <string name="first_photo">There are not many dogs</string>
+    <string name="first_photo">Can never have to much dogs, right?</string>
 
-    <string name="smile">Улыбака</string>
-    <string name="suspect">Подозревака</string>
-    <string name="bully">Забияка</string>
-    <string name="sweet_cotton_wool">Сахарна-вата</string>
-    <string name="fright">Испугака</string>
-    <string name="capitan">Капитака</string>
-    <string name="smile_else">Улыбыка есчо</string>
+    <string name="smile">Smile dog</string>
+    <string name="suspect">Suspect dog</string>
+    <string name="bully">Hector dog</string>
+    <string name="sweet_cotton_wool">Candyfloss dog</string>
+    <string name="fright">Scared dog</string>
+    <string name="capitan">Capitan dog</string>
+    <string name="smile_else">Smile dog one else</string>
 
     <!-- Progress Dialog-->
     <string name="no_network_q">The application requires an Internet connection</string>
@@ -186,7 +186,7 @@
 
     <string name="enter_as_anon">you will be a guest!</string>
     <string name="check_email">Check your mailbox!</string>
-    <string name="created_account">Account created</string>
+    <string name="created_account">Account is created</string>
 
 
     <!-- Реклама -->
