@@ -28,7 +28,7 @@ import com.dzenis_ska.findyourdog.ui.utils.CheckNetwork
 import kotlinx.coroutines.Job
 
 class FirstFragment : Fragment() {
-    var rootElement: FragmentIntroBinding? = null
+    var binding: FragmentIntroBinding? = null
     var navController: NavController? = null
     private val fbAuth = FBAuth()
     var adapter: FirstFrAdapter? = null
@@ -54,7 +54,7 @@ class FirstFragment : Fragment() {
     ): View {
         Log.d("!!!on", "onCreateView")
         val rootElement = FragmentIntroBinding.inflate(inflater)
-        this.rootElement = rootElement
+        this.binding = rootElement
         return rootElement.root
     }
 
@@ -67,15 +67,14 @@ class FirstFragment : Fragment() {
         initClick()
     }
 
-    private fun isAuth() = with(rootElement!!){
+    private fun isAuth() = with(binding!!){
         val currUser = fbAuth.mAuth.currentUser
         if (currUser == null) {
             fbAuth.signInAnonymously() {isSignAnon, messAnonSign ->
                 if(isSignAnon == true) {
                     navController?.navigate(R.id.mapsFragment)
                 } else {
-                        CheckNetwork.check(activity as MainActivity)
-
+                    CheckNetwork.check(activity as MainActivity)
                 }
                 Toast.makeText(context, messAnonSign, Toast.LENGTH_LONG).show()
             }
@@ -104,12 +103,12 @@ class FirstFragment : Fragment() {
             res(R.string.smile_else)
         )
         adapter = FirstFrAdapter()
-        rootElement!!.rcFF.adapter = adapter
-        rootElement!!.rcFF.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
+        binding!!.rcFF.adapter = adapter
+        binding!!.rcFF.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL, false)
         adapter!!.updateAdapter(listPhoto, listTitle)
 
         val snapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(rootElement!!.rcFF)
+        snapHelper.attachToRecyclerView(binding!!.rcFF)
 //        rootElement!!.rcFF.scrollToPosition(4)
 //        rootElement!!.rcFF.smoothScrollBy(300,0)
     }
@@ -117,7 +116,7 @@ class FirstFragment : Fragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initClick() {
-        rootElement!!.apply {
+        binding!!.apply {
             imageButton1.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     v.isPressed = true
@@ -212,7 +211,7 @@ class FirstFragment : Fragment() {
 
     override fun onDestroyView() {
         job2 = null
-        rootElement = null
+        binding = null
         super.onDestroyView()
         Log.d("!!!on", "onDestroyView")
     }

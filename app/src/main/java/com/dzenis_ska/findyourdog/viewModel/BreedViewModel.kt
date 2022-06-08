@@ -162,7 +162,6 @@ class BreedViewModel(private val repository: Repository) : ViewModel() {
     fun getOnePhoto(url: String) {
         scope.launch {
             _onePhoto.postValue(repository.getOnePhoto(url))
-
         }
     }
 

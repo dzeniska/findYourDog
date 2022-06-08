@@ -382,8 +382,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 edTelNum.text.toString(),
                 tvGender.text.toString(),
                 tvSize.text.toString(),
-                targetLat.toString(),
-                targetLng.toString(),
+                targetLat/*.toString()*/,
+                targetLng/*.toString()*/,
                 edDescription.text.toString(),
                 breed,
                 mAuth.currentUser?.email,
@@ -712,11 +712,11 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     private fun publishAdShelter(adTemp: AdShelter, dialog: AlertDialog) {
 
         if (boolEditOrNew == true) {
-            var lt = shLat.toString()
-            var lg = shLng.toString()
+            var lt = shLat/*.toString()*/
+            var lg = shLng/*.toString()*/
             if (!ltlng) {
-                lt = adTemp.lat.toString()
-                lg = adTemp.lng.toString()
+                lt = adTemp.lat/*.toString()*/
+                lg = adTemp.lng/*.toString()*/
             }
             viewModel.publishAdShelter(
                 adTemp
@@ -915,7 +915,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
     override fun onDetach() {
         super.onDetach()
         viewModel.adShelteAfterPhotoViewed = null
-
     }
 
     private fun updatePermissionsState(permMap: MutableMap<String, Boolean>) {

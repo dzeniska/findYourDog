@@ -2,27 +2,21 @@ package com.dzenis_ska.findyourdog.ui
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.graphics.Typeface
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
-import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.core.view.MenuItemCompat
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.navOptions
@@ -38,6 +32,10 @@ import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.*
 import javax.inject.Inject
+import android.content.res.Configuration
+
+import java.util.*
+
 
 @SuppressLint("SetTextI18n")
 @AndroidEntryPoint
@@ -86,7 +84,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             uiUpdateMain(it)
         })
     }
-
 
     private fun uiUpdateMain(user: FirebaseUser?) {
         if (user?.email != null) {
@@ -238,6 +235,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             closeDrawer()
         }
     }
+
+
 
     private fun closeDrawer() {
         rootElement!!.drawerLayout.closeDrawer(GravityCompat.START)

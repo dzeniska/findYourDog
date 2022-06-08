@@ -193,17 +193,16 @@ object ImageManager {
             }else{
                 return@withContext  arrayListOf<ByteArray>()
             }
-
         }
 
         for (i in uris.indices) {
 //            val e = kotlin.runCatching {
 
-            val rotationDegres = imageRotationNew(uris[i], act)
+            val rotationDegree = imageRotationNew(uris[i], act)
             bitmapList.add(Picasso.get()
                 .load(uris[i])
                 .resize(tempList[i][WIDTH], tempList[i][HEIGHT])
-                .rotate(rotationDegres.toFloat())
+                .rotate(rotationDegree.toFloat())
                 .get()
             )
 //            }
@@ -212,7 +211,7 @@ object ImageManager {
         val bmlA = arrayListOf<ByteArray>()
         bitmapList.forEach { bitmap ->
             val out = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 25,out)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 50,out)
             val biteArray = out.toByteArray()
             bmlA.add(biteArray)
         }

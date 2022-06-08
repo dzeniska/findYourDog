@@ -21,15 +21,15 @@ android {
         }
     }
 
-    compileSdkVersion 31
+    compileSdkVersion 32
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.dzenis_ska.findyourdog"
         minSdkVersion 24
-        targetSdkVersion 31
-        versionCode 177
-        versionName "1.7.7"
+        targetSdkVersion 32
+        versionCode 179
+        versionName "1.7.9"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 

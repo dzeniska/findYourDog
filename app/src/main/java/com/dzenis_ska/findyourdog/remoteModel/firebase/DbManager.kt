@@ -5,6 +5,7 @@ import android.net.Uri
 import android.util.Log
 import android.widget.Toast
 import com.dzenis_ska.findyourdog.ui.utils.FilterManager
+import com.dzenis_ska.findyourdog.ui.utils.FilterManager.createLoc
 import com.dzenis_ska.findyourdog.viewModel.BreedViewModel
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.ktx.auth
@@ -27,7 +28,8 @@ class DbManager() {
         if (mAuth.uid != null) {
             val childFirst = "${adTemp.email?.substringBefore('.')}_${adTemp.key}"
             db.child(childFirst)
-                .child(mAuth.uid!!).child(AD_SHELTER_NODE)
+                .child(mAuth.uid!!)
+                .child(AD_SHELTER_NODE)
                 .setValue(adTemp)
                 .addOnCompleteListener { task1 ->
                     if (task1.isSuccessful) {
@@ -113,15 +115,75 @@ class DbManager() {
 
         })
     }
-
-    fun getAllAds(callback: (adShelterArray: ArrayList<AdShelter>) -> Unit) {
-        val query = db.orderByChild("/${FILTER_NODE}/time")
-//            .startAt("1635430194000")
-            .limitToFirst(100)
-        readDataFromDB(query) { callback(it) }
+    private fun getQuery(latLng: String, start: Double, end: Double): Query {
+        return db.orderByChild("/${FILTER_NODE}/${latLng}")
+            .startAt(createLoc(start))
+            .endBefore(createLoc(end))
     }
 
-    //на будущее pagination
+    private fun getLatLngTrash(latLngD: Double, latLngS: String, callback: (list: ArrayList<AdShelter>) -> Unit) {
+        when (latLngD) {
+            in 0.0..LOCATION_LIMIT -> {
+                Log.d("!!!getLatLngTrash1", "${latLngD} --- ${latLngS}")
+                val queryLatLng1 = getQuery(latLngS, 0.0, latLngD.plus(LOCATION_LIMIT))
+                readDataFromDB(queryLatLng1){ trash1->
+                    val queryLatLng2 = getQuery(latLngS, -0.0, latLngD.minus(LOCATION_LIMIT))
+                    readDataFromDB(queryLatLng2){trash2->
+                        callback(addAllTrash(trash1, trash2))
+                    }
+                }
+            }
+            in -LOCATION_LIMIT..-0.0 -> {
+                Log.d("!!!getLatLngTrash2", "${latLngD} --- ${latLngS}")
+
+                val queryLatLng1 = getQuery(latLngS, -0.0, latLngD.minus(LOCATION_LIMIT))
+                readDataFromDB(queryLatLng1){ trash1->
+                    val queryLatLng2 = getQuery(latLngS, 0.0, latLngD.plus(LOCATION_LIMIT))
+                    readDataFromDB(queryLatLng2){trash2->
+                        callback(addAllTrash(trash1, trash2))
+                    }
+                }
+            }
+            in LOCATION_LIMIT..if (latLngS == LAT) 86.0 else 180.0->{
+                Log.d("!!!getLatLngTrash3", "${latLngD} --- ${latLngS}")
+
+                val queryLatLng1 = getQuery(latLngS, latLngD.minus(LOCATION_LIMIT),
+                    if (latLngS == LAT) latLngD.plus(
+                        LOCATION_LIMIT) else latLngD.plus(LOCATION_LIMIT))
+                readDataFromDB(queryLatLng1){
+                    callback(it)
+                }
+            }
+            in (if (latLngS == LAT) -86.0 else -180.0)..-LOCATION_LIMIT->{
+                Log.d("!!!getLatLngTrash4", "${latLngD} --- ${latLngD.minus(LOCATION_LIMIT)}")
+
+                val queryLatLng1 = getQuery(latLngS, latLngD.plus(LOCATION_LIMIT), latLngD.minus(LOCATION_LIMIT))
+                readDataFromDB(queryLatLng1){
+                    callback(it)
+                }
+            }
+        }
+    }
+
+    private fun addAllTrash(list1: ArrayList<AdShelter>, list2: ArrayList<AdShelter>): ArrayList<AdShelter>{
+        val list = arrayListOf<AdShelter>()
+        list.addAll(list1)
+        list.addAll(list2)
+        return list
+    }
+
+    private fun addSortTrash(list1: ArrayList<AdShelter>, list2: ArrayList<AdShelter>): ArrayList<AdShelter>{
+        val list = arrayListOf<AdShelter>()
+        list1.forEach { l1->
+            list2.forEach { l2->
+                if (l2.key == l1.key) list.add(l1)
+            }
+        }
+//        Log.d("!!!getLatLngTrashAllList", "${list.size} --- ")
+        return list
+    }
+
+
     fun getAllAdsForAdapter(
         lat: Double,
         lng: Double,
@@ -137,44 +199,10 @@ class DbManager() {
                 callback(it)
             }
         } else {
-            val queryLat: Query = when (lat) {
-                in LOCATION_LIMIT..85.0 -> db.orderByChild("/${FILTER_NODE}/lat")
-                    .startAt("${lat.minus(LOCATION_LIMIT)}")
-                    .endBefore("${lat.plus(LOCATION_LIMIT)}")
-                //            .limitToFirst(100)
-                in -85.0..-LOCATION_LIMIT -> db.orderByChild("/${FILTER_NODE}/lat")
-                    .startAt("${lat.plus(LOCATION_LIMIT)}")
-                    .endBefore("${lat.minus(LOCATION_LIMIT)}")
-
-                else -> db.orderByChild("/${FILTER_NODE}/lat").equalTo("$lat")
-            }
-
-            readDataFromDB(queryLat) { adShLat ->
-                val queryLng: Query = when (lng) {
-                    in LOCATION_LIMIT..179.0 -> db.orderByChild("/${FILTER_NODE}/lng")
-                        .startAt("${lng.minus(LOCATION_LIMIT)}")
-                        .endBefore("${lng.plus(LOCATION_LIMIT)}")
-                    in -179.0..-LOCATION_LIMIT -> db.orderByChild("/${FILTER_NODE}/lng")
-                        .startAt("${lng.plus(LOCATION_LIMIT)}")
-                        .endBefore("${lng.minus(LOCATION_LIMIT)}")
-
-                    else -> db.orderByChild("/${FILTER_NODE}/lng").equalTo("$lng")
+            getLatLngTrash(lat, LAT){ trashLat->
+                getLatLngTrash(lng, LNG){ trashLng->
+                    callback(addSortTrash(trashLat, trashLng))
                 }
-//            Log.d("!!!getAdsForAdapter", "${lng.minus(LOCATION_LIMIT)}_ ${lng.plus(LOCATION_LIMIT)}")
-                readDataFromDB(queryLng) { adShLng ->
-                    val listSh = arrayListOf<AdShelter>()
-                    adShLat.forEach { adShLatItem ->
-                        adShLng.forEach adShLngItem@{ adShLngItem ->
-                            Log.d("!!!getAdsForAdapter", "${adShLngItem}")
-                            if (adShLngItem == adShLatItem) {
-                                listSh.add(adShLngItem)
-                                return@adShLngItem
-                            }
-                        }
-                    }
-                    callback(listSh)
-                }
-
             }
         }
     }
@@ -314,6 +342,9 @@ class DbManager() {
         const val MAIN_MAP_NODE = "main_map"
         const val STORAGE_NODE = "main"
         const val LOCATION_LIMIT = 10.0
+
+        const val LAT = "lat"
+        const val LNG = "lng"
     }
 }
 
