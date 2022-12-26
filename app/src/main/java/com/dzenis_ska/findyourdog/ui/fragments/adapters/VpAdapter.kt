@@ -40,16 +40,6 @@ class VpAdapter(val addSF: AddShelterFragment) : RecyclerView.Adapter<VpAdapter.
                 addSF.fullScreen(250, 0.50f)
                 addSF.toFragOnePhoto(uri)
             }
-           /* binding.imgItemVp.orientation = ImageManager.imageRotationPreview(bitmap)
-//            binding.imgItemVp.setImageBitmap(bitmap)
-            binding.imgItemVp.setImage(ImageSource.uri(bitmap))
-//            binding.imgItemVp.setImage(ImageSource.bitmap(bitmap))*/
-
-//            scope.launch {
-//                Picasso.get()
-//                    .load(uri)
-//                    .into(binding.imgItemVp)
-//            }
 
             if(!b) {
                 scope.launch {

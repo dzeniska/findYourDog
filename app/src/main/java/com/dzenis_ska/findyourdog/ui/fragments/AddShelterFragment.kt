@@ -113,7 +113,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 // Handle the Intent
                 val fileUri = intent?.let { UCrop.getOutput(it) }
                 if (fileUri != null) {
-                    Log.d("!!!ADD_PHOTO", "${requestPhoto} _ ${fileUri} _ ")
+                    Log.d("!!!ADD_PHOTO", "$requestPhoto _ $fileUri _ ")
                     when (requestPhoto) {
                         ADD_PHOTO -> vpAdapter.updateAdapter(listOf(fileUri), false)
                         ADD_IMAGE -> vpAdapter.updateAdapterForSinglePhoto(listOf(fileUri))
@@ -261,7 +261,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         }
 
         //Открываем AddShelterFragment и передаём данные
-        viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner, { adShelter ->
+        viewModel.liveAdsDataAddShelter.observe(viewLifecycleOwner) { adShelter ->
 
             rootElement!!.apply {
                 if (adShelter != null) {
@@ -270,7 +270,8 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         fillFrag(adShelter, true)
                         boolEditOrNew = true
                         fabDeleteShelter.isVisible = true
-                        (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.editing)
+                        (activity as AppCompatActivity).supportActionBar?.title =
+                            resources.getString(R.string.editing)
 
                         ibGetLocation.isVisible = true
                     } else {
@@ -278,10 +279,11 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                         (activity as AppCompatActivity).supportActionBar?.title = adShelter.name
                     }
                 } else {
-                    (activity as AppCompatActivity).supportActionBar?.title = resources.getString(R.string.created)
+                    (activity as AppCompatActivity).supportActionBar?.title =
+                        resources.getString(R.string.created)
                 }
             }
-        })
+        }
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -537,7 +539,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
                 fullScreen(250, 0.50f)
             }
             ibFullScreen.setOnClickListener() {
-                if (fs == 250) fullScreen(1000, 0.22f)
+                if (fs == 250) fullScreen(1200, 0.22f)
                 else fullScreen(250, 0.50f)
             }
             ibGetLocation.setOnClickListener {
@@ -749,7 +751,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
             cs.constrainHeight(R.id.mapView, height)
             cs.applyTo(rootElement!!.clDescr)
             rootElement!!.guideline4.setGuidelinePercent(percent)
-            if (height == 1000) rootElement!!.ibFullScreen.setImageResource(R.drawable.ic_close_fullscreen)
+            if (height == 1200) rootElement!!.ibFullScreen.setImageResource(R.drawable.ic_close_fullscreen)
             else rootElement!!.ibFullScreen.setImageResource(R.drawable.ic_open_in_full)
             fs = height
         }
@@ -908,6 +910,7 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         )
         viewModel.adShelteAfterPhotoViewed = instState
         navController.navigate(R.id.onePhotoFragment)
+
         viewModel.getOnePhoto(uri.toString())
     }
 
@@ -916,7 +919,6 @@ class AddShelterFragment : Fragment(), OnMapReadyCallback, LocationListener,
         super.onDetach()
         viewModel.adShelteAfterPhotoViewed = null
     }
-
     private fun updatePermissionsState(permMap: MutableMap<String, Boolean>) {
         var countPerm = 0
         permMap.forEach { map ->

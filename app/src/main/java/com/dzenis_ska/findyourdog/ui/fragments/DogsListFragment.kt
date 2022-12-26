@@ -91,13 +91,13 @@ class DogsListFragment : Fragment() {
 //        rootElement!!.tvDogList.text = getString(R.string.hi, "${getCounterValue()}")
 
 
-        viewModel.breedLive.observe(viewLifecycleOwner, {
+        viewModel.breedLive.observe(viewLifecycleOwner) {
 
             breeds.clear()
             breeds.addAll(it)
             adapter?.updateAdapterBreeds(it)
             rootElement!!.tvDogList.alpha = 0.3f
-        })
+        }
     }
 
     private fun initAdapter() {

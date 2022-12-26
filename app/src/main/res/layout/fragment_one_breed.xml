@@ -133,10 +133,10 @@
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
         android:padding="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tvBreedDog"
-        app:layout_constraintEnd_toStartOf="@+id/imgCut"
+        app:layout_constraintBottom_toBottomOf="@id/tvBreedDog"
+        app:layout_constraintEnd_toStartOf="@id/imgCut"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tvBreedDog"
+        app:layout_constraintTop_toTopOf="@id/tvBreedDog"
         android:spinnerMode="dialog"/>
 
     <ScrollView

@@ -39,7 +39,9 @@ import java.util.*
 
 @SuppressLint("SetTextI18n")
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(),
+    NavigationView.OnNavigationItemSelectedListener
+{
 
     private lateinit var tvHeaderAcc: TextView
     var navController: NavController? = null
@@ -80,9 +82,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         init()
         rootElement!!.navView.setNavigationItemSelectedListener(this)
 //        openCloseDrawer()
-        viewModel.userUpdate.observe(this, {
+        viewModel.userUpdate.observe(this) {
             uiUpdateMain(it)
-        })
+        }
     }
 
     private fun uiUpdateMain(user: FirebaseUser?) {
@@ -134,13 +136,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             ) as (TextView)
             breedCounter(it.size)
         })
-        viewModel.liveAdsDataAllMarkers.observe(this, {
+        viewModel.liveAdsDataAllMarkers.observe(this) {
             //добавляем счётчик в item menu_drawer
             menuMapItem = MenuItemCompat.getActionView(
                 rootElement!!.navView.menu.findItem(R.id.goToMapFr)
             ) as (TextView)
             mapCounter(it.size)
-        })
+        }
         viewModel.countFavorites()
 
 //        viewModel.selectBreed()

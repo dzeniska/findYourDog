@@ -10,13 +10,10 @@ import android.widget.BaseAdapter
 import com.dzenis_ska.findyourdog.databinding.ItemSpinnerBreedBinding
 import java.util.*
 
-typealias OnSelectPressedListener = (String) -> Unit
-
 class SpinnerAdapterMorePhoto(
     private val breeds: List<String>,
-    private val breedName: String,
-//    private val onSelectPressedListener: OnSelectPressedListener
-) : BaseAdapter()/*, View.OnClickListener*/
+    private val breedName: String
+) : BaseAdapter()
 {
     override fun getItem(position: Int): String {
         return breeds[position]
@@ -39,22 +36,12 @@ class SpinnerAdapterMorePhoto(
         } else {
             binding.textBreed.setTextColor(Color.WHITE)
         }
-//        binding.root.tag = breed
         binding.textBreed.tag = breed
         return binding.root
     }
 
-//    override fun onClick(v: View) {
-////        val breed = v.tag as ItemSpinnerBreedBinding
-////        val text = breed.textBreed.text.toString()
-//        val text = v.tag as String
-//        onSelectPressedListener.invoke(text)
-//    }
-
     private fun createBinding(context: Context) : ItemSpinnerBreedBinding{
         val binding = ItemSpinnerBreedBinding.inflate(LayoutInflater.from(context))
-//        binding.root.setOnClickListener(this)
-//        binding.textBreed.setOnClickListener(this)
         binding.root.tag = binding
         return binding
     }

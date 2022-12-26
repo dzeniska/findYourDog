@@ -148,13 +148,7 @@ class OneBreedFragment : Fragment()/*, AdapterView.OnItemSelectedListener*/ {
     private fun initSpinner() = with(binding!!) {
         //Spinner
         spinnerAdapter = SpinnerAdapterMorePhoto(listBreed, breedName)
-//        {
-//            Toast.makeText(
-//                activity as MainActivity,
-//                it,
-//                Toast.LENGTH_SHORT
-//            ).show()
-//        }
+
         spinner.adapter = spinnerAdapter
 
         spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

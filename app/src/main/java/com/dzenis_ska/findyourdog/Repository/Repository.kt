@@ -1,6 +1,7 @@
 package com.dzenis_ska.findyourdog.Repository
 
 
+import android.util.Log
 import com.dzenis_ska.findyourdog.LocalModel.LocalModel
 import com.dzenis_ska.findyourdog.remoteModel.*
 import javax.inject.Inject
@@ -10,6 +11,7 @@ data class Repository @Inject constructor(val remoteModel: RemoteModel, val loca
 
     //одного фото запрос
     suspend fun getOnePhoto(url: String): ByteArray{
+
         return remoteModel.getOnePhoto(url)
     }
 
